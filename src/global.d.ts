@@ -1,9 +1,16 @@
+/* eslint no-unused-vars: 0 */
 declare global {
-  namespace NodeJS { // eslint-disable-line
-      interface ProcessEnv { // eslint-disable-line
-        name: string;
-      }
+  namespace NodeJS {
+    interface ProcessEnv {
+      name: string;
+    }
+  }
+
+  type GalaxyInfo = {
+    config: {
+      token: string
+    }
   }
 }
 
-export {}
+export { }
