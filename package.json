@@ -1,0 +1,36 @@
+{
+  "name": "galaxy-info",
+  "version": "2.0.0",
+  "description": "Galaxy Info is a Discord bot for information of Galaxy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix",
+    "build": "tsc",
+    "dev1": "tsc --watch",
+    "dev2": "cd dist && nodemon",
+    "prod": "docker build . -t 192.168.1.32:5000/galaxyinfo2 && docker push 192.168.1.32:5000/galaxyinfo2"
+  },
+  "author": "Wingy <git@wingysam.xyz>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@sapphire/decorators": "^3.1.3",
+    "@sapphire/framework": "^2.1.3",
+    "discord.js": "^13.2.0",
+    "dotenv": "^10.0.0",
+    "esbuild": "^0.13.9",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@sapphire/ts-config": "^3.1.3",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1",
+    "nodemon": "^2.0.14",
+    "typescript": "^4.4.4"
+  }
+}
