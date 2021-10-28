@@ -1,20 +1,19 @@
-import { SapphireClient } from '@sapphire/framework'
-import parseConfig from './config'
 import { config as dotenv } from 'dotenv'
-import * as path from 'path'
+
+import { SapphireClient } from '@sapphire/framework'
+import '@sapphire/plugin-logger/register'
+import parseConfig from './config'
 import IngestService from './ingest'
 
 ;(async () => {
-  dotenv({
-    path: path.resolve(process.cwd(), '..', '.env')
-  })
+  dotenv()
   const config = await parseConfig()
 
   const GalaxyInfo: GalaxyInfo = { config }
 
   const client = new SapphireClient({
     intents: ['GUILDS', 'GUILD_MESSAGES'],
-    defaultPrefix: '!'
+    defaultPrefix: GalaxyInfo.config.prefix
   })
 
   client.login(config.token)
