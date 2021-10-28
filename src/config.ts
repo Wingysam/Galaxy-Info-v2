@@ -16,15 +16,23 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
     fallback?: string | (() => Promise<undefined | string>),
     handle?: (arg: string) => Promise<undefined | string>
   ) {
+    let cfgSection: any = cfg
+    const nameSplit = name.split('.')
+    const key = nameSplit[nameSplit.length - 1]
+    for (const part of nameSplit.splice(0, nameSplit.length - 1)) {
+      if (!cfgSection[part]) cfgSection[part] = {}
+      cfgSection = cfgSection[part]
+    }
+
     async function fb () {
       switch (typeof fallback) {
         case 'function':
-          cfg[name] = await fallback()
-          if (cfg[name]) log(name, 'defaulted to', cfg[name])
-          return !!cfg[name]
+          cfgSection[key] = await fallback()
+          if (cfgSection[key]) log(name, 'defaulted to', cfgSection[key])
+          return !!cfgSection[key]
         case 'string':
-          cfg[name] = fallback
-          log(name, 'defaulted to', cfg[name])
+          cfgSection[key] = fallback
+          log(name, 'defaulted to', cfgSection[key])
           return true
       }
       return false
@@ -37,10 +45,10 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
     if (!fromEnv) {
       switch (requirementLevel) {
         case 'must':
-          fail(`process.env.${name} must be set.`)
+          fail(`process.env['${name}'] must be set.`)
           break
         case 'should':
-          log(`Warning: process.env.${name} is unset.`)
+          log(`Warning: process.env['${name}'] is unset.`)
           break
         case 'may':
           break
@@ -50,19 +58,23 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
     }
 
     if (!handle) {
-      cfg[name] = fromEnv
+      cfgSection[key] = fromEnv
       log('Loaded option', name)
       return
     }
 
     const handled = await handle(fromEnv)
     if (handled) fail(handled)
-    cfg[name] = fromEnv
+    cfgSection[key] = fromEnv
     log('Loaded option', name)
   }
 
+  // Primary operations configuration
   await option('token', 'must')
   await option('prefix', 'may', '!')
+
+  // Ingest service
+  await option('ingest.token', 'should')
 
   return cfg
 }
