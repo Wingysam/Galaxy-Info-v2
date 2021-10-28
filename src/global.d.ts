@@ -3,7 +3,10 @@ declare global {
   type GalaxyInfo = {
     config: {
       token: string
-      prefix: string
+      prefix: string,
+      ingest?: {
+        token?: string
+      }
     }
   }
 }
