@@ -1,5 +1,5 @@
 import { SapphireClient } from '@sapphire/framework'
-import configurator from './config'
+import parseConfig from './config'
 import { config as dotenv } from 'dotenv'
 import * as path from 'path'
 
@@ -7,7 +7,7 @@ import * as path from 'path'
   dotenv({
     path: path.resolve(process.cwd(), '..', '.env')
   })
-  const config = await configurator()
+  const config = await parseConfig()
 
   const client = new SapphireClient({
     intents: ['GUILDS', 'GUILD_MESSAGES'],

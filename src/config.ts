@@ -1,8 +1,4 @@
-type Config = {
-  token: string
-}
-
-export default async function config (): Promise<Config> {
+export default async function parseConfig (): Promise<GalaxyInfo['config']> {
   function log (...args: any) {
     console.log('[Configuration]', ...args)
   }
