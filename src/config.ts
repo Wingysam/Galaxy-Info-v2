@@ -1,3 +1,20 @@
+declare global {
+  type GalaxyInfo = { // eslint-disable-line no-unused-vars
+    config: {
+      bot: {
+        token: string,
+        prefix: string
+      },
+      ingest: {
+        token?: string
+      },
+      web: {
+        port: number
+      }
+    }
+  }
+}
+
 export default async function parseConfig (): Promise<GalaxyInfo['config']> {
   function log (...args: any) {
     console.log('[Configuration]', ...args)
@@ -13,8 +30,8 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
   async function option (
     name: string,
     requirementLevel: 'must' | 'should' | 'may',
-    fallback?: string | (() => Promise<undefined | string>),
-    handle?: (arg: string) => Promise<undefined | string>
+    fallback?: any,
+    handle?: (arg: string) => Promise<any>
   ) {
     let cfgSection: any = cfg
     const nameSplit = name.split('.')
@@ -25,17 +42,16 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
     }
 
     async function fb () {
-      switch (typeof fallback) {
-        case 'function':
-          cfgSection[key] = await fallback()
-          if (cfgSection[key]) log(name, 'defaulted to', cfgSection[key])
-          return !!cfgSection[key]
-        case 'string':
-          cfgSection[key] = fallback
-          log(name, 'defaulted to', cfgSection[key])
-          return true
+      if (fallback === undefined) return false
+      if (typeof fallback === 'function') {
+        cfgSection[key] = await fallback()
+        if (cfgSection[key]) log(name, 'defaulted to', cfgSection[key])
+        return !!cfgSection[key]
+      } else {
+        cfgSection[key] = fallback
+        log(name, 'defaulted to', cfgSection[key])
+        return true
       }
-      return false
     }
 
     const fromEnv = process.env[name]
@@ -63,10 +79,15 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
       return
     }
 
-    const handled = await handle(fromEnv)
-    if (handled) fail(handled)
-    cfgSection[key] = fromEnv
-    log('Loaded option', name)
+    try {
+      const handled = await handle(fromEnv)
+      if (!handled) throw new Error('failed to parse')
+
+      cfgSection[key] = handled
+      log('Loaded option', name)
+    } catch (error) {
+      fail(error)
+    }
   }
 
   // Primary operations configuration
@@ -77,7 +98,7 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
   await option('ingest.token', 'should')
 
   // Web
-  await option('web.port', 'should', '3000')
+  await option('web.port', 'should', 3000, async port => Number(port))
 
   return cfg
 }
