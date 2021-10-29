@@ -13,10 +13,10 @@ import IngestService from './ingest'
 
   const client = new SapphireClient({
     intents: ['GUILDS', 'GUILD_MESSAGES'],
-    defaultPrefix: GalaxyInfo.config.prefix
+    defaultPrefix: GalaxyInfo.config.bot.prefix
   })
 
-  client.login(config.token)
+  client.login(config.bot.token)
 
   IngestService({ GalaxyInfo })
 })()

@@ -2,10 +2,15 @@
 declare global {
   type GalaxyInfo = {
     config: {
-      token: string
-      prefix: string,
-      ingest?: {
+      bot: {
+        token: string,
+        prefix: string
+      },
+      ingest: {
         token?: string
+      },
+      web: {
+        port: string
       }
     }
   }

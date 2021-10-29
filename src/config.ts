@@ -70,11 +70,14 @@ export default async function parseConfig (): Promise<GalaxyInfo['config']> {
   }
 
   // Primary operations configuration
-  await option('token', 'must')
-  await option('prefix', 'may', '!')
+  await option('bot.token', 'must')
+  await option('bot.prefix', 'may', '!')
 
   // Ingest service
   await option('ingest.token', 'should')
+
+  // Web
+  await option('web.port', 'should', '3000')
 
   return cfg
 }
