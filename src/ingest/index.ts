@@ -1,10 +1,17 @@
-type Arg = {
+type ConstructorArg = {
   GalaxyInfo: GalaxyInfo
 }
 
-export default async function Ingest ({
-  GalaxyInfo
-}: Arg) {
-  if (!GalaxyInfo.config.ingest?.token) return
-  console.log('Ingest initializing')
+export class IngestService {
+  private GalaxyInfo
+
+  constructor ({ GalaxyInfo }: ConstructorArg) {
+    this.GalaxyInfo = GalaxyInfo
+    this.init()
+  }
+
+  async init () {
+    if (!this.GalaxyInfo.config.ingest?.token) return
+    console.log('init')
+  }
 }

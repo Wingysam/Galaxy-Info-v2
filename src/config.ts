@@ -1,21 +1,17 @@
-declare global {
-  type GalaxyInfo = { // eslint-disable-line no-unused-vars
-    config: {
-      bot: {
-        token: string,
-        prefix: string
-      },
-      ingest: {
-        token?: string
-      },
-      web: {
-        port: number
-      }
-    }
+export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
+  bot: {
+    token: string,
+    prefix: string
+  },
+  ingest: {
+    token?: string
+  },
+  web: {
+    port: number
   }
 }
 
-export default async function parseConfig (): Promise<GalaxyInfo['config']> {
+export async function parseConfig (): Promise<GalaxyInfoConfig> {
   function log (...args: any) {
     console.log('[Configuration]', ...args)
   }
