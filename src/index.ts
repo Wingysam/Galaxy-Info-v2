@@ -4,11 +4,15 @@ import { SapphireClient } from '@sapphire/framework'
 import '@sapphire/plugin-logger/register'
 import { GalaxyInfoConfig, parseConfig } from './config'
 import { IngestService } from './ingest'
+import { PrismaClient } from '@prisma/client'
+import GalaxyInfoRobloxInterface from './roblox'
 
 declare global {
   type GalaxyInfo = { // eslint-disable-line no-unused-vars
     config: GalaxyInfoConfig,
-    ingest: IngestService
+    ingest: IngestService,
+    prisma: PrismaClient,
+    roblox: GalaxyInfoRobloxInterface
   }
 }
 
@@ -21,6 +25,8 @@ declare global {
 
     gi.config = config
     gi.ingest = new IngestService({ GalaxyInfo: gi })
+    gi.prisma = new PrismaClient()
+    gi.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo: gi })
 
     return gi
   })()

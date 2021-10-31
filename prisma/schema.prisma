@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/data.db"
+}
+
+model Kills {
+  id             BigInt   @id
+  killer_id      BigInt
+  killer_name    String
+  killer_ship    String
+  killer_class   String
+  victim_id      BigInt
+  victim_name    String
+  victim_ship    String
+  victim_class   String
+  victim_cost    Int
+  victim_limited Boolean
+  refunded       Boolean
+  nuke           Boolean
+  date           DateTime
+}
+
+model Users {
+  name String @id
+  id   BigInt
+}

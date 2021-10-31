@@ -8,6 +8,9 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
   },
   web: {
     port: number
+  },
+  galaxy: {
+    guild?: string
   }
 }
 
@@ -92,6 +95,9 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
 
   // Ingest service
   await option('ingest.token', 'should')
+
+  // Galaxy Server
+  await option('galaxy.guild', 'should')
 
   // Web
   await option('web.port', 'should', 3000, async port => Number(port))

@@ -15,8 +15,10 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
+    camelcase: 'off'
   },
   globals: {
     GalaxyInfo: 'readonly'
-  }
+  },
+  
 }
