@@ -37,9 +37,9 @@ export default class ShipKillsIngest extends EventEmitter {
     if (!description) return this.log('Invalid embed, id:', message.id)
 
     let nuke = false
-    let matches = description.match(/^\*\*(.*)'s (.*?)\*\* \((.*)\) destroyed \*\*([A-z0-9_]{3,20})'s (.*?)\*\* \((.*?) Value: (.*?)\)/)
+    let matches = description.match(/^\*\*(.*?)'s (.*?)\*\* \((.*)\) destroyed \*\*([A-z0-9_]{3,20})'s (.*?)\*\* \((.*?) Value: (.*?)\)/)
     if (!matches) {
-      matches = description.match(/^\*\*(.*)'s (.*?)\*\* \((.*)\) __EXPLODED__ destroying \*\*([A-z0-9_]{3,20})'s (.*?)\*\* \((.*?) Value: (.*?)\)/)
+      matches = description.match(/^\*\*(.*?)'s (.*?)\*\* \((.*)\) __EXPLODED__ destroying \*\*([A-z0-9_]{3,20})'s (.*?)\*\* \((.*?) Value: (.*?)\)/)
       if (matches) nuke = true
     }
     if (!matches || matches.length !== 8) {
