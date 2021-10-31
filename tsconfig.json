@@ -2,7 +2,8 @@
 	"extends": "@sapphire/ts-config",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "incremental": false
   },
   "includes": [ "src" ]
 }
