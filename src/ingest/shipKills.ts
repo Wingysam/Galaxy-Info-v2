@@ -99,7 +99,7 @@ export default class ShipKillsIngest extends EventEmitter {
         data: parsed
       })
 
-      this.log(`${parsed.killer_name} (${parsed.killer_id}) ${parsed.killer_ship} -> ${parsed.victim_name} ${parsed.victim_ship}`)
+      this.log(`${parsed.date} ${parsed.killer_name} (${parsed.killer_id}) ${parsed.killer_ship} -> ${parsed.victim_name} ${parsed.victim_ship}`)
     })
 
     ;(async () => {
@@ -149,7 +149,7 @@ export default class ShipKillsIngest extends EventEmitter {
           let saved = 0
           const startTimestamp = performance.now()
           for (const kill of alreadyParsed) {
-            this.log(`${kill.killer_name} (${kill.killer_id}) ${kill.killer_ship} -> ${kill.victim_name} ${kill.victim_ship} : ${kill.id} ${mostRecentKillId}`)
+            this.log(`${kill.date} ${kill.killer_name} (${kill.killer_id}) ${kill.killer_ship} -> ${kill.victim_name} ${kill.victim_ship} : ${kill.id} ${mostRecentKillId}`)
             if (mostRecentKill && kill.id <= mostRecentKill.id) continue
             try {
               await this.GalaxyInfo.prisma.kills.create({
