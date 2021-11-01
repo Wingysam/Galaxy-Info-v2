@@ -6,6 +6,7 @@ import type { Message } from 'discord.js'
   aliases: ['pong'],
   description: 'ping pong'
 })
+
 export class PingCommand extends Command {
   public async messageRun (message: Message) {
     const msg = await message.channel.send('Ping?')

@@ -12,7 +12,14 @@ declare global {
     config: GalaxyInfoConfig,
     ingest: IngestService,
     prisma: PrismaClient,
-    roblox: GalaxyInfoRobloxInterface
+    roblox: GalaxyInfoRobloxInterface,
+    client: SapphireClient
+  }
+}
+
+declare module '@sapphire/framework' {
+  interface SapphireClient { // eslint-disable-line no-unused-vars
+    GalaxyInfo: GalaxyInfo
   }
 }
 
@@ -20,21 +27,25 @@ declare global {
   dotenv()
   const config = await parseConfig()
 
-  const GalaxyInfo: GalaxyInfo = await (async () => {
-    const gi: any = {}
+  await (async () => {
+    const GalaxyInfo: any = {}
 
-    gi.config = config
-    gi.ingest = new IngestService({ GalaxyInfo: gi })
-    gi.prisma = new PrismaClient()
-    gi.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo: gi })
+    GalaxyInfo.config = config
+    GalaxyInfo.ingest = new IngestService({ GalaxyInfo: GalaxyInfo })
+    GalaxyInfo.prisma = new PrismaClient()
+    GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo: GalaxyInfo })
 
-    return gi
+    const client = new SapphireClient({
+      intents: ['GUILDS', 'GUILD_MESSAGES'],
+      defaultPrefix: GalaxyInfo.config.bot.prefix
+    })
+
+    client.GalaxyInfo = GalaxyInfo
+
+    client.login(config.bot.token)
+
+    GalaxyInfo.client = client
+
+    return GalaxyInfo
   })()
-
-  const client = new SapphireClient({
-    intents: ['GUILDS', 'GUILD_MESSAGES'],
-    defaultPrefix: GalaxyInfo.config.bot.prefix
-  })
-
-  client.login(config.bot.token)
 })()
