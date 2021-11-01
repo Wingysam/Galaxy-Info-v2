@@ -162,7 +162,7 @@ export default class ShipKillsIngest extends EventEmitter {
             }
           }
           const endTimestamp = performance.now()
-          this.log('Saved', saved, 'kills in', endTimestamp - startTimestamp, 'ms')
+          this.log('Saved', saved, 'kills in', Math.ceil(endTimestamp - startTimestamp), 'ms')
           return
         }
 
