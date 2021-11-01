@@ -52,7 +52,8 @@ export default class ShipKillsIngest extends EventEmitter {
 
     let killer_id
     try {
-      killer_id = await this.GalaxyInfo.roblox.nameToId(killer_name)
+      if (matches[3] === 'Base') killer_id = -1n
+      else killer_id = await this.GalaxyInfo.roblox.nameToId(killer_name)
     } catch (error) {
       return this.log(killer_name, 'does not exist', error)
     }
