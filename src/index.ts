@@ -36,8 +36,11 @@ declare module '@sapphire/framework' {
     GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo: GalaxyInfo })
 
     const client = new SapphireClient({
-      intents: ['GUILDS', 'GUILD_MESSAGES'],
-      defaultPrefix: GalaxyInfo.config.bot.prefix
+      intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES'],
+      defaultPrefix: GalaxyInfo.config.bot.prefix,
+      partials: [
+        'CHANNEL'
+      ]
     })
 
     client.GalaxyInfo = GalaxyInfo
