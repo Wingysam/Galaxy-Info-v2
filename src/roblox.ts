@@ -1,7 +1,19 @@
-import _ from 'lodash'
+import fetch from 'node-fetch'
 
 type ConstructorArg = {
   GalaxyInfo: GalaxyInfo
+}
+
+type RobloxAPIGetByUsername = {
+  code: number,
+  message: string
+} | {
+  success: false,
+  errorMessage: string
+} | {
+  Id: number,
+  username: string
+  // has other properties, but they aren't used by this
 }
 
 function log (...message: any[]) {
@@ -26,22 +38,45 @@ export default class GalaxyInfoRobloxInterface {
         name
       }
     })
-    if (existing) return existing.id
+    if (existing?.id) return existing.id
 
-    const fromRoblox = BigInt(_.random(1, 1000000))
+    let fromRoblox = (await (await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(name)}`)).json() as RobloxAPIGetByUsername)
+
+    if ('success' in fromRoblox) { // success is undefined when it should be true, success being present means it's false
+      if (fromRoblox.success) {
+        log('my assumption about success was wrong', fromRoblox)
+        process.exit()
+      }
+      fromRoblox = {
+        Id: -1,
+        username: name
+      }
+    }
+
+    if ('code' in fromRoblox) {
+      log('Failed to fetch', name, fromRoblox)
+      return 0n
+    } // 5xx i think
+
     try {
-      await this.GalaxyInfo.prisma.users.create({
-        data: {
+      await this.GalaxyInfo.prisma.users.upsert({
+        create: {
           name,
-          id: fromRoblox
+          id: fromRoblox.Id
+        },
+        update: {
+          id: fromRoblox.Id
+        },
+        where: {
+          name
         }
       })
     } catch {
-      log('Already exists')
-      return fromRoblox
+      log(name, 'Already exists')
+      return BigInt(fromRoblox.Id)
     }
     log('Saved data for', name)
-    return fromRoblox
+    return BigInt(fromRoblox.Id)
   }
 
   /**
