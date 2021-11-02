@@ -2,7 +2,6 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
       dark
     >
       <div class="d-flex align-center">
@@ -23,12 +22,11 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
+        href="https://discord.com/api/oauth2/authorize?client_id=745790085789909033&redirect_uri=http%3A%2F%2F192.168.1.32%3A8083%2F&response_type=code&scope=identify%20guilds"
+        color="blurple"
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        <span class="mr-2">Log In</span>
+        <v-icon>mdi-discord</v-icon>
       </v-btn>
     </v-app-bar>
 
