@@ -1,11 +1,13 @@
 import { config as dotenv } from 'dotenv'
 
 import { SapphireClient } from '@sapphire/framework'
-import '@sapphire/plugin-logger/register'
-import { GalaxyInfoConfig, parseConfig } from './config'
-import { IngestService } from './ingest'
 import { PrismaClient } from '@prisma/client'
+import '@sapphire/plugin-logger/register'
+
+import { GalaxyInfoConfig, parseConfig } from './config'
 import GalaxyInfoRobloxInterface from './roblox'
+import { IngestService } from './ingest'
+import { GalaxyInfoWeb } from './web'
 
 declare global {
   type GalaxyInfo = { // eslint-disable-line no-unused-vars
@@ -13,7 +15,8 @@ declare global {
     ingest: IngestService,
     prisma: PrismaClient,
     roblox: GalaxyInfoRobloxInterface,
-    client: SapphireClient
+    client: SapphireClient,
+    web: GalaxyInfoWeb
   }
 }
 
@@ -48,6 +51,8 @@ declare module '@sapphire/framework' {
     client.login(config.bot.token)
 
     GalaxyInfo.client = client
+
+    GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
 
     return GalaxyInfo
   })()

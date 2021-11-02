@@ -1,0 +1,19 @@
+import { Router } from 'express'
+
+import { ApiV1 } from './v1'
+import { ApiV2 } from './v2'
+
+type Arg = {
+  GalaxyInfo: GalaxyInfo
+}
+
+export default async function GalaxyInfoWebApi ({ GalaxyInfo }: Arg) {
+  const router = Router()
+
+  router.get('/', (_, res) => res.end('API'))
+
+  router.use('/v1', await ApiV1({ GalaxyInfo }))
+  router.use('/v2', await ApiV2({ GalaxyInfo }))
+
+  return router
+}
