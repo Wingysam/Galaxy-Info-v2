@@ -8,7 +8,8 @@ export default new Vuetify({
     dark: true,
     themes: {
       dark: {
-        blurple: '#5865F2'
+        blurple: '#5865F2',
+        ogblurple: '#7289DA'
       }
     }
   }
