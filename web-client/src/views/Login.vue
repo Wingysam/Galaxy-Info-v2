@@ -2,7 +2,7 @@
   <v-container>
     <div v-if="discordResponse">
       <v-row class="text-center" v-if="discordResponse.error">
-        <redirect v-if="discordResponse.error === 'access_denied'" to="/"/>
+        <redirect v-if="discordResponse.error === 'access_denied'" tso="/"/>
         <div v-else>
           <v-col cols="12">
             <v-img
@@ -58,7 +58,8 @@ export default {
 
     ;(async () => {
       const token = this.discordResponse?.access_token
-      if (!token) return
+      if (!token) return console.log('no token')
+      console.log('has token')
 
       this.$store.commit('setToken', token)
 

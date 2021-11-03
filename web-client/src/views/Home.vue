@@ -19,7 +19,7 @@
           The ultimate solution to all information about Galaxy. Service for gathering, organizing, and displaying various data. 
         </p>
 
-        <v-btn href="/login" color="blurple" class="mx-3 my-2">Configure your server</v-btn>
+        <v-btn href="/guilds" color="blurple" class="mx-3 my-2">Configure your server</v-btn>
         <v-btn href="/commands" color="secondary" class="mx-3 my-2">View commands</v-btn>
         <v-btn href="/ships" color="secondary" class="mx-3 my-2">See all ships</v-btn>
         <v-btn href="/ships" color="secondary" class="mx-3 my-2">Check Leaderboards</v-btn>
