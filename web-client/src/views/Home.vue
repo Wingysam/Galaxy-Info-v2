@@ -16,7 +16,7 @@
         </h1>
 
         <p class="subheading font-weight-regular">
-          The ultimate solution to all information about Galaxy. Service for gathering, organizing, and displaying various data. 
+          The ultimate solution to all information about Galaxy. Platform for gathering, organizing, and displaying various data. 
         </p>
 
         <v-btn to="/guilds" color="blurple" class="mx-3 my-2">Configure your server</v-btn>
