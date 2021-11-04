@@ -1,7 +1,14 @@
 <template>
   <v-container>
-    <h2>Guild Configuration</h2>
-    <p>Select a guild to configure.</p>
+    <v-row>
+      <v-col shrink style="flex-grow: 0; white-space: nowrap;">
+        <h2>Guild Configuration</h2>
+        <p>Select a guild to configure.</p>
+      </v-col>
+      <v-col>
+        <v-btn @click="updateGuilds" style="top: 25%" :loading="loadBar" :disabled="loadBar">Refresh</v-btn>
+      </v-col>
+    </v-row>
     <h3>Update</h3>
     <GuildsSection :guilds="guilds.botGuilds"/>
     <h3>Setup</h3>
@@ -20,17 +27,25 @@ export default {
       guilds: {
         botGuilds: [],
         userGuilds: []
-      }
+      },
+      loadBar: false
     }
   },
   mounted () {
-    (async () => {
+    this.updateGuilds()
+  },
+  methods: {
+    async updateGuilds () {
+      this.loadBar = true
+
       const discordUser = this.$store.state.discordUser || await this.$store.state.fetchDiscordUser({ login: true })
       if (!discordUser) return console.log({ discordUser })
 
       const updatableGuilds = await this.$api.http('/v2/updatableGuilds')
       this.guilds = updatableGuilds
-    })()
+
+      this.loadBar = false
+    }
   }
 }
 </script>

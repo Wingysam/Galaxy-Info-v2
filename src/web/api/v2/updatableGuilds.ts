@@ -16,7 +16,7 @@ export async function updatableGuilds ({ GalaxyInfo }: Arg) {
         Authorization: 'Bearer ' + req.discordUser._token
       }
     })).json()
-    if (userGuilds.message) return res.send({ error: userGuilds.message })
+    if (userGuilds.message) return res.send({ error: userGuilds })
 
     userGuilds = userGuilds.filter((guild: any) =>
       new Permissions(guild.permissions).has(['ADMINISTRATOR', 'MANAGE_GUILD'])

@@ -2,12 +2,13 @@
   <v-container>
     <v-row justify="start" v-if="guilds.length">
       <v-col v-for="guild in guilds" :key="guild.id" style="flex-grow: 0;">
-        <v-card height="13.5em" width="10em" style="overflow: hidden;" @click="invite ? redirect(generateInvite(guild)) : $router.push(`/guilds/${guild.id}`)">
+        <v-card height="13.5em" width="9em" style="overflow: hidden;" @click="invite ? redirect(generateInvite(guild)) : $router.push(`/guilds/${guild.id}`)">
           <v-img
             :src="guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp` : require('@/assets/discord.svg')"
             contain
             class="shrink"
-            height="10em"
+            width="9em"
+            height="9em"
           />
           <p class="mx-4 my-4" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ guild.name }}</p>
         </v-card>
@@ -15,10 +16,10 @@
     </v-row>
     <v-row v-else>
       <v-col style="flex-grow: 0;">
-        <v-card height="13.5em" width="10em" loading>
+        <v-card height="13.5em" width="9em" loading>
           <v-skeleton-loader
-            width="10em"
-            height="10em"
+            width="9em"
+            height="9em"
             type="image"
           />
           <v-skeleton-loader
