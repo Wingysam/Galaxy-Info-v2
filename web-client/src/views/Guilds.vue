@@ -1,52 +1,35 @@
 <template>
   <v-container>
-    <div>
-      <v-row justify="center">
-        <v-col v-for="guild in guilds" :key="guild.id" style="flex-grow: 0;">
-          <v-card height="15em" width="10em" style="overflow: hidden;" @click="$router.push(`/guilds/${guild.id}`)">
-            <v-img
-              :src="guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp` : require('@/assets/discord.svg')"
-              contain
-              class="shrink"
-              height="10em"
-            />
-            <p class="mx-4 my-4">{{guild.name}}</p>
-          </v-card>
-        </v-col>
-      </v-row>
-    </div>
+    <h2>Guild Configuration</h2>
+    <p>Select a guild to configure.</p>
+    <h3>Update</h3>
+    <GuildsSection :guilds="guilds.botGuilds"/>
+    <h3>Setup</h3>
+    <GuildsSection :guilds="guilds.userGuilds" invite="https://discord.com/oauth2/authorize?client_id=745790085789909033&scope=bot&disable_guild_select=true"/>
   </v-container>
 </template>
 
 <script>
-import { BitField } from '@/util/BitField.js'
+import GuildsSection from '@/components/GuildsSection.vue'
 
 export default {
   name: 'Guilds',
+  components: { GuildsSection },
   data () {
     return {
-      guilds: []
+      guilds: {
+        botGuilds: [],
+        userGuilds: []
+      }
     }
   },
   mounted () {
     (async () => {
-      const discordUser = this.$store.state.discordUser || await this.$store.state.fetchDiscordUser()
-      if (!discordUser) return console.log(discordUser)
-      const guilds = await (await fetch('https://discord.com/api/v9/users/@me/guilds', {
-        headers: {
-          Authorization: 'Bearer ' + this.$store.state.discordToken
-        }
-      })).json()
+      const discordUser = this.$store.state.discordUser || await this.$store.state.fetchDiscordUser({ login: true })
+      if (!discordUser) return console.log({ discordUser })
 
-      if (guilds.errors) {
-        console.log('errors fetching guilds', guilds)
-        return this.$store.commit('setToken', null)
-      }
-      this.guilds = guilds.filter(guild => {
-        const bitfield = new BitField(guild.permissions)
-        console.log(bitfield)
-        return bitfield.has(8) || bitfield.has(5)
-      })
+      const updatableGuilds = await this.$api.http('/v2/updatableGuilds')
+      this.guilds = updatableGuilds
     })()
   }
 }
