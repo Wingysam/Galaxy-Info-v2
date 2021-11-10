@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client'
 import '@sapphire/plugin-logger/register'
 
 import { GalaxyInfoConfig, parseConfig } from './config'
-import GalaxyInfoRobloxInterface from './roblox'
+import GalaxyInfoRobloxInterface from './util/roblox'
 import { IngestService } from './ingest'
 import { GalaxyInfoWeb } from './web'
 
