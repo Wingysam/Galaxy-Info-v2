@@ -8,9 +8,11 @@ import { GalaxyInfoConfig, parseConfig } from './config'
 import GalaxyInfoRobloxInterface from './util/roblox'
 import { IngestService } from './ingest'
 import { GalaxyInfoWeb } from './web'
+import { GuildConfigs } from './util/guildConfigReadWrite'
 
 declare global {
   type GalaxyInfo = { // eslint-disable-line no-unused-vars
+    guildConfigs: GuildConfigs,
     config: GalaxyInfoConfig,
     ingest: IngestService,
     prisma: PrismaClient,
@@ -30,7 +32,7 @@ declare module '@sapphire/framework' {
   dotenv()
   const config = await parseConfig()
 
-  await (async () => {
+  ;(async () => {
     const GalaxyInfo: any = {}
 
     GalaxyInfo.config = config
@@ -46,6 +48,8 @@ declare module '@sapphire/framework' {
       ]
     })
 
+    GalaxyInfo.guildConfigs = new GuildConfigs({ GalaxyInfo })
+
     client.GalaxyInfo = GalaxyInfo
 
     client.login(config.bot.token)
@@ -53,7 +57,5 @@ declare module '@sapphire/framework' {
     GalaxyInfo.client = client
 
     GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
-
-    return GalaxyInfo
   })()
 })()
