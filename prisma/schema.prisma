@@ -3,11 +3,26 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:../data/data.db"
+  provider = "postgres"
+  url      = env("prisma.db")
 }
 
-model Kills {
+enum GalaxyShipClass {
+  Admin
+  Fighter
+  Miner
+  Freighter
+  Frigate
+  Destroyer
+  Cruiser
+  Battlecruiser
+  Battleship
+  Dreadnought
+  Carrier
+  Super_Capital
+}
+
+model Kill {
   id             BigInt   @id
   killer_id      BigInt
   killer_name    String
@@ -24,7 +39,40 @@ model Kills {
   date           DateTime
 }
 
-model Users {
+model User {
   name String @id
   id   BigInt
+}
+
+model Guild {
+  id           BigInt   @id
+  last_updated DateTime
+
+  prefix String?
+
+  command_ship_compact          Boolean?
+  command_ship_image_size       Int?
+  command_ship_detailed_enabled Boolean?
+}
+
+model Channel {
+  id    BigInt @id
+  guild BigInt
+
+  commands          Boolean?
+  admin_event_pings Boolean?
+  dps_updates       Boolean?
+
+  kill_log_enabled         Boolean?
+  kill_log_members         Boolean?
+  kill_log_custom_users    BigInt[]
+  kill_log_embed           Boolean?
+  kill_log_pin_limiteds    Boolean?
+  kill_log_template_normal String?
+  kill_log_template_nuke   String?
+
+  kill_log_bm_kill_classes       GalaxyShipClass[]
+  kill_log_limited_kill_classes  GalaxyShipClass[]
+  kill_log_bm_death_classes      GalaxyShipClass[]
+  kill_log_limited_death_classes GalaxyShipClass[]
 }

@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: galaxyinfo
+      POSTGRES_PASSWORD: galaxyinfo
+      POSTGRES_DB: galaxyinfo
+    ports:
+      - 20321:5432
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data
+  admin:
+    image: adminer
+    ports:
+      - 20322:8080

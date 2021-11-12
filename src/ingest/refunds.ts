@@ -80,7 +80,7 @@ export default class RefundsIngest extends EventEmitter {
   }
 
   async scanMessages (allMessages: Message[]) {
-    const kills = await this.GalaxyInfo.prisma.kills.findMany()
+    const kills = await this.GalaxyInfo.prisma.kill.findMany()
     let ingestedRefunds = 0
     for (const kill of kills) {
       for (const message of allMessages) {
@@ -89,7 +89,7 @@ export default class RefundsIngest extends EventEmitter {
         if (!lower.includes(kill.victim_ship.toLowerCase())) continue
         if (kill.date > message.createdAt) continue
 
-        const refundCandidateKills = await this.GalaxyInfo.prisma.kills.findMany({
+        const refundCandidateKills = await this.GalaxyInfo.prisma.kill.findMany({
           where: {
             victim_name: kill.victim_name,
             victim_ship: kill.victim_ship
@@ -101,7 +101,7 @@ export default class RefundsIngest extends EventEmitter {
         if (!refundedKill) continue // this kill wasn't refunded
         if (refundedKill.refunded) continue // no need to update in database, already registered as refunded
 
-        await this.GalaxyInfo.prisma.kills.update({
+        await this.GalaxyInfo.prisma.kill.update({
           where: {
             id: refundedKill.id
           },

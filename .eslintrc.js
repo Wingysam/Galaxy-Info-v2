@@ -15,10 +15,13 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    camelcase: 'off'
+    camelcase: 'off',
+    'no-dupe-class-members': 'off'
   },
   globals: {
-    GalaxyInfo: 'readonly'
-  },
-  
+    GalaxyInfo: 'readonly',
+    Optional: 'readonly',
+    AllProps: 'readonly'
+  }
+
 }

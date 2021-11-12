@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { updatableGuilds } from './updatableGuilds'
+import { guildConfig } from './guildConfig'
 import cors from 'cors'
 
 type Arg = {
@@ -14,6 +15,7 @@ export async function ApiV2 ({ GalaxyInfo }: Arg) {
   router.get('/', (_, res) => res.end('API v2'))
 
   router.use('/updatableGuilds', await updatableGuilds({ GalaxyInfo }))
+  router.use('/guildConfig', await guildConfig({ GalaxyInfo }))
 
   return router
 }

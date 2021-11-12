@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="start" v-if="guilds.length">
       <v-col v-for="guild in guilds" :key="guild.id" style="flex-grow: 0;">
-        <v-card height="13.5em" width="9em" style="overflow: hidden;" @click="invite ? redirect(generateInvite(guild)) : $router.push(`/guilds/${guild.id}`)">
+        <v-card height="13.5em" width="9em" style="overflow: hidden;" @click="invite ? redirect(generateInvite(guild)) : $router.push(`/guilds/${guild.id}/general`)">
           <v-img
             :src="guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.webp` : require('@/assets/discord.svg')"
             contain

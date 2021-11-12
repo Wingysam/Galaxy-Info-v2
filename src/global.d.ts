@@ -8,4 +8,7 @@ declare global {
       discordUser?: any
     }
   }
+
+  type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
+  type AllProps<T> = { [P in keyof T]: Required<NonNullable<T[P]>>; };
 }

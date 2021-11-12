@@ -1,4 +1,4 @@
-import type { Kills } from '.prisma/client'
+import type { Kill } from '.prisma/client'
 import type { Client, Message } from 'discord.js'
 import { EventEmitter } from 'events'
 import { performance } from 'perf_hooks'
@@ -92,25 +92,14 @@ export default class ShipKillsIngest extends EventEmitter {
     const galaxyGuild = this.client.guilds.cache.get(galaxyGuildId)
     if (!galaxyGuild) return this.log('Galaxy Guild is falsy')
 
-    this.client.on('messageCreate', async message => {
-      const parsed = await this.parseMessage(message)
-      if (!parsed) return
-
-      await this.GalaxyInfo.prisma.kills.create({
-        data: parsed
-      })
-
-      this.log(`${parsed.date} ${parsed.killer_name} (${parsed.killer_id}) ${parsed.killer_ship} -> ${parsed.victim_name} ${parsed.victim_ship}`)
-    })
-
-    ;(async () => {
+    const getOld = async () => {
       const channels = await galaxyGuild.channels.fetch()
-      if (!channels) return this.log("Couldn't find Galaxy guild channels")
+      if (!channels) throw new Error("Couldn't find Galaxy guild channels")
       const channel = channels.find(channel => channel.name === 'ship-kills')
-      if (!channel) return this.log("Couldn't find #ship-kills")
-      if (!channel.isText()) return this.log('#ship-kills is a', channel.type, 'channel, not a TextChannel')
+      if (!channel) throw new Error("Couldn't find #ship-kills")
+      if (!channel.isText()) throw new Error('#ship-kills is a ' + channel.type + ' channel, not a TextChannel')
 
-      const mostRecentKill = await this.GalaxyInfo.prisma.kills.findFirst({
+      const mostRecentKill = await this.GalaxyInfo.prisma.kill.findFirst({
         orderBy: {
           id: 'desc'
         }
@@ -118,13 +107,16 @@ export default class ShipKillsIngest extends EventEmitter {
       const mostRecentKillId = (mostRecentKill?.id || '').toString()
       this.log('most recent kill id:', mostRecentKillId)
 
-      const fetchOldKills = async (cursor: Message | undefined, alreadyParsed: Kills[]): Promise<void> => {
+      const fetchOldKills = async (cursor: Message | undefined, alreadyParsed: Kill[]): Promise<number> => {
         if (!cursor) {
           const mostRecent = (await channel.messages.fetch({ limit: 1 })).first()
-          if (!mostRecent) return this.log('#ship-kills is empty!')
+          if (!mostRecent) throw new Error('#ship-kills is empty!')
 
           const parsed = await this.parseMessage(mostRecent)
-          if (parsed?.id === mostRecentKill?.id) return this.log('Backlog: already up-to-date')
+          if (parsed?.id === mostRecentKill?.id) {
+            this.log('Backlog: already up-to-date')
+            return 0
+          }
 
           return fetchOldKills(mostRecent, parsed ? [parsed] : [])
         }
@@ -147,29 +139,40 @@ export default class ShipKillsIngest extends EventEmitter {
         const oldestMessage = messages.last()
         if (!oldestMessage || messages.map(message => message.id).includes(mostRecentKillId)) {
           alreadyParsed.reverse()
-          let saved = 0
           const startTimestamp = performance.now()
-          for (const kill of alreadyParsed) {
-            this.log(`${kill.date} ${kill.killer_name} (${kill.killer_id}) ${kill.killer_ship} -> ${kill.victim_name} ${kill.victim_ship} : ${kill.id} ${mostRecentKillId}`)
-            if (mostRecentKill && kill.id <= mostRecentKill.id) continue
-            try {
-              await this.GalaxyInfo.prisma.kills.create({
-                data: kill
-              })
-              saved++
-            } catch (error) {
-              this.log(kill.id, 'failed', error)
-            }
-          }
+          this.log('Uploading', alreadyParsed.length, 'kills to db')
+          const { count } = await this.GalaxyInfo.prisma.kill.createMany({
+            data: alreadyParsed,
+            skipDuplicates: true
+          })
           const endTimestamp = performance.now()
-          this.log('Saved', saved, 'kills in', Math.ceil(endTimestamp - startTimestamp), 'ms')
-          return
+          this.log('Uploaded', count, 'kills in', Math.ceil(endTimestamp - startTimestamp), 'ms')
+          return alreadyParsed.length
         }
 
         return fetchOldKills(oldestMessage, alreadyParsed)
       }
 
-      fetchOldKills(undefined, [])
-    })()
+      return fetchOldKills(undefined, [])
+    }
+
+    const startTimestamp = performance.now()
+    while (true) { // we grab old kills as they come in until there aren't any, this is to prevent an old kill then a new kill without the ones in between.
+      const got = await getOld()
+      if (got === 0) break
+    }
+    const endTimestamp = performance.now()
+    this.log('Processed old kills in', Math.ceil(endTimestamp - startTimestamp), 'ms')
+
+    this.client.on('messageCreate', async message => {
+      const parsed = await this.parseMessage(message)
+      if (!parsed) return
+
+      await this.GalaxyInfo.prisma.kill.create({
+        data: parsed
+      })
+
+      this.log(`${parsed.date} ${parsed.killer_name} (${parsed.killer_id}) ${parsed.killer_ship} -> ${parsed.victim_name} ${parsed.victim_ship}`)
+    })
   }
 }

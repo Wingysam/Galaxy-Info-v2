@@ -19,6 +19,11 @@ const routes = [
     path: '/guilds',
     name: 'Guilds',
     component: () => import(/* webpackChunkName: "guilds" */ '@/views/Guilds.vue')
+  },
+  {
+    path: '/guilds/:guildid/:section',
+    name: 'Guild',
+    component: () => import(/* webpackChunkName: "guild" */ '@/views/Guild.vue')
   }
 ]
 
