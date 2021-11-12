@@ -22,6 +22,7 @@ export class GuildConfigs {
         commands: true,
         admin_event_pings: false,
         dps_updates: false,
+        permits: false,
 
         kill_log_enabled: false,
         kill_log_members: true,

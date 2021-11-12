@@ -62,6 +62,7 @@ model Channel {
   commands          Boolean?
   admin_event_pings Boolean?
   dps_updates       Boolean?
+  permits           Boolean?
 
   kill_log_enabled         Boolean?
   kill_log_members         Boolean?

@@ -116,6 +116,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
           'commands',
           'admin_event_pings',
           'dps_updates',
+          'permits',
 
           'kill_log_enabled',
           'kill_log_members',

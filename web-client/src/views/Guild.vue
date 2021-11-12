@@ -64,8 +64,10 @@
               <v-card class="pa-4">
                 <h3 class="display-1 font-weight-light mb-2">#{{ selectedChannel.name }}</h3>
                 <h4 class="mb-4">General</h4>
+                <v-switch class="mt-0" v-model="selectedChannel.config.commands" label="Commands"/>
                 <v-switch class="mt-0" v-model="selectedChannel.config.admin_event_pings" label="Admin event pings"/>
                 <v-switch class="mt-0" v-model="selectedChannel.config.dps_updates" label="Announce DPS changes"/>
+                <v-switch class="mt-0" v-model="selectedChannel.config.permits" label="Announce when a permit is added to Mega Base"/>
                 <h4 class="mb-4">Kill Log</h4>
                 <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_enabled" label="This is a kill log channel"/>
                 <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_embed" label="Place the message in an embed"/>
