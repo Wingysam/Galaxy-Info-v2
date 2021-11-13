@@ -43,9 +43,14 @@ export class GuildConfigs {
       for (const [key, val] of Object.entries(value)) {
         // if we don't have a default for it, we keep the provided value
         const defaultValue = defaults[key]
-        if (!defaultValue) result[key] = val
+        if (typeof defaultValue === 'undefined') result[key] = val
+        // this used to not set the key, but it caused a bug where it was
+        // impossible to change a value back to the default after changing it
+        // setting it to null allows it to remove the cell in the database
+        // there was also a second bug involved, not sure which fix actaully fixed it
+        else if (defaultValue === val) result[key] = null
         // if we do have a default but it doesn't match, we keep the provided value
-        else if (defaultValue !== val) result[key] = val
+        else result[key] = val
       }
 
       return result

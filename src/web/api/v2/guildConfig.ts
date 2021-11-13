@@ -110,6 +110,10 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
           }))
         }
 
+        for (const key of Object.keys(submittedChannel)) {
+          if (submittedChannel[key] === '') submittedChannel[key] = null
+        }
+
         const channel: Prisma.ChannelCreateInput = { id: submittedChannel.id, guild: validatedGuildId }
 
         const CHANNEL_KEYS = [
@@ -134,7 +138,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
         for (const key of CHANNEL_KEYS) {
           // @ts-expect-error
-          if (submittedChannel[key]) channel[key] = submittedChannel[key]
+          if (key in submittedChannel) channel[key] = submittedChannel[key]
         }
 
         channels.push(channel)
