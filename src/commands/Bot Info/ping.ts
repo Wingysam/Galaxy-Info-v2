@@ -1,13 +1,16 @@
 import { ApplyOptions } from '@sapphire/decorators'
-import { Command, CommandOptions } from '@sapphire/framework'
 import type { Message } from 'discord.js'
+import { GalaxyInfoCommand } from '../../GalaxyInfoCommand'
 
-@ApplyOptions<CommandOptions>({
+@ApplyOptions<GalaxyInfoCommand.Options>({
   aliases: ['pong'],
-  description: 'ping pong'
+  description: 'ping pong',
+  examples: [
+    'ping'
+  ]
 })
 
-export class PingCommand extends Command {
+export class PingCommand extends GalaxyInfoCommand {
   public async messageRun (message: Message) {
     const msg = await message.channel.send('Ping?')
 

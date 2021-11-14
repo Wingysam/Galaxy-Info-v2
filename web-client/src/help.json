@@ -1,0 +1,43 @@
+{
+  "Bot Info": [
+    {
+      "name": "ping",
+      "aliases": [
+        "pong"
+      ],
+      "description": "ping pong",
+      "detailedDescription": "",
+      "examples": [
+        "ping"
+      ],
+      "flags": []
+    }
+  ],
+  "_Dev": [
+    {
+      "name": "sql",
+      "aliases": [
+        "q",
+        "query"
+      ],
+      "description": "Evaluates arbitary SQL",
+      "detailedDescription": "Reserved only for devs",
+      "examples": [],
+      "flags": []
+    },
+    {
+      "name": "eval",
+      "aliases": [
+        "ev"
+      ],
+      "description": "Evaluates arbitary JavaScript",
+      "detailedDescription": "Reserved only for devs",
+      "examples": [],
+      "flags": [
+        "json",
+        "async",
+        "showHidden"
+      ]
+    }
+  ]
+}

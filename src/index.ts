@@ -9,6 +9,7 @@ import GalaxyInfoRobloxInterface from './util/roblox'
 import { IngestService } from './ingest'
 import { GalaxyInfoWeb } from './web'
 import { GuildConfigs } from './util/guildConfigReadWrite'
+import { ExportService } from './export'
 
 declare global {
   type GalaxyInfo = { // eslint-disable-line no-unused-vars
@@ -32,30 +33,30 @@ declare module '@sapphire/framework' {
   dotenv()
   const config = await parseConfig()
 
-  ;(async () => {
-    const GalaxyInfo: any = {}
+  const GalaxyInfo: any = {}
 
-    GalaxyInfo.config = config
-    GalaxyInfo.ingest = new IngestService({ GalaxyInfo: GalaxyInfo })
-    GalaxyInfo.prisma = new PrismaClient()
-    GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo: GalaxyInfo })
+  GalaxyInfo.config = config
+  GalaxyInfo.ingest = new IngestService({ GalaxyInfo })
+  GalaxyInfo.prisma = new PrismaClient()
+  GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo })
 
-    const client = new SapphireClient({
-      intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES'],
-      defaultPrefix: GalaxyInfo.config.bot.prefix,
-      partials: [
-        'CHANNEL'
-      ]
-    })
+  const client = new SapphireClient({
+    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES'],
+    defaultPrefix: GalaxyInfo.config.bot.prefix,
+    partials: [
+      'CHANNEL'
+    ]
+  })
 
-    GalaxyInfo.guildConfigs = new GuildConfigs({ GalaxyInfo })
+  GalaxyInfo.guildConfigs = new GuildConfigs({ GalaxyInfo })
 
-    client.GalaxyInfo = GalaxyInfo
+  client.GalaxyInfo = GalaxyInfo
 
-    client.login(config.bot.token)
+  client.login(config.bot.token)
 
-    GalaxyInfo.client = client
+  GalaxyInfo.client = client
 
-    GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
-  })()
+  GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
+
+  GalaxyInfo.export = new ExportService({ GalaxyInfo })
 })()

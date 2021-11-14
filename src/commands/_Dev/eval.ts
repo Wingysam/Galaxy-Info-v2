@@ -1,12 +1,12 @@
 import { ApplyOptions } from '@sapphire/decorators'
-import type { Args, CommandOptions } from '@sapphire/framework'
+import type { Args } from '@sapphire/framework'
 import { Type } from '@sapphire/type'
 import { codeBlock } from '@sapphire/utilities'
 import type { Message } from 'discord.js'
 import { inspect } from 'util'
-import { Command } from '@sapphire/framework'
+import { GalaxyInfoCommand } from '../../GalaxyInfoCommand'
 
-@ApplyOptions<CommandOptions>({
+@ApplyOptions<GalaxyInfoCommand.Options>({
   aliases: ['ev'],
   description: 'Evaluates arbitary JavaScript',
   detailedDescription: 'Reserved only for devs',
@@ -14,7 +14,7 @@ import { Command } from '@sapphire/framework'
   preconditions: ['DevOnly']
 })
 
-export default class extends Command {
+export default class extends GalaxyInfoCommand {
   public async messageRun (message: Message, args: Args): Promise<any> {
     const code = await args.rest('string').catch(() => null)
     if (!code) throw new Error('Code not found. You must provide some code to evaluate.')

@@ -21,7 +21,8 @@ module.exports = {
   globals: {
     GalaxyInfo: 'readonly',
     Optional: 'readonly',
-    AllProps: 'readonly'
+    AllProps: 'readonly',
+    GalaxyInfoCommand: 'readonly'
   }
 
 }
