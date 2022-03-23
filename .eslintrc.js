@@ -16,7 +16,18 @@ module.exports = {
   ],
   rules: {
     camelcase: 'off',
-    'no-dupe-class-members': 'off'
+    'no-dupe-class-members': 'off',
+    'no-useless-return': 'off',
+    'no-use-before-define': 'off',
+    'no-new': 'off',
+    '@typescript-eslint/no-use-before-define': [
+      'error', // by default, eslint reports incorrect errors
+      { functions: false, classes: false }
+    ],
+    'no-unused-vars': [
+      'error',
+      { destructuredArrayIgnorePattern: '^_' }
+    ]
   },
   globals: {
     GalaxyInfo: 'readonly',

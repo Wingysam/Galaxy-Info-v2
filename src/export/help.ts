@@ -16,12 +16,10 @@ export async function run ({ GalaxyInfo, log: logParent }: Arg) {
 
   for (const command of commands.values()) {
     const category = command.fullCategory.join('/')
-    // if (category.startsWith('_')) continue
+    if (category.startsWith('_')) continue
     if (command.enabled === false) continue
 
     if (!output[category]) output[category] = []
-
-    console.log(command)
 
     output[category].push({
       name: command.name,

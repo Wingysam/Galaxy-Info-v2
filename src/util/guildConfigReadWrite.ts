@@ -14,6 +14,8 @@ export class GuildConfigs {
       guild: {
         prefix: this.GalaxyInfo.config.bot.prefix,
 
+        members: [],
+
         command_ship_compact: false,
         command_ship_image_size: 1,
         command_ship_detailed_enabled: true
@@ -29,7 +31,8 @@ export class GuildConfigs {
         kill_log_embed: true,
         kill_log_pin_limiteds: true,
         kill_log_template_normal: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} destroyed {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",
-        kill_log_template_nuke: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} 💥 nuked 💥 {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}"
+        kill_log_template_nuke: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} 💥 nuked 💥 {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",
+        kill_log_daily_stats: false
       }
     }
   }

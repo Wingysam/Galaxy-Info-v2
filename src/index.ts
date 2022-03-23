@@ -10,6 +10,8 @@ import { IngestService } from './ingest'
 import { GalaxyInfoWeb } from './web'
 import { GuildConfigs } from './util/guildConfigReadWrite'
 import { ExportService } from './export'
+import { Ships } from './ships/ships'
+import { Turrets } from './ships/turrets'
 
 declare global {
   type GalaxyInfo = { // eslint-disable-line no-unused-vars
@@ -19,7 +21,9 @@ declare global {
     prisma: PrismaClient,
     roblox: GalaxyInfoRobloxInterface,
     client: SapphireClient,
-    web: GalaxyInfoWeb
+    web: GalaxyInfoWeb,
+    ships: Ships,
+    turrets: Turrets
   }
 }
 
@@ -36,8 +40,30 @@ declare module '@sapphire/framework' {
   const GalaxyInfo: any = {}
 
   GalaxyInfo.config = config
-  GalaxyInfo.ingest = new IngestService({ GalaxyInfo })
+
   GalaxyInfo.prisma = new PrismaClient()
+
+  GalaxyInfo.ingest = new IngestService({ GalaxyInfo })
+
+  GalaxyInfo.turrets = new Turrets(GalaxyInfo)
+  await GalaxyInfo.turrets.init()
+  GalaxyInfo.ships = new Ships(GalaxyInfo)
+  await GalaxyInfo.ships.init()
+
+  if (GalaxyInfo.config.db.queryLog) {
+    ;(GalaxyInfo.prisma as PrismaClient).$use(async (params, next) => {
+      const before = Date.now()
+
+      const result = await next(params)
+
+      const after = Date.now()
+
+      console.log(`Query ${params.model}.${params.action} took ${after - before}ms`)
+
+      return result
+    })
+  }
+
   GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo })
 
   const client = new SapphireClient({
@@ -55,8 +81,6 @@ declare module '@sapphire/framework' {
   client.login(config.bot.token)
 
   GalaxyInfo.client = client
-
   GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
-
   GalaxyInfo.export = new ExportService({ GalaxyInfo })
 })()

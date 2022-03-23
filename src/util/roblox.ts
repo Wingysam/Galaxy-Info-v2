@@ -92,6 +92,7 @@ export default class GalaxyInfoRobloxInterface {
     })
     if (existing) return existing.name
 
+    // TODO: figure out what 'a' means
     const fromRoblox = 'a'
     try {
       await this.GalaxyInfo.prisma.user.create({

@@ -29,7 +29,7 @@ const store = new Vuex.Store({
         }
       })).json()
     
-      if (userData.errors) return store.commit('setToken', null)
+      if (userData.message) return store.commit('setToken', null)
       store.commit('setDiscordUser', userData)
       return userData
     }

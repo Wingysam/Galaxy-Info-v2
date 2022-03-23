@@ -88,6 +88,8 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
       const GUILD_KEYS = [
         'prefix',
 
+        'members',
+
         'command_ship_compact',
         'command_ship_image_size',
         'command_ship_detailed_enabled'
@@ -129,6 +131,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
           'kill_log_pin_limiteds',
           'kill_log_template_normal',
           'kill_log_template_nuke',
+          'kill_log_daily_stats',
 
           'kill_log_bm_kill_classes',
           'kill_log_limited_kill_classes',

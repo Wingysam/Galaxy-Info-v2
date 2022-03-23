@@ -4,13 +4,25 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
     prefix: string
   },
   ingest: {
-    token?: string
+    token?: string,
+    verbose: boolean,
+    quests: {
+      npcHook?: string
+    }
   },
   web: {
     port: number
   },
+  // TODO: remove galaxy config
   galaxy: {
     guild?: string
+  },
+  guilds: {
+    galaxy?: string,
+    galaxyDevelopment?: string
+  },
+  db: {
+    queryLog: boolean
   }
 }
 
@@ -95,12 +107,21 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
 
   // Ingest service
   await option('ingest.token', 'should')
+  await option('ingest.verbose', 'may', false, async opt => opt === 'true')
+  await option('ingest.quests.npcHook', 'should')
 
   // Galaxy Server
   await option('galaxy.guild', 'should')
 
+  // Guilds
+  await option('guilds.galaxy', 'should')
+  await option('guilds.galaxyDevelopment', 'should')
+
   // Web
   await option('web.port', 'should', 3000, async port => Number(port))
+
+  // DB
+  await option('db.queryLog', 'may', false, async opt => opt === 'true')
 
   return cfg
 }

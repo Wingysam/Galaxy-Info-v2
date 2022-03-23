@@ -72,6 +72,7 @@
                 <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_enabled" label="This is a kill log channel"/>
                 <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_embed" label="Place the message in an embed"/>
                 <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_pin_limiteds" label="Automatically pin limited kills/deaths"/>
+                <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_daily_stats" label="Post daily statistics for your members"/>
                 <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_members" label="Include all of your guild members in this kill log"/>
                 <h5 class="mb-4">Custom users</h5>
                 <p>Include these users in this kill log</p>

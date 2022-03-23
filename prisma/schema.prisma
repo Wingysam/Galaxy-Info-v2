@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["filterJson", "fullTextSearch"]
 }
 
 datasource db {
@@ -20,6 +21,35 @@ enum GalaxyShipClass {
   Dreadnought
   Carrier
   Super_Capital
+  Titan
+  Alien
+}
+
+enum ApiTokenScope {
+  ships_read
+  ships_read_secret
+  ships_read_model
+  ships_write
+
+  turrets_read
+  turrets_write
+
+  quests_read
+  quests_read_fresh
+  quests_write
+
+  kills_read
+}
+
+enum QuestCompletionEnvironment {
+  Galaxy
+  Arcade
+  Dev
+}
+
+enum QuestCompletionServerType {
+  Public
+  Private
 }
 
 model Kill {
@@ -32,7 +62,7 @@ model Kill {
   victim_name    String
   victim_ship    String
   victim_class   String
-  victim_cost    Int
+  victim_cost    BigInt
   victim_limited Boolean
   refunded       Boolean
   nuke           Boolean
@@ -44,11 +74,27 @@ model User {
   id   BigInt
 }
 
+model QuestCompletion {
+  completion_id BigInt                     @id
+  environment   QuestCompletionEnvironment
+  server_type   QuestCompletionServerType
+
+  username String
+
+  title    String
+  quest_id String
+  reward   String
+
+  date DateTime
+}
+
 model Guild {
   id           BigInt   @id
   last_updated DateTime
 
   prefix String?
+
+  members BigInt[]
 
   command_ship_compact          Boolean?
   command_ship_image_size       Int?
@@ -71,9 +117,21 @@ model Channel {
   kill_log_pin_limiteds    Boolean?
   kill_log_template_normal String?
   kill_log_template_nuke   String?
+  kill_log_daily_stats     Boolean?
 
   kill_log_bm_kill_classes       GalaxyShipClass[]
   kill_log_limited_kill_classes  GalaxyShipClass[]
   kill_log_bm_death_classes      GalaxyShipClass[]
   kill_log_limited_death_classes GalaxyShipClass[]
+}
+
+model ApiToken {
+  token  String          @id
+  owner  BigInt?
+  scopes ApiTokenScope[]
+}
+
+model KeyValue {
+  key   String @id
+  value Json
 }

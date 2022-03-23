@@ -60,7 +60,15 @@ export default class RefundsIngest extends EventEmitter {
         })
 
         allMessages = [...allMessages, ...messages.values()]
-        this.log('Fetched', allMessages.length, 'messages', allMessages[allMessages.length - 1].createdAt, (process.memoryUsage().heapUsed / 1024 / 1024 / 1024).toFixed(2) + 'G')
+        if (this.GalaxyInfo.config.ingest.verbose) {
+          this.log(
+            'Fetched',
+            allMessages.length,
+            'messages',
+            allMessages[allMessages.length - 1].createdAt,
+            (process.memoryUsage().heapUsed / 1024 / 1024 / 1024).toFixed(2) + 'G'
+          )
+        }
 
         const oldestMessage = messages.last()
         if (!oldestMessage) {

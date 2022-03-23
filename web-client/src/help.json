@@ -1,5 +1,55 @@
 {
+  "Carnage": [
+    {
+      "name": "carnage-leaderboard",
+      "aliases": [
+        "carnagelb",
+        "clb"
+      ],
+      "description": "Display carnage leaderboards",
+      "detailedDescription": "",
+      "examples": [
+        "carnagelb -ship=\"stealth b-2\"",
+        "carnagelb",
+        "carnagelb 2"
+      ],
+      "flags": [
+        "pirating",
+        "limited",
+        "reverse",
+        "count"
+      ]
+    },
+    {
+      "name": "carnage",
+      "aliases": [],
+      "description": "Get carnage for one or more players, defaults to the guild the command is run in. Specify the player 'all' to see carnage for everyone. ",
+      "detailedDescription": "",
+      "examples": [
+        "carnage yname",
+        "carnage yname drwhointardis",
+        "carnage"
+      ],
+      "flags": [
+        "reverse",
+        "pirating",
+        "limited"
+      ]
+    }
+  ],
   "Bot Info": [
+    {
+      "name": "privacy-policy",
+      "aliases": [
+        "pp"
+      ],
+      "description": "Sends the Privacy Policy for Galaxy Info",
+      "detailedDescription": "",
+      "examples": [
+        "pp"
+      ],
+      "flags": []
+    },
     {
       "name": "ping",
       "aliases": [
@@ -11,33 +61,6 @@
         "ping"
       ],
       "flags": []
-    }
-  ],
-  "_Dev": [
-    {
-      "name": "sql",
-      "aliases": [
-        "q",
-        "query"
-      ],
-      "description": "Evaluates arbitary SQL",
-      "detailedDescription": "Reserved only for devs",
-      "examples": [],
-      "flags": []
-    },
-    {
-      "name": "eval",
-      "aliases": [
-        "ev"
-      ],
-      "description": "Evaluates arbitary JavaScript",
-      "detailedDescription": "Reserved only for devs",
-      "examples": [],
-      "flags": [
-        "json",
-        "async",
-        "showHidden"
-      ]
     }
   ]
 }
