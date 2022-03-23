@@ -3,7 +3,6 @@ import cors from 'cors'
 
 import { updatableGuilds } from './updatableGuilds'
 import { guildConfig } from './guildConfig'
-import { updateLog } from './updateLog'
 import { ships } from './ships'
 import { turrets } from './turrets'
 
@@ -20,7 +19,6 @@ export async function ApiV2 ({ GalaxyInfo }: Arg) {
 
   router.use('/updatableGuilds', await updatableGuilds({ GalaxyInfo }))
   router.use('/guildConfig', await guildConfig({ GalaxyInfo }))
-  router.use('/updateLog', await updateLog({ GalaxyInfo }))
   router.use('/turrets', await turrets({ GalaxyInfo }))
   router.use('/ships', await ships({ GalaxyInfo }))
 

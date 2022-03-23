@@ -1,6 +1,5 @@
 import { Client } from 'discord.js'
 
-import UpdateLogIngest from './updateLog'
 import ShipKillsIngest from './shipKills'
 import RefundsIngest from './refunds'
 import QuestsIngest from './quests'
@@ -15,7 +14,6 @@ function log (...message: any[]) {
 
 export class IngestService {
   private GalaxyInfo
-  public UpdateLog: undefined | UpdateLogIngest
   public ShipKills: undefined | ShipKillsIngest
   public Refunds: undefined | RefundsIngest
   public Quests: undefined | QuestsIngest
@@ -47,10 +45,6 @@ export class IngestService {
         GalaxyInfo: this.GalaxyInfo,
         client,
         log
-      })
-      this.UpdateLog = new UpdateLogIngest({
-        GalaxyInfo: this.GalaxyInfo,
-        client
       })
       this.Quests = new QuestsIngest({
         GalaxyInfo: this.GalaxyInfo,
