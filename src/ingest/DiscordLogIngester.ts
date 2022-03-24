@@ -1,4 +1,4 @@
-import type { Channel, Client, Collection, Guild, Message, TextBasedChannels } from 'discord.js'
+import type { Channel, Client, Collection, Guild, Message, TextBasedChannel } from 'discord.js'
 import { clone } from 'lodash'
 
 export type DiscordLogIngestionConfiguration = {
@@ -78,7 +78,7 @@ export class DiscordLogIngester {
     await this.fetchAndParseAndPrependToBufferAndBeginBufferFlush(fetcher)
   }
 
-  private async setupCallbackWhenNewMessage (channel: TextBasedChannels) {
+  private async setupCallbackWhenNewMessage (channel: TextBasedChannel) {
     DiscordLogStreamer.create(channel, async (messages: Message[]) => {
       const parsed = await this.tryToParseMessages(messages)
       this.freshLogs = [...this.freshLogs, ...parsed]
@@ -123,7 +123,7 @@ export class DiscordLogIngester {
 
 // IngestionChannel is responsible for locating a discord.js Channel from a guild id and channel name
 class IngestionChannel {
-  public static async findChannel (client: Client, channelLocation: ChannelLocation): Promise<TextBasedChannels> {
+  public static async findChannel (client: Client, channelLocation: ChannelLocation): Promise<TextBasedChannel> {
     const guild = await this.findGuild(client, channelLocation.guildId)
     const channel = await this.findChannelInGuild(guild, channelLocation.channelName)
     if (!channel) throw new ChannelNotFoundError(channelLocation.channelName)
@@ -149,11 +149,11 @@ class IngestionChannel {
 
 class DiscordLogFetcher {
   private fetchMessagesAfterId: bigint
-  private channel: TextBasedChannels
+  private channel: TextBasedChannel
   private channelNameOrId: string
   private newestMessageId: bigint
 
-  constructor (channel: TextBasedChannels, startingMessageId?: Snowflake) {
+  constructor (channel: TextBasedChannel, startingMessageId?: Snowflake) {
     this.channel = channel
     this.fetchMessagesAfterId = BigInt(startingMessageId ?? 0n)
     this.channelNameOrId = 'name' in this.channel ? this.channel.name : this.channel.id
@@ -234,7 +234,7 @@ class DiscordLogFetcher {
 }
 
 class DiscordLogStreamer {
-  public static async create (channel: TextBasedChannels, callback: (messages: Message[]) => Promise<void>) {
+  public static async create (channel: TextBasedChannel, callback: (messages: Message[]) => Promise<void>) {
     let buffer: Message[] = []
     let flushing: Promise<void> | null = null
     let moreToFlush = false
