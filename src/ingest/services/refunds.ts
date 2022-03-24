@@ -1,25 +1,10 @@
-import { Client, Message, TextChannel } from 'discord.js'
-import { EventEmitter } from 'events'
+import { Message, TextChannel } from 'discord.js'
 import { performance } from 'perf_hooks'
+import { IngestService, IngestServiceArg } from '../service'
 
-type LogFunction = (...message: any[]) => void
-
-type ConstructorArg = {
-  GalaxyInfo: GalaxyInfo
-  client: Client,
-  log: LogFunction
-}
-
-export default class RefundsIngest extends EventEmitter {
-  private GalaxyInfo: GalaxyInfo
-  private client: Client
-  private log: LogFunction
-
-  constructor ({ GalaxyInfo, client, log }: ConstructorArg) {
-    super()
-    this.GalaxyInfo = GalaxyInfo
-    this.client = client
-    this.log = (...message) => log('[Refunds]', ...message)
+export default class RefundsIngest extends IngestService {
+  constructor (arg: IngestServiceArg) {
+    super(arg)
     this.init()
   }
 

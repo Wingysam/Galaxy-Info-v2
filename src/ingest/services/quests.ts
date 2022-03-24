@@ -1,16 +1,8 @@
-import type { Client, Message } from 'discord.js'
+import type { Message } from 'discord.js'
 import { WebhookClient } from 'discord.js'
-import { EventEmitter } from 'events'
 import { performance } from 'perf_hooks'
-import { DiscordLogIngester, DiscordLogIngesterParser } from './DiscordLogIngester'
-
-type LogFunction = (...message: any[]) => void
-
-type ConstructorArg = {
-  GalaxyInfo: GalaxyInfo
-  client: Client,
-  log: LogFunction
-}
+import { IngestService, IngestServiceArg } from '../service'
+import { DiscordLogIngester, DiscordLogIngesterParser } from '../DiscordLogIngester'
 
 type QuestCompletionEnvironment = 'Galaxy' | 'Arcade' | 'Dev'
 type QuestCompletionServerType = 'Public' | 'Private'
@@ -26,24 +18,16 @@ export type QuestCompletion = {
 }
 
 // The Quests ingest is responsible for emitting `QuestCompletion`s, uploading them to database, and logging admin spawns.
-export default class QuestsIngest extends EventEmitter {
-  private GalaxyInfo: GalaxyInfo
-  private client: Client
-  private log: LogFunction
+export default class QuestsIngest extends IngestService {
   private npcHook?: WebhookClient
 
-  constructor ({ GalaxyInfo, client, log }: ConstructorArg) {
-    super()
-    this.GalaxyInfo = GalaxyInfo
-    this.client = client
-    this.log = (...message) => log('[quests]', ...message)
+  constructor (arg: IngestServiceArg) {
+    super(arg)
 
     if (this.GalaxyInfo.config.ingest.quests.npcHook) this.npcHook = new WebhookClient({ url: this.GalaxyInfo.config.ingest.quests.npcHook })
-
-    this.init()
   }
 
-  private async init () {
+  async init () {
     if (!this.GalaxyInfo.config.guilds.galaxyDevelopment) throw new Error('Galaxy Development guild is unconfigured')
     const mostRecentCompletion = await this.GalaxyInfo.prisma.questCompletion.findFirst({
       orderBy: {

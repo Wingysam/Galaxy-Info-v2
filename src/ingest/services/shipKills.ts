@@ -1,35 +1,21 @@
-import type { Kill } from '.prisma/client'
-import type { Client, Message } from 'discord.js'
-import { EventEmitter } from 'events'
 import { performance } from 'perf_hooks'
-import { min } from '../util/clampBigInt'
-import type GalaxyInfoRobloxInterface from '../util/roblox'
-import { DiscordLogIngester, DiscordLogIngesterParser } from './DiscordLogIngester'
 
-type LogFunction = (...message: any[]) => void
+import type { Kill } from '.prisma/client'
+import type { Message } from 'discord.js'
 
-type ConstructorArg = {
-  GalaxyInfo: GalaxyInfo
-  client: Client,
-  log: LogFunction
-}
+import { DiscordLogIngester, DiscordLogIngesterParser } from '../DiscordLogIngester'
+import type GalaxyInfoRobloxInterface from '../../util/roblox'
+import { IngestService, IngestServiceArg } from '../service'
+import { min } from '../../util/clampBigInt'
 
 // The Ship Kills ingest is responsible for uploading `Kill`s to the database and emitting them.
-export default class ShipKillsIngest extends EventEmitter {
-  private GalaxyInfo: GalaxyInfo
-  private client: Client
-  private log: LogFunction
-
-  constructor ({ GalaxyInfo, client, log }: ConstructorArg) {
-    super()
-    this.GalaxyInfo = GalaxyInfo
-    this.client = client
-    this.log = (...message) => log('[ship-kills]', ...message)
-
+export default class ShipKillsIngest extends IngestService {
+  constructor (arg: IngestServiceArg) {
+    super(arg)
     this.init()
   }
 
-  private async init () {
+  async init () {
     if (!this.GalaxyInfo.config.galaxy.guild) throw new Error('Galaxy guild is unconfigured')
     const mostRecentKill = await this.GalaxyInfo.prisma.kill.findFirst({
       orderBy: {

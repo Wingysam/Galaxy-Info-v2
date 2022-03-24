@@ -1,8 +1,9 @@
 import { Client } from 'discord.js'
 
-import ShipKillsIngest from './shipKills'
-import RefundsIngest from './refunds'
-import QuestsIngest from './quests'
+import { readdir } from 'fs/promises'
+import path from 'path'
+import { AwaitableCollection } from '../util/AwaitableCollection'
+import type { IngestService, IngestServiceArg } from './service'
 
 type ConstructorArg = {
   GalaxyInfo: GalaxyInfo
@@ -12,14 +13,20 @@ function log (...message: any[]) {
   console.log('[Ingest]', ...message)
 }
 
-export class IngestService {
+async function getServices(): Promise<(new(arg: IngestServiceArg) => IngestService)[]> {
+  const servicesDir = path.join(__dirname, 'services')
+  const serviceFilenames = (await readdir(servicesDir))
+    .filter(filename => filename.endsWith('.js'))
+  return Promise.all(serviceFilenames.map(filename => require(path.join(servicesDir, filename)).default))
+}
+
+export class IngestServices {
   private GalaxyInfo
-  public ShipKills: undefined | ShipKillsIngest
-  public Refunds: undefined | RefundsIngest
-  public Quests: undefined | QuestsIngest
+  public services: AwaitableCollection<string, IngestService>
 
   constructor ({ GalaxyInfo }: ConstructorArg) {
     this.GalaxyInfo = GalaxyInfo
+    this.services = new AwaitableCollection()
     this.init()
   }
 
@@ -36,21 +43,15 @@ export class IngestService {
       if (!client.user) return log('Error: client.user is falsy')
       log(`Logged in as ${client.user.tag}!`)
 
-      this.ShipKills = new ShipKillsIngest({
-        GalaxyInfo: this.GalaxyInfo,
-        client,
-        log
-      })
-      this.Refunds = new RefundsIngest({
-        GalaxyInfo: this.GalaxyInfo,
-        client,
-        log
-      })
-      this.Quests = new QuestsIngest({
-        GalaxyInfo: this.GalaxyInfo,
-        client,
-        log
-      })
+      const services = await getServices()
+      for (const serviceConstructor of services) {
+        const service = new serviceConstructor({
+          GalaxyInfo: this.GalaxyInfo,
+          client,
+          log: (...message) => log(`[${serviceConstructor.name}]`, ...message)
+        })
+        this.services.set(serviceConstructor.name, service)
+      }
 
       log('Instantiated all ingest subservices')
     })
