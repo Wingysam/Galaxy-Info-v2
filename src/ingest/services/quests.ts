@@ -62,8 +62,7 @@ export default class QuestsIngest extends IngestService {
       '-102': 'Pirate Fleet',
       '-102.1': 'Kraken Fleet',
       '-101': 'Necromancer Fleet',
-      '-100': "Pleb's Kodiak",
-      '-694203': "April Fool's Fleet"
+      '-100': "Pleb's Kodiak"
     }
     if (!this.npcHook) return
     for (const completion of questCompletions) {
