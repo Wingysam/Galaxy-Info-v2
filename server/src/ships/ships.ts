@@ -28,7 +28,8 @@ type SerializedShip = {
   topSpeed: number
   acceleration: number
   turnSpeed: number
-  weapons: SerializedShipWeapons
+  weapons: SerializedShipWeapons,
+  fighters: string[]
 }
 
 type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E'
@@ -56,6 +57,10 @@ type SerializedSpinalGun = {
 type SpinalWeaponType = 'Phaser' | 'Cannon' | 'Torpedo'
 type SpinalWeaponSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
 
+function log (...args: any) {
+  console.log('[Ships]', ...args)
+}
+
 const KV_STORE_KEY = 'ships_dump'
 export class Ships {
   private initialized: boolean
@@ -76,10 +81,11 @@ export class Ships {
         rejectOnNotFound: true
       }) as any
       await this.load(cache.value)
-    } catch (e) {
-      console.log('Ships database reset.', e)
+    } catch (error) {
+      log('Ships database reset.', error)
     }
     this.initialized = true
+    log('Initialized')
   }
 
   private assertReady() {
@@ -105,9 +111,16 @@ export class Ships {
 
   private async load(ships: SerializedShips) {
     this.ships = {}
+    await this.loadShips(ships, true)
+    await this.loadShips(ships, false)
+  }
+
+  private async loadShips(ships: SerializedShips, fighters: boolean) {
     for (const serializedShip of Object.values(ships)) {
       try {
-        const ship = new Ship(this.GalaxyInfo.turrets, serializedShip)
+        if (!fighters && serializedShip.class === 'Fighter') continue
+        if (fighters && serializedShip.class !== 'Fighter') continue
+        const ship = new Ship(this.ships, this.GalaxyInfo.turrets, serializedShip)
         this.ships[ship.name] = ship
       } catch {} // missing turret or something
     }
@@ -143,10 +156,11 @@ export class Ship {
     top: number, acceleration: number, turn: number
   }
   weapons: ShipWeapons
+  fighters: ShipFighters
 
   private serializedShip: SerializedShip
 
-  constructor (turrets: Turrets, serializedShip: SerializedShip) {
+  constructor (ships: { [key: string]: Ship }, turrets: Turrets, serializedShip: SerializedShip) {
     this.serializedShip = serializedShip
 
     this.name = serializedShip.name
@@ -168,6 +182,8 @@ export class Ship {
     }
 
     this.weapons = new ShipWeapons(turrets, serializedShip.weapons)
+    this.fighters = new ShipFighters(ships, serializedShip.fighters)
+    if (this.name === 'Annihilator') debugger
   }
 
   private calculatePermit() {
@@ -331,5 +347,47 @@ export class ShipSpinalGun extends Weapon {
 
   dps() {
     return new Dps(this._alpha.shield / this.reload, this._alpha.hull / this.reload)
+  }
+}
+
+export class ShipFighters extends Weapon {
+  fighters: Map<Ship, number>
+  hasFighters: boolean
+
+  constructor(ships: { [key: string]: Ship }, fighterNames: string[]) {
+    super()
+
+    this.hasFighters = false
+
+    this.fighters = new Map()
+    for (const fighterName of fighterNames) {
+      try {
+        const fighter = ships[fighterName]
+        if (!fighter) continue
+        this.incrementFighter(fighter)
+        this.hasFighters = true
+      } catch (error) { log(error) }
+    }
+  }
+
+  private incrementFighter(fighter: Ship) {
+    const previous = this.fighters.get(fighter) ?? 0
+    this.fighters.set(fighter, previous + 1)
+  }
+
+  alpha(range?: number, loyalty = 0) {
+    const alpha = new Alpha()
+    for (const [fighter, count] of this.fighters) {
+      alpha.add(fighter.weapons.alpha(range, loyalty).multiply(count))
+    }
+    return alpha
+  }
+  
+  dps(range?: number, loyalty = 0) {
+    const dps = new Dps()
+    for (const [fighter, count] of this.fighters) {
+      dps.add(fighter.weapons.dps(range, loyalty).multiply(count))
+    }
+    return dps
   }
 }
