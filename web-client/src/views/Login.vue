@@ -29,7 +29,7 @@
           got a code: {{discordResponse.access_token}}
         </v-col>
       </v-row>
-      <redirect v-else href="https://discord.com/api/oauth2/authorize?client_id=745790085789909033&redirect_uri=http%3A%2F%2F192.168.1.32%3A8083%2Flogin&response_type=token&scope=identify%20guilds"/>
+      <redirect v-else href="https://discord.com/api/oauth2/authorize?client_id=745790085789909033&redirect_uri=http%3A%2F%2F192.168.1.32%3A8080%2Flogin&response_type=token&scope=identify%20guilds"/>
     </div>
   </v-container>
 </template>

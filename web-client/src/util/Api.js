@@ -1,4 +1,4 @@
-import { serialize, deserialize } from '../../../educatejson'
+import { serialize, deserialize } from '../../../shared/galaxy-info-serialization'
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time))
 export class Api {

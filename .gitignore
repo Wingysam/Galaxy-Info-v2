@@ -1,6 +1,6 @@
-dist
-node_modules
-.env
-tsconfig.tsbuildinfo
-data
-.dockerignore
+server/dist
+**/node_modules
+server/.env
+server/tsconfig.tsbuildinfo
+server/data
+server/.dockerignore
