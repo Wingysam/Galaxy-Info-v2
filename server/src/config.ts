@@ -21,7 +21,7 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
   guilds: {
     galaxy?: string,
     galaxyDevelopment?: string,
-    bot: string
+    bot?: string
   },
   db: {
     queryLog: boolean
@@ -118,7 +118,7 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   // Guilds
   await option('guilds.galaxy', 'should')
   await option('guilds.galaxyDevelopment', 'should')
-  await option('guilds.bot', 'must')
+  await option('guilds.bot', 'should')
 
   // Web
   await option('web.port', 'should', 3000, async port => Number(port))
