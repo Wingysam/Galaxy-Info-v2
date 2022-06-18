@@ -1,7 +1,6 @@
 export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
   bot: {
-    token: string,
-    prefix: string
+    token: string
   },
   ingest: {
     token?: string,
@@ -105,7 +104,6 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
 
   // Primary operations configuration
   await option('bot.token', 'must')
-  await option('bot.prefix', 'may', '!')
 
   // Ingest service
   await option('ingest.token', 'should')

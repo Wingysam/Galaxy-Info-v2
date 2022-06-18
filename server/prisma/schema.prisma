@@ -104,8 +104,6 @@ model Guild {
   id           BigInt   @id
   last_updated DateTime
 
-  prefix String?
-
   members BigInt[]
 
   command_ship_compact          Boolean?

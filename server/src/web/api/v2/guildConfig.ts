@@ -86,8 +86,6 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
       }
 
       const GUILD_KEYS = [
-        'prefix',
-
         'members',
 
         'command_ship_compact',

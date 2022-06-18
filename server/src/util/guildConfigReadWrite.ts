@@ -12,8 +12,6 @@ export class GuildConfigs {
     this.GalaxyInfo = GalaxyInfo
     this.defaults = {
       guild: {
-        prefix: this.GalaxyInfo.config.bot.prefix,
-
         members: [],
 
         command_ship_compact: false,
