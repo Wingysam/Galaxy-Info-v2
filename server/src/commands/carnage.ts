@@ -2,11 +2,11 @@ import { CommandInteraction, MessageEmbed } from 'discord.js'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import format from 'pg-format'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { CLASSES } from '@galaxyinfo/ships'
+import { CLASSES as SHIP_CLASSES } from '@galaxyinfo/ships'
 
 function assertShipClassesValid (shipClasses: string[]) {
   for (const shipClass of shipClasses) {
-    if (!(CLASSES as any).includes(shipClass)) throw new Error(`"${shipClass}" is not a valid class.`)
+    if (SHIP_CLASSES.map(shipClass => shipClass.toLowerCase()).includes(shipClass.toLowerCase())) throw new Error(`"${shipClass}" is not a valid class.`)
   }
 }
 
