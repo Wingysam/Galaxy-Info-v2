@@ -26,26 +26,9 @@ const KV_STORE_KEY = 'turrets_dump'
 export class Turrets {
   private turrets: { [key: string]: Turret }
   private initialized: boolean
-  private GalaxyInfo: GalaxyInfo
-  constructor(GalaxyInfo: GalaxyInfo) {
+  constructor() {
     this.turrets = {}
-    this.GalaxyInfo = GalaxyInfo
     this.initialized = false
-  }
-
-  async init() {
-    try {
-      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
-        where: {
-          key: KV_STORE_KEY
-        },
-        rejectOnNotFound: true
-      }) as any
-      await this.load(cache.value)
-    } catch (e) {
-      console.log('Turrets database reset.')
-    }
-    this.initialized = true
   }
 
   private assertReady() {
@@ -53,27 +36,12 @@ export class Turrets {
     if (Object.keys(this.turrets).length === 0) throw new TurretsNotDumpedError('Turrets have not been exported from the game.')
   }
 
-  async save(serializedTurrets: SerializedTurrets) {
-    await this.GalaxyInfo.prisma.keyValue.upsert({
-      create: {
-        key: KV_STORE_KEY,
-        value: serializedTurrets
-      },
-      update: {
-        value: serializedTurrets
-      },
-      where: {
-        key: KV_STORE_KEY
-      }
-    })
-    await this.load(serializedTurrets)
-  }
-
   async load(serializedTurrets: SerializedTurrets) {
     for (const serializedTurret of Object.values(serializedTurrets)) {
       const turret = new Turret(serializedTurret)
       this.turrets[turret.name] = turret
     }
+    this.initialized = true
   }
 
   get(turretName: TurretResolvable) {
@@ -122,5 +90,54 @@ class Turret extends Weapon {
   dps(range?: number, loyalty = 0) {
     const alphaAtRange = this.alpha(range)
     return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload).multiply(1 + loyalty)
+  }
+}
+
+export class ClientTurrets extends Turrets {
+  constructor() {
+    super()
+  }
+
+  async init (turrets: SerializedTurrets) {
+    await super.load(turrets)
+  }
+}
+
+export class ServerTurrets extends Turrets {
+  private GalaxyInfo: GalaxyInfo
+
+  constructor(GalaxyInfo: GalaxyInfo) {
+    super()
+    this.GalaxyInfo = GalaxyInfo
+  }
+
+  async init() {
+    try {
+      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+        where: {
+          key: KV_STORE_KEY
+        },
+        rejectOnNotFound: true
+      }) as any
+      await this.load(cache.value)
+    } catch (e) {
+      console.log('Turrets database reset.')
+    }
+  }
+
+  async save(serializedTurrets: SerializedTurrets) {
+    await this.GalaxyInfo.prisma.keyValue.upsert({
+      create: {
+        key: KV_STORE_KEY,
+        value: serializedTurrets
+      },
+      update: {
+        value: serializedTurrets
+      },
+      where: {
+        key: KV_STORE_KEY
+      }
+    })
+    await this.load(serializedTurrets)
   }
 }

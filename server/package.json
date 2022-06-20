@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "fuzzyfind": "github:Wingysam/fuzzyfind#patch-1",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.2",
     "node-fetch": "^2.6.6",
     "nodemw": "^0.17.0",
     "pg-format": "^1.0.4",
@@ -49,5 +50,8 @@
     "nodemon": "^2.0.14",
     "prisma": "^3.3.0",
     "typescript": "^4.7.3"
+  },
+  "_moduleAliases": {
+    "@galaxyinfo": "../shared"
   }
 }

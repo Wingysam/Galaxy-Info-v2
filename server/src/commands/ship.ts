@@ -4,10 +4,10 @@ import format from 'pg-format'
 
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { EMOJIS } from '../emoji'
-import type { ShipSpinal, ShipTurrets } from '../ships/ships'
-import type { Turret } from '../ships/turrets'
+import type { Ship, ShipFighters, ShipSpinal, ShipTurrets } from '@galaxyinfo/ships'
+import type { Turret } from '@galaxyinfo/ships'
 import { firstBy } from 'thenby'
-import { BUILD_MENU_CLASSES, LOYALTY_REQUIREMENTS, RESISTANCE } from '../ships/constants'
+import { BUILD_MENU_CLASSES, LOYALTY_REQUIREMENTS, RESISTANCE } from '@galaxyinfo/ships'
 import type { Galaxypedia } from '../Galaxypedia'
 import type GalaxyDevelopersIngest from '../ingest/services/GalaxyDevelopers'
 import type { Channel } from '@prisma/client'
@@ -90,15 +90,6 @@ export class ShipCommand extends GalaxyInfoCommand {
       `),
     ])
 
-    function generateSpinalText(letter: 'f' | 'g', spinal?: ShipSpinal) {
-      if (!spinal) return
-      const dps = spinal.dps(range ?? undefined)
-      return `${EMOJIS.spinal[letter]} ${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType} (${Math.floor(dps.average)}${NBSP}DPS)`
-    }
-    const spinalText = [
-      generateSpinalText('f', info.weapons.spinals.f), generateSpinalText('g', info.weapons.spinals.g)
-    ].join('\n')
-
     function processTurret(turret: Turret, count: number) {
       return {
         name: turret.name,
@@ -112,6 +103,29 @@ export class ShipCommand extends GalaxyInfoCommand {
       return processed.map(processedTurret => `${processedTurret.count}x ${processedTurret.name} (${processedTurret.dps}${NBSP}DPS)`).join('\n')
     }
     const turretText = generateTurretText(info.weapons.turrets)
+
+    function generateSpinalText(letter: 'f' | 'g', spinal?: ShipSpinal) {
+      if (!spinal) return
+      const dps = spinal.dps(range ?? undefined)
+      return `${EMOJIS.spinal[letter]} ${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType} (${Math.floor(dps.average)}${NBSP}DPS)`
+    }
+    const spinalText = [
+      generateSpinalText('f', info.weapons.spinals.f), generateSpinalText('g', info.weapons.spinals.g)
+    ].join('\n')
+
+    function processFighter(fighter: Ship, count: number) {
+      return {
+        name: fighter.name,
+        count,
+        dps: Math.floor(fighter.weapons.dps().multiply(count).average)
+      }
+    }
+    function generateFighterText(fighters: ShipFighters) {
+      const processed = Array.from(fighters.fighters.entries()).map(([fighter, count]) => processFighter(fighter, count))
+      processed.sort(firstBy('dps', -1))
+      return processed.map(processedTurret => `[F] ${processedTurret.count}x ${processedTurret.name} (${processedTurret.dps}${NBSP}DPS)`).join('\n')
+    }
+    const fighterText = generateFighterText(info.fighters)
 
     const dps = info.weapons.dps(range ?? undefined, loyalty)
     const alpha = info.weapons.alpha(range ?? undefined, loyalty)
@@ -132,8 +146,8 @@ export class ShipCommand extends GalaxyInfoCommand {
     embed.addField('Class', info.class, true)
     embed.addField('Carnage', `💀 Kills: ${carnage[0].count ?? '0'} ($${(carnage[0].carnage ?? 0).toLocaleString()})\n💥 Losses: ${reverseCarnage[0].count ?? 0} ($${(reverseCarnage[0].carnage ?? 0).toLocaleString()})`, true)
 
-    embed.addField('Weapons', `${turretText}\n\n${spinalText}`.trim() || 'None', true)
-    embed.addField('DPS', `Shield: ${Math.floor(dps.shield)}\nHull: ${Math.floor(dps.hull)}\nAverage: ${Math.floor(dps.average)}`, true)
+    embed.addField('Weapons', ([turretText, spinalText, fighterText].filter(text => text.trim()).join('\n\n')) || 'None', true)
+    embed.addField('DPS', `Shield: ${Math.floor(dps.shield)}\nHull: ${Math.floor(dps.hull)}\nAverage: ${Math.floor(dps.average)}` + (info.fighters.hasFighters ? `\n\nWith fighters: ${Math.floor(dps.average + info.fighters.dps().average)}` : ''), true)
     embed.addField('Alpha', `Shield: ${Math.floor(alpha.shield)}\nHull: ${Math.floor(alpha.hull)}\nMax: ${Math.floor(alpha.max)}`, true)
 
     const imageResolved = await image

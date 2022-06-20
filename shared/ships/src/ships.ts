@@ -61,31 +61,16 @@ function log (...args: any) {
   console.log('[Ships]', ...args)
 }
 
+
 const KV_STORE_KEY = 'ships_dump'
 export class Ships {
   private initialized: boolean
   private ships: { [key: string]: Ship }
-  private GalaxyInfo: GalaxyInfo
-  constructor(GalaxyInfo: GalaxyInfo) {
+  private turrets: Turrets
+  constructor(turrets: Turrets) {
     this.ships = {}
-    this.GalaxyInfo = GalaxyInfo
+    this.turrets = turrets
     this.initialized = false
-  }
-
-  async init() {
-    try {
-      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
-        where: {
-          key: KV_STORE_KEY
-        },
-        rejectOnNotFound: true
-      }) as any
-      await this.load(cache.value)
-    } catch (error) {
-      log('Ships database reset.', error)
-    }
-    this.initialized = true
-    log('Initialized')
   }
 
   private assertReady() {
@@ -93,34 +78,19 @@ export class Ships {
     if (Object.keys(this.ships).length === 0) throw new ShipsNotDumpedError('Ships have not been exported from the game.')
   }
 
-  async save(ships: SerializedShips) {
-    await this.GalaxyInfo.prisma.keyValue.upsert({
-      create: {
-        key: KV_STORE_KEY,
-        value: ships
-      },
-      update: {
-        value: ships
-      },
-      where: {
-        key: KV_STORE_KEY
-      }
-    })
-    await this.load(ships)
-  }
-
-  private async load(ships: SerializedShips) {
+  async load(ships: SerializedShips) {
     this.ships = {}
-    await this.loadShips(ships, true)
-    await this.loadShips(ships, false)
+    await this.loadShips(ships, this.turrets, true)
+    await this.loadShips(ships, this.turrets, false)
+    this.initialized = true
   }
 
-  private async loadShips(ships: SerializedShips, fighters: boolean) {
+  private async loadShips(ships: SerializedShips, turrets: Turrets, fighters: boolean) {
     for (const serializedShip of Object.values(ships)) {
       try {
         if (!fighters && serializedShip.class === 'Fighter') continue
         if (fighters && serializedShip.class !== 'Fighter') continue
-        const ship = new Ship(this.ships, this.GalaxyInfo.turrets, serializedShip)
+        const ship = new Ship(this.ships, turrets, serializedShip)
         this.ships[ship.name] = ship
       } catch {} // missing turret or something
     }
@@ -183,7 +153,6 @@ export class Ship {
 
     this.weapons = new ShipWeapons(turrets, serializedShip.weapons)
     this.fighters = new ShipFighters(ships, serializedShip.fighters)
-    if (this.name === 'Annihilator') debugger
   }
 
   private calculatePermit() {
@@ -389,5 +358,54 @@ export class ShipFighters extends Weapon {
       dps.add(fighter.weapons.dps(range, loyalty).multiply(count))
     }
     return dps
+  }
+}
+
+export class ClientShips extends Ships {
+  constructor(turrets: Turrets) {
+    super(turrets)
+  }
+
+  async init(ships: SerializedShips) {
+    await super.load(ships)
+  }
+}
+
+export class ServerShips extends Ships {
+  private GalaxyInfo: GalaxyInfo
+  constructor(GalaxyInfo: GalaxyInfo) {
+    super(GalaxyInfo.turrets)
+    this.GalaxyInfo = GalaxyInfo
+  }
+
+  async init() {
+    try {
+      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+        where: {
+          key: KV_STORE_KEY
+        },
+        rejectOnNotFound: true
+      }) as any
+      await super.load(cache.value)
+    } catch (error) {
+      log('Ships database reset.', error)
+    }
+    log('Initialized')
+  }
+
+  async save(ships: SerializedShips) {
+    await this.GalaxyInfo.prisma.keyValue.upsert({
+      create: {
+        key: KV_STORE_KEY,
+        value: ships
+      },
+      update: {
+        value: ships
+      },
+      where: {
+        key: KV_STORE_KEY
+      }
+    })
+    await super.load(ships)
   }
 }

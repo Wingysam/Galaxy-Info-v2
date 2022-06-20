@@ -7,7 +7,11 @@
     "lib": [
       "ESNext",
       "DOM"
-    ]
+    ],
+    "baseUrl": "src/",
+    "paths": {
+      "@galaxyinfo/*": ["../../shared/*"]
+    }
   },
   "includes": [ "src" ],
   "exclude": [ "dist", "node_modules" ]

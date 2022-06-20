@@ -1,3 +1,5 @@
+require('module-alias/register')
+
 import { config as dotenv } from 'dotenv'
 
 import { Intents } from 'discord.js'
@@ -11,8 +13,8 @@ import { IngestServices } from './ingest'
 import { GalaxyInfoWeb } from './web'
 import { GuildConfigs } from './util/guildConfigReadWrite'
 import { ExportService } from './export'
-import { Ships } from './ships/ships'
-import { Turrets } from './ships/turrets'
+import { ServerShips } from '@galaxyinfo/ships'
+import { ServerTurrets } from '@galaxyinfo/ships'
 import { GalaxyInfoClient } from './GalaxyInfoClient'
 import { Galaxypedia } from './Galaxypedia'
 
@@ -25,8 +27,8 @@ declare global {
     roblox: GalaxyInfoRobloxInterface,
     client: GalaxyInfoClient,
     web: GalaxyInfoWeb,
-    ships: Ships,
-    turrets: Turrets,
+    ships: ServerShips,
+    turrets: ServerTurrets,
     galaxypedia: Galaxypedia
   }
 }
@@ -53,9 +55,9 @@ function log (...args: any) {
 
   GalaxyInfo.ingest = new IngestServices({ GalaxyInfo })
 
-  GalaxyInfo.turrets = new Turrets(GalaxyInfo)
+  GalaxyInfo.turrets = new ServerTurrets(GalaxyInfo)
   await GalaxyInfo.turrets.init()
-  GalaxyInfo.ships = new Ships(GalaxyInfo)
+  GalaxyInfo.ships = new ServerShips(GalaxyInfo)
   await GalaxyInfo.ships.init()
 
   if (GalaxyInfo.config.db.queryLog) {

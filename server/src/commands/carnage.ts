@@ -2,7 +2,7 @@ import { CommandInteraction, MessageEmbed } from 'discord.js'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import format from 'pg-format'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { CLASSES } from '../ships/constants'
+import { CLASSES } from '@galaxyinfo/ships'
 
 function assertShipClassesValid (shipClasses: string[]) {
   for (const shipClass of shipClasses) {
