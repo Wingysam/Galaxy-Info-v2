@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import { serialize } from '../../../../shared/galaxy-info-serialization'
+import { serialize } from '@galaxyinfo/serialization'
 
 export async function apiToken (req: Request, res: Response, next: NextFunction) {
   try {

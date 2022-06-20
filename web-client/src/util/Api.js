@@ -1,4 +1,4 @@
-import { serialize, deserialize } from '@galaxyinfo/galaxy-info-serialization'
+import { serialize, deserialize } from '@galaxyinfo/serialization'
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time))
 export class Api {

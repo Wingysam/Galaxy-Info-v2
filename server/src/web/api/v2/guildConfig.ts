@@ -1,7 +1,7 @@
 import { json, Router } from 'express'
 import frontendLoggedIn from '../../middleware/frontendLoggedIn'
 import { TextChannel } from 'discord.js'
-import { deserialize, serialize } from '../../../../../shared/galaxy-info-serialization'
+import { deserialize, serialize } from '@galaxyinfo/serialization'
 import type { Channel, Prisma } from '.prisma/client'
 import { getBotGuild, getUserGuild } from '../../../util/getGuild'
 

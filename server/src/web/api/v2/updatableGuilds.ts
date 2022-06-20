@@ -2,7 +2,7 @@ import { Router } from 'express'
 import fetch from 'node-fetch'
 import frontendLoggedIn from '../../middleware/frontendLoggedIn'
 import { Permissions } from 'discord.js'
-import { serialize } from '../../../../../shared/galaxy-info-serialization'
+import { serialize } from '@galaxyinfo/serialization'
 import { sleep } from '../../../util/sleep'
 
 type Arg = {

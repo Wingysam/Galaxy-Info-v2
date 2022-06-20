@@ -1,6 +1,6 @@
 import type { ApiTokenScope } from '.prisma/client'
 import type { NextFunction, Request, Response } from 'express'
-import { serialize } from '../../../../shared/galaxy-info-serialization'
+import { serialize } from '@galaxyinfo/serialization'
 
 export function scope (...scopes: ApiTokenScope[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
