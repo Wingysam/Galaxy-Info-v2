@@ -79,6 +79,7 @@ export default class GalaxyInfoRobloxInterface {
     return BigInt(fromRoblox.Id)
   }
 
+  // TODO: implement this
   /**
    * Maps a Roblox ID to a username
    * @param id The ID of the Roblox user
@@ -92,8 +93,8 @@ export default class GalaxyInfoRobloxInterface {
     })
     if (existing) return existing.name
 
-    // TODO: figure out what 'a' means
-    const fromRoblox = 'a'
+    const fromRoblox = ''
+    if (fromRoblox === '') throw new Error('Not implemented')
     try {
       await this.GalaxyInfo.prisma.user.create({
         data: {
