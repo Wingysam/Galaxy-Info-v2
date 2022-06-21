@@ -1,3 +1,4 @@
+import { serialize } from '@galaxyinfo/serialization'
 import { Router, json } from 'express'
 import { scope } from '../../../middleware/scope'
 type Arg = {
@@ -17,7 +18,7 @@ export async function turrets ({ GalaxyInfo }: Arg) {
       res.send(`${error}`)
       return
     }
-    res.send(GalaxyInfo.turrets.all())
+    res.send(serialize(GalaxyInfo.turrets.all()))
   })
 
   router.post('/', scope('turrets_write'), json({ limit: '50mb' }), async (req, res) => {

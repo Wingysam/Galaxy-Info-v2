@@ -1,9 +1,6 @@
 const CLASSES = [
-  'Admin',
-  'Alien',
   'Miner',
   'Freighter',
-  'Fighter',
   'Frigate',
   'Destroyer',
   'Cruiser',
@@ -12,7 +9,10 @@ const CLASSES = [
   'Dreadnought',
   'Carrier',
   'Super Capital',
-  'Titan'
+  'Fighter',
+  'Titan',
+  'Alien',
+  'Admin'
 ] as const
 
 const DAMAGE_TYPE_DISTRIBUTIONS = { // verified in StructureHealth 2022-03-19
@@ -87,7 +87,7 @@ const RESISTANCE = {
 } as const
 
 const LOYALTY_REQUIREMENTS = {
-  Fighter: .09,
+  Fighter: 0,
   Frigate: 0,
   Destroyer: 0,
   Cruiser: 0,
@@ -116,4 +116,10 @@ const BUILD_MENU_CLASSES = [
   'Super Capital'
 ] as const
 
-export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, LOYALTY_REQUIREMENTS, BUILD_MENU_CLASSES }
+const CLAMPS = {
+  turnSpeed: [.1, .9],
+  topSpeed: [45, 380],
+  acceleration: [5, 50]
+} as const
+
+export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, LOYALTY_REQUIREMENTS, BUILD_MENU_CLASSES, CLAMPS }

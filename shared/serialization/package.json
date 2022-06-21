@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && esbuild src/index.ts --outfile=index.js --format=cjs --minify"
+    "build": "tsc && esbuild src/index.ts --outfile=index.js --format=cjs"
   },
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "types": "./src/index.d.ts",
   "devDependencies": {
     "esbuild": "^0.13.12",

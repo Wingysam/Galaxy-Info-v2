@@ -4,14 +4,16 @@ import fuzzyfind from 'fuzzyfind'
 
 import { CLASSES, PERMITS, SPINALS, SPINAL_RELOAD_EXPONENT } from './constants'
 import { Weapon, Dps, Alpha } from './weapon'
+import { CLAMPS } from '.'
 
 export class ShipsNotInitializedError extends Error {}
 export class ShipsNotDumpedError extends Error {}
 export class ShipNotFoundError extends Error {}
 
-type SerializedShips = { [key: string] : SerializedShip }
-type SerializedShip = {
+export type SerializedShips = { [key: string] : SerializedShip }
+export type SerializedShip = {
   name: string
+  test: boolean
   class: typeof CLASSES[number]
   description?: string
   eventId: number
@@ -21,6 +23,7 @@ type SerializedShip = {
   cargoHold: number
   oreHold: number
   secret: boolean
+  nonPlayer: boolean
   health: {
     shield: number
     hull: number
@@ -32,37 +35,39 @@ type SerializedShip = {
   fighters: string[]
 }
 
-type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E'
+export type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E'
 
-type SerializedShipWeapons = {
+export type SerializedShipWeapons = {
   spinals: SerializedSpinals
   turrets: TurretResolvable[]
 }
 
-type SerializedSpinals = {
+export type SerializedSpinals = {
   f?: SerializedSpinal
   g?: SerializedSpinal
 }
-type SerializedSpinal = {
+export type SerializedSpinal = {
   weaponType: SpinalWeaponType
   weaponSize: SpinalWeaponSize
   interval: number
   reloadOverride?: number
   guns: SerializedSpinalGun[]
 }
-type SerializedSpinalGun = {
+export type SerializedSpinalGun = {
   barrels: number
 }
 
-type SpinalWeaponType = 'Phaser' | 'Cannon' | 'Torpedo'
-type SpinalWeaponSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
+export type SpinalWeaponType = 'Phaser' | 'Cannon' | 'Torpedo'
+export type SpinalWeaponSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
 
 function log (...args: any) {
   console.log('[Ships]', ...args)
 }
 
+function clamp(x: number, min: number, max: number) {
+  return Math.min(Math.max(x, min), max)
+}
 
-const KV_STORE_KEY = 'ships_dump'
 export class Ships {
   private initialized: boolean
   private ships: { [key: string]: Ship }
@@ -104,14 +109,21 @@ export class Ships {
     return this.ships[fuzzyfound]
   }
 
-  all () {
+  all (options: { secret?: boolean }) {
     this.assertReady()
-    return this.ships
+    if (!options) options = {}
+    const ships = {}
+    for (const key in this.ships) {
+      if (options.secret === false && this.ships[key].secret) continue
+      ships[key] = this.ships[key]
+    }
+    return ships
   }
 }
 
 export class Ship {
   name: string
+  test: boolean
   class: typeof CLASSES[number]
   description: string
   eventId: number
@@ -121,6 +133,7 @@ export class Ship {
   cargoHold: number
   oreHold: number
   secret: boolean
+  nonPlayer: boolean
   health: { shield: number, hull: number }
   speed: {
     top: number, acceleration: number, turn: number
@@ -134,6 +147,7 @@ export class Ship {
     this.serializedShip = serializedShip
 
     this.name = serializedShip.name
+    this.test = serializedShip.test
     this.class = serializedShip.class
     this.description = serializedShip.description ?? '(no description)'
     this.eventId = serializedShip.eventId
@@ -143,6 +157,7 @@ export class Ship {
     this.cargoHold = serializedShip.cargoHold
     this.oreHold = serializedShip.oreHold
     this.secret = serializedShip.secret
+    this.nonPlayer = serializedShip.nonPlayer || ['Alien', 'Titan'].includes(this.class)
     this.health = serializedShip.health
 
     this.speed = {
@@ -153,6 +168,12 @@ export class Ship {
 
     this.weapons = new ShipWeapons(turrets, serializedShip.weapons)
     this.fighters = new ShipFighters(ships, serializedShip.fighters)
+
+    this.speed.turn = clamp(this.speed.turn, ...CLAMPS.turnSpeed)
+    if (!this.secret) {
+      this.speed.top = clamp(this.speed.top, ...CLAMPS.topSpeed)
+      this.speed.acceleration = clamp(this.speed.acceleration, ...CLAMPS.acceleration)
+    }
   }
 
   private calculatePermit() {
@@ -271,8 +292,8 @@ export class ShipSpinal extends Weapon {
       if (gun.barrels > biggestGun.barrels) biggestGun = gun
     }
 
-    if (serializedSpinal.reloadOverride) {
-      this.reload = (serializedSpinal.interval * (biggestGun.barrels - 1)) + serializedSpinal.reloadOverride
+    if (typeof serializedSpinal.reloadOverride !== 'undefined') {
+      this.reload = Math.max(0.01, (serializedSpinal.interval * (biggestGun.barrels - 1)) + serializedSpinal.reloadOverride)
     } else {
       this.reload = biggestGun.reload
     }
@@ -382,7 +403,7 @@ export class ServerShips extends Ships {
     try {
       const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
         where: {
-          key: KV_STORE_KEY
+          key: this.GalaxyInfo.config.db.kvKeys.serializedShips
         },
         rejectOnNotFound: true
       }) as any
@@ -396,14 +417,14 @@ export class ServerShips extends Ships {
   async save(ships: SerializedShips) {
     await this.GalaxyInfo.prisma.keyValue.upsert({
       create: {
-        key: KV_STORE_KEY,
+        key: this.GalaxyInfo.config.db.kvKeys.serializedShips,
         value: ships
       },
       update: {
         value: ships
       },
       where: {
-        key: KV_STORE_KEY
+        key: this.GalaxyInfo.config.db.kvKeys.serializedShips
       }
     })
     await super.load(ships)

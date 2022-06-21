@@ -7,11 +7,12 @@ export declare class ShipsNotDumpedError extends Error {
 }
 export declare class ShipNotFoundError extends Error {
 }
-declare type SerializedShips = {
+export declare type SerializedShips = {
     [key: string]: SerializedShip;
 };
-declare type SerializedShip = {
+export declare type SerializedShip = {
     name: string;
+    test: boolean;
     class: typeof CLASSES[number];
     description?: string;
     eventId: number;
@@ -21,6 +22,7 @@ declare type SerializedShip = {
     cargoHold: number;
     oreHold: number;
     secret: boolean;
+    nonPlayer: boolean;
     health: {
         shield: number;
         hull: number;
@@ -31,27 +33,27 @@ declare type SerializedShip = {
     weapons: SerializedShipWeapons;
     fighters: string[];
 };
-declare type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E';
-declare type SerializedShipWeapons = {
+export declare type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E';
+export declare type SerializedShipWeapons = {
     spinals: SerializedSpinals;
     turrets: TurretResolvable[];
 };
-declare type SerializedSpinals = {
+export declare type SerializedSpinals = {
     f?: SerializedSpinal;
     g?: SerializedSpinal;
 };
-declare type SerializedSpinal = {
+export declare type SerializedSpinal = {
     weaponType: SpinalWeaponType;
     weaponSize: SpinalWeaponSize;
     interval: number;
     reloadOverride?: number;
     guns: SerializedSpinalGun[];
 };
-declare type SerializedSpinalGun = {
+export declare type SerializedSpinalGun = {
     barrels: number;
 };
-declare type SpinalWeaponType = 'Phaser' | 'Cannon' | 'Torpedo';
-declare type SpinalWeaponSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge';
+export declare type SpinalWeaponType = 'Phaser' | 'Cannon' | 'Torpedo';
+export declare type SpinalWeaponSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge';
 export declare class Ships {
     private initialized;
     private ships;
@@ -61,12 +63,13 @@ export declare class Ships {
     load(ships: SerializedShips): Promise<void>;
     private loadShips;
     find(name: string): Ship;
-    all(): {
-        [key: string]: Ship;
-    };
+    all(options: {
+        secret?: boolean;
+    }): {};
 }
 export declare class Ship {
     name: string;
+    test: boolean;
     class: typeof CLASSES[number];
     description: string;
     eventId: number;
@@ -76,6 +79,7 @@ export declare class Ship {
     cargoHold: number;
     oreHold: number;
     secret: boolean;
+    nonPlayer: boolean;
     health: {
         shield: number;
         hull: number;
@@ -154,4 +158,3 @@ export declare class ServerShips extends Ships {
     init(): Promise<void>;
     save(ships: SerializedShips): Promise<void>;
 }
-export {};

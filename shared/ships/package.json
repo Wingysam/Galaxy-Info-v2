@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --minify --outfile=dist/index.js"
+    "build": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.js"
   },
   "author": "Wingy <git@wingysam.xyz>",
   "license": "UNLICENSED",

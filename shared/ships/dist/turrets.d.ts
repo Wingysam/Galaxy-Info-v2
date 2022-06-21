@@ -6,10 +6,10 @@ export declare class TurretsNotDumpedError extends Error {
 }
 export declare class TurretNotFoundError extends Error {
 }
-declare type SerializedTurrets = {
+export declare type SerializedTurrets = {
     [key: string]: SerializedTurret;
 };
-declare type SerializedTurret = {
+export declare type SerializedTurret = {
     Name: string;
     Damage: number;
     Reload: number;
@@ -20,8 +20,8 @@ declare type SerializedTurret = {
     BaseAccuracy: number;
     SpeedDenominator: number;
 };
-declare type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL';
-declare type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien';
+export declare type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL';
+export declare type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien';
 export declare class Turrets {
     private turrets;
     private initialized;
@@ -39,6 +39,7 @@ declare class Turret extends Weapon {
     reload: number;
     range: number;
     private _alpha;
+    private affectedByLoyalty;
     constructor(serializedTurret: SerializedTurret);
     alpha(range?: number, loyalty?: number): Alpha;
     dps(range?: number, loyalty?: number): Dps;

@@ -50,6 +50,9 @@ export function serialize (data: Object): Serialized {
 }
 
 export function deserialize (serialized: Serialized): any {
+  if (typeof serialized !== 'object') throw new Error(`Expected serialized data to be an object. Got ${typeof serialized}.`)
+  if (!serialized) throw new Error(`Serialized data is expected to be truthy. Data: ${serialized}`)
+
   for (const bigint of serialized.bigints) {
     serialized.data[bigint] = BigInt(serialized.data[bigint])
   }

@@ -7,8 +7,8 @@ export class TurretsNotInitializedError extends Error {}
 export class TurretsNotDumpedError extends Error {}
 export class TurretNotFoundError extends Error {}
 
-type SerializedTurrets = { [key: string]: SerializedTurret }
-type SerializedTurret = {
+export type SerializedTurrets = { [key: string]: SerializedTurret }
+export type SerializedTurret = {
   Name: string,
   Damage: number,
   Reload: number
@@ -19,10 +19,9 @@ type SerializedTurret = {
   BaseAccuracy: number,
   SpeedDenominator: number
 }
-type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL'
-type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien'
+export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL'
+export type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien'
 
-const KV_STORE_KEY = 'turrets_dump'
 export class Turrets {
   private turrets: { [key: string]: Turret }
   private initialized: boolean
@@ -63,6 +62,7 @@ class Turret extends Weapon {
   range: number
 
   private _alpha: Alpha
+  private affectedByLoyalty: boolean
 
   constructor (serializedTurret: SerializedTurret) {
     super()
@@ -80,16 +80,19 @@ class Turret extends Weapon {
     this.name = serializedTurret.Name
     this.range = serializedTurret.Range
     this.reload = serializedTurret.Reload
+
+    this.affectedByLoyalty = !['Mining'].includes(serializedTurret.Class)
   }
 
   alpha(range?: number, loyalty = 0) {
+    if (!this.affectedByLoyalty) loyalty = 0
     if (range && range > this.range) return new Alpha()
     return new Alpha().add(this._alpha).multiply(1 + loyalty)
   }
 
   dps(range?: number, loyalty = 0) {
-    const alphaAtRange = this.alpha(range)
-    return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload).multiply(1 + loyalty)
+    const alphaAtRange = this.alpha(range, loyalty)
+    return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload)
   }
 }
 
@@ -115,7 +118,7 @@ export class ServerTurrets extends Turrets {
     try {
       const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
         where: {
-          key: KV_STORE_KEY
+          key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets
         },
         rejectOnNotFound: true
       }) as any
@@ -128,14 +131,14 @@ export class ServerTurrets extends Turrets {
   async save(serializedTurrets: SerializedTurrets) {
     await this.GalaxyInfo.prisma.keyValue.upsert({
       create: {
-        key: KV_STORE_KEY,
+        key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets,
         value: serializedTurrets
       },
       update: {
         value: serializedTurrets
       },
       where: {
-        key: KV_STORE_KEY
+        key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets
       }
     })
     await this.load(serializedTurrets)
