@@ -104,48 +104,59 @@ export default {
         },
         {
           text: 'Average DPS',
-          value: 'dps.average'
+          value: 'dps.average',
+          filterable: false
         },
 
         {
           text: 'Shield',
-          value: 'hp.shield'
+          value: 'hp.shield',
+          filterable: false
         },
         {
           text: 'Hull',
-          value: 'hp.hull'
+          value: 'hp.hull',
+          filterable: false
         },
         {
           text: 'Total HP',
-          value: 'hp.combined'
+          value: 'hp.combined',
+          filterable: false
         },
         {
           text: 'Top Speed',
-          value: 'speed.top'
+          value: 'speed.top',
+          filterable: false
         },
         {
           text: 'Acceleration',
-          value: 'speed.acceleration'
+          value: 'speed.acceleration',
+          filterable: false
         },
         {
           text: 'Turn Speed',
-          value: 'speed.turn'
+          value: 'speed.turn',
+          filterable: false
         },
         {
           text: 'Shield DPS',
-          value: 'dps.shield'
+          value: 'dps.shield',
+          filterable: false
         },
         {
           text: 'Hull DPS',
-          value: 'dps.hull'
+          value: 'dps.hull',
+          filterable: false
         },
         {
           text: 'DPS w/ Fighters',
-          value: 'dps.fighters'
+          value: 'dps.fighters',
+          filterable: false
         },
         {
           text: 'Alpha',
-          value: 'alpha'
+          value: 'alpha',
+          filterable: false
         }
       ],
       tableSearch: '',
