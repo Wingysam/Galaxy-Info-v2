@@ -23,7 +23,7 @@
         <v-btn to="/commands" color="secondary" class="mx-3 my-2">View commands</v-btn>
         <v-btn to="/ships" color="secondary" class="mx-3 my-2">See all ships</v-btn>
         <v-btn to="/ships" color="secondary" class="mx-3 my-2">Check Leaderboards</v-btn>
-        <v-btn to="/ships" color="blurple" class="mx-3 my-2">Get Help <v-icon>mdi-discord</v-icon></v-btn>
+        <v-btn to="/ships" color="blurple" class="mx-3 my-2">Get Help&nbsp;&nbsp;<v-icon>mdi-discord</v-icon></v-btn>
       </v-col>
     </v-row>
 
