@@ -74,8 +74,10 @@
       <template
         v-slot:item.name="{ item }"
       >
-        <span class="limited" v-if="item.limited">{{ item.name }}</span>
-        <span v-else>{{ item.name }}</span>
+        <router-link class="shiplink" :to="`/ships/${encodeURIComponent(item.name)}`">
+          <span class="limited" v-if="item.limited">{{ item.name }}</span>
+          <span v-else>{{ item.name }}</span>
+        </router-link>
       </template>
     </v-data-table>
   </v-container>
@@ -202,6 +204,11 @@ export default {
   }
 
   .limited {
-    color: rgb(219, 168, 74);
+    color: #dba84a;
+  }
+
+  .shiplink {
+    text-decoration: none;
+    color: #dedede;
   }
 </style>
