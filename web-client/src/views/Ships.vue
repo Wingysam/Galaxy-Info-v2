@@ -89,7 +89,7 @@ import Worker from 'worker-loader!@/shipTableCalculator.js'
 const worker = new Worker()
 
 export default {
-  name: 'Guilds',
+  name: 'Ships',
   components: {},
   data () {
     return {
