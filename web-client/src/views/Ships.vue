@@ -207,7 +207,7 @@ export default {
     color: #dba84a;
   }
 
-  .shiplink {
+  a.shiplink {
     text-decoration: none;
     color: #dedede;
   }
