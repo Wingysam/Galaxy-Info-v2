@@ -29,6 +29,7 @@
       <div v-if="$store.state.discordUser">
         <v-btn
           color="blurple"
+          :loading="loggingOut"
           @click="logOut"
         >
           <span>Log Out&nbsp;</span>
@@ -62,11 +63,14 @@ export default {
   name: 'App',
   data () {
     return {
-      window
+      window,
+      loggingOut: false
     }
   },
   methods: {
-    logOut () {
+    async logOut () {
+      this.loggingOut = true
+      await this.$api.http('/v2/logout')
       this.$store.commit('setToken', null)
     }
   }

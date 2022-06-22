@@ -8,6 +8,7 @@ import { turrets } from './turrets'
 import { shipsAndTurrets } from './ships-turrets'
 import { galaxypedia } from './galaxypedia'
 import { kills } from './kills'
+import { logout } from './logout'
 
 type Arg = {
   GalaxyInfo: GalaxyInfo
@@ -22,6 +23,7 @@ export async function ApiV2 ({ GalaxyInfo }: Arg) {
 
   router.use('/updatableGuilds', await updatableGuilds({ GalaxyInfo }))
   router.use('/guildConfig', await guildConfig({ GalaxyInfo }))
+  router.use('/logout', await logout({ GalaxyInfo }))
   router.use('/turrets', await turrets({ GalaxyInfo }))
   router.use('/ships', await ships({ GalaxyInfo }))
   router.use('/ships-turrets', await shipsAndTurrets({ GalaxyInfo }))
