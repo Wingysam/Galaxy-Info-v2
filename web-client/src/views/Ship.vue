@@ -20,7 +20,7 @@
       {{ error }}
     </div>
     <div v-else-if="ship && stats.weapons">
-      <v-row>
+      <v-row class="mt-4">
         <v-col>
           <DataCard
             title="Speed"
