@@ -195,13 +195,18 @@ class DiscordLogFetcher {
       return mostRecent.id
     }
 
-    async function fetchPage (cursor: Snowflake) {
-      const cursorAsStringForDiscordJS = String(cursor) // discord.js does not support BigInts.
-      const messages = await fetcher.channel.messages.fetch({
-        limit: 100,
-        before: cursorAsStringForDiscordJS
-      })
-      return messages
+    async function fetchPage (cursor: Snowflake): Promise<Collection<String, Message>> {
+      try {
+        const cursorAsStringForDiscordJS = String(cursor) // discord.js does not support BigInts.
+        const messages = await fetcher.channel.messages.fetch({
+          limit: 100,
+          before: cursorAsStringForDiscordJS
+        })
+        return messages
+      } catch (error) {
+        console.error(error)
+        return fetchPage(cursor)
+      }
     }
 
     async function mergeMessagesIntoBuffer (messages: Collection<any, Message>, buffer: Message[]) {
