@@ -4,7 +4,7 @@ import fuzzyfind from 'fuzzyfind'
 
 import { CLASSES, PERMITS, SPINALS, SPINAL_RELOAD_EXPONENT } from './constants'
 import { Weapon, Dps, Alpha } from './weapon'
-import { CLAMPS } from '.'
+import { CLAMPS, RESISTANCE } from '.'
 
 export class ShipsNotInitializedError extends Error {}
 export class ShipsNotDumpedError extends Error {}
@@ -138,6 +138,7 @@ export class Ship {
   name: string
   test: boolean
   class: typeof CLASSES[number]
+  resistance: number
   description: string
   eventId: number
   permit: Permit | null
@@ -167,6 +168,7 @@ export class Ship {
     this.name = serializedShip.name
     this.test = serializedShip.test
     this.class = serializedShip.class
+    this.resistance = RESISTANCE[this.class]
     this.description = serializedShip.description ?? '(no description)'
     this.eventId = serializedShip.eventId
     this.permit = this.calculatePermit()

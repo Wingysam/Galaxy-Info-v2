@@ -7,6 +7,7 @@ import { ships } from './ships'
 import { turrets } from './turrets'
 import { shipsAndTurrets } from './ships-turrets'
 import { galaxypedia } from './galaxypedia'
+import { kills } from './kills'
 
 type Arg = {
   GalaxyInfo: GalaxyInfo
@@ -25,6 +26,7 @@ export async function ApiV2 ({ GalaxyInfo }: Arg) {
   router.use('/ships', await ships({ GalaxyInfo }))
   router.use('/ships-turrets', await shipsAndTurrets({ GalaxyInfo }))
   router.use('/galaxypedia', await galaxypedia({ GalaxyInfo }))
+  router.use('/kills', await kills({ GalaxyInfo }))
 
   return router
 }

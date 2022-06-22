@@ -39,7 +39,7 @@ export declare type SerializedShip = {
     extraMaterials: ExtraMaterials;
 };
 export declare type ExtraMaterials = {
-    [key: string]: number;
+    [key: string]: number | undefined;
 };
 export declare type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E';
 export declare type SerializedShipWeapons = {
@@ -82,6 +82,7 @@ export declare class Ship {
     name: string;
     test: boolean;
     class: typeof CLASSES[number];
+    resistance: number;
     description: string;
     eventId: number;
     permit: Permit | null;

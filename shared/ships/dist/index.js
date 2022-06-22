@@ -410,6 +410,7 @@ var Ship = class {
     this.name = serializedShip.name;
     this.test = serializedShip.test;
     this.class = serializedShip.class;
+    this.resistance = RESISTANCE[this.class];
     this.description = serializedShip.description ?? "(no description)";
     this.eventId = serializedShip.eventId;
     this.permit = this.calculatePermit();
