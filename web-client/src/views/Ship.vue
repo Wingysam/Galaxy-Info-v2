@@ -1,30 +1,21 @@
 <template>
   <v-container>
-    <v-row class="pb-5">
-      <v-col
-        shrink
-        style="flex-grow: 0; white-space: nowrap"
-      >
-        <div>
-          <h2>{{ $route.params.ship }}</h2>
-        </div>
-        <div v-if="ship">
-          <p style="white-space: normal; word-wrap: break-word;">
-            {{ ship.description }}
-          </p>
-        </div>
-        <div v-else-if="error" />
-        <div v-else>
-          <v-skeleton-loader
-            type="text"
-            width="75em"
-          />
-        </div>
-        <v-btn to="/ships">
-          Return to index
-        </v-btn>
-      </v-col>
-    </v-row>
+    <h2>{{ $route.params.ship }}</h2>
+    <div v-if="ship">
+      <p style="white-space: normal; word-wrap: break-word;">
+        {{ ship.description }}
+      </p>
+    </div>
+    <div v-else-if="error" />
+    <div v-else>
+      <v-skeleton-loader
+        type="text"
+        width="75em"
+      />
+    </div>
+    <v-btn to="/ships">
+      Return to index
+    </v-btn>
     <div v-if="error">
       {{ error }}
     </div>
