@@ -195,6 +195,7 @@ export default {
     },
 
     updateStats() {
+      if (!this.ship) return
       const stats = {};
 
       stats.weapons = {};
