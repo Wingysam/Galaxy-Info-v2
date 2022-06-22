@@ -12,10 +12,11 @@ type Arg = {
 export async function guildConfig ({ GalaxyInfo }: Arg) {
   const router = Router()
 
-  router.get('/:guildId', frontendLoggedIn, async (req, res) => {
+  router.get('/:guildId', frontendLoggedIn(), async (req, res) => {
+    if (!req.discordUser) throw new Error('Not logged in')
     let botGuild
     try {
-      botGuild = await getBotGuild(req.discordUser?._token, req.params.guildId, GalaxyInfo.client)
+      botGuild = await getBotGuild(req.discordUser._token, req.params.guildId, GalaxyInfo.client)
     } catch (error) {
       return res.send(serialize({ error }))
     }
@@ -51,7 +52,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
     }))
   })
 
-  router.post('/:guildId', frontendLoggedIn, json(), async (req, res) => {
+  router.post('/:guildId', frontendLoggedIn(), json(), async (req, res) => {
     try {
       const body = deserialize(req.body)
 
@@ -66,7 +67,9 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
         }))
       }
 
-      const userGuild = await getUserGuild(req.discordUser?._token, req.params.guildId)
+      if (!req.discordUser) throw new Error('Not logged in')
+
+      const userGuild = await getUserGuild(req.discordUser._token, req.params.guildId)
 
       const validatedGuildId = BigInt(userGuild.id)
 

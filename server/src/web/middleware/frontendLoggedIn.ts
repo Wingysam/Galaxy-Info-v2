@@ -1,18 +1,25 @@
+import type { NextFunction, Request, Response } from 'express'
 import fetch from 'node-fetch'
 
-export default async function frontendLoggedIn (req: any, res: any, next: any) {
-  const token = req.headers['x-discord-token']
-  if (!token) return res.send('no token')
-  if (typeof token !== 'string') return res.send('token not a string')
-
-  const userData = await (await fetch('https://discord.com/api/v9/users/@me', {
-    headers: {
-      Authorization: 'Bearer ' + token
+export default function frontendLoggedIn (options: { optional?: boolean } = {}) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    function notLoggedIn(reason: string) {
+      if (options.optional) return next()
+      return res.send(reason)
     }
-  })).json()
-  if (userData.errors) return res.send('discord api returned an error: ' + JSON.stringify(userData.errors))
+    const token = req.headers['x-discord-token']
+    if (!token) return notLoggedIn('no token')
+    if (typeof token !== 'string') return notLoggedIn('token not a string')
 
-  req.discordUser = userData
-  req.discordUser._token = token
-  return next()
+    const userData = await (await fetch('https://discord.com/api/v9/users/@me', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })).json()
+    if (userData.errors) return notLoggedIn('discord api returned an error: ' + JSON.stringify(userData.errors))
+
+    userData._token = token
+    req.discordUser = userData
+    return next()
+  }
 }

@@ -11,7 +11,15 @@ declare module 'stream/web' {
 declare global {
   namespace Express {
     interface Request {
-      discordUser?: any
+      discordUser?: {
+        id: string,
+        username: string,
+        discriminator: string,
+        avatar?: string,
+        banner?: string,
+        locale?: string,
+        _token: string
+      }
       GalaxyInfo: GalaxyInfo,
       token: ApiToken
     }

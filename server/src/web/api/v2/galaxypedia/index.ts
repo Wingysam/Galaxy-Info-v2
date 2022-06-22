@@ -49,9 +49,9 @@ function formatShip(ship: Ship) {
     cargo_hold: ship.cargoHold || undefined,
     ore_hold: ship.oreHold || undefined,
     warp_drive: ship.canWarp ? 'Yes' : 'No',
-    damage_res: `${RESISTANCE[ship.class] * 100}%`,
+    damage_res: `${Math.round(RESISTANCE[ship.class] * 100)}%`,
     stealth: ship.stealth,
-    cmax_drift: ship.customDrift ? `${ship.customDrift * 100}%` : undefined,
+    cmax_drift: ship.customDrift ? `${Math.round(ship.customDrift * 100)}%` : undefined,
     turret_dps: Math.floor(dps.turret) || undefined,
     spinal_dps: Math.floor(dps.spinal) || undefined,
     fighter_turret_dps: Math.floor(dps.fighters.turret) || undefined,
@@ -82,7 +82,7 @@ function formatShip(ship: Ship) {
     permit: ship.permit || undefined,
     description: ship.description,
     vip_required: ship.vip ? 'Yes' : 'No',
-    loyalty_required: `${LOYALTY_REQUIREMENTS[ship.class] * 100}%`,
+    loyalty_required: LOYALTY_REQUIREMENTS[ship.class] ? `${Math.round(LOYALTY_REQUIREMENTS[ship.class] * 100)}%` : undefined,
     explosion_radius: ship.explosionSize
   }
 

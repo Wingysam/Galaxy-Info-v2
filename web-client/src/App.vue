@@ -4,7 +4,10 @@
       app
       dark
     >
-      <router-link to="/" style="text-decoration: none; color: inherit;">
+      <router-link
+        to="/"
+        style="text-decoration: none; color: inherit;"
+      >
         <div class="d-flex align-center">
           <v-img
             alt="Galaxy Info Logo"
@@ -21,10 +24,13 @@
         </div>
       </router-link>
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <div v-if="$store.state.discordUser">
-        <v-btn color="blurple" @click="logOut">
+        <v-btn
+          color="blurple"
+          @click="logOut"
+        >
           <span>Log Out&nbsp;</span>
           <v-img
             alt="Your Discord Avatar"
@@ -37,7 +43,7 @@
 
       <v-btn
         v-else-if="$store.state.discordUser === false"
-        to="/login"
+        :to="`/login?next=${encodeURIComponent(window.location.pathname)}`"
         color="blurple"
       >
         <span class="mr-2">Log In</span>
@@ -46,7 +52,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
@@ -54,6 +60,11 @@
 <script>
 export default {
   name: 'App',
+  data () {
+    return {
+      window
+    }
+  },
   methods: {
     logOut () {
       this.$store.commit('setToken', null)

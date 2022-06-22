@@ -135,7 +135,7 @@ export class ShipCommand extends GalaxyInfoCommand {
     embed.setDescription(info.description)
     embed.url = `${GalaxyInfo.config.web.frontendBase}/ships/${encodeURIComponent(info.name)}`
     embed.setFooter({
-      text: `Damage at ${Math.floor(loyalty * 100)}% loyalty${info.secret ? '; Secret ship. This information is only available to Galaxy developers.' : ''}`
+      text: `Damage at ${Math.round(loyalty * 100)}% loyalty${info.secret ? '; Secret ship. This information is only available to Galaxy developers.' : ''}`
     })
 
     embed.addField('Health', `🛡️ ${info.health.shield} / 🛠️ ${info.health.hull}\n🗯️ Resistance: ${Math.round(RESISTANCE[info.class] * 100)}%`, true)

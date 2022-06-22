@@ -1,8 +1,14 @@
 <template>
   <v-container>
     <div v-if="discordResponse">
-      <v-row class="text-center" v-if="discordResponse.error">
-        <redirect v-if="discordResponse.error === 'access_denied'" tso="/"/>
+      <v-row
+        v-if="discordResponse.error"
+        class="text-center"
+      >
+        <redirect
+          v-if="discordResponse.error === 'access_denied'"
+          tso="/"
+        />
         <div v-else>
           <v-col cols="12">
             <v-img
@@ -14,22 +20,32 @@
           </v-col>
 
           <v-col class="mb-4">
-            <h1 class="display-2 font-weight-bold mb-3">Discord Error</h1>
+            <h1 class="display-2 font-weight-bold mb-3">
+              Discord Error
+            </h1>
 
             <p class="subheading font-weight-regular">
               {{ discordResponse.error_description }}
             </p>
 
-            <v-btn color="primary" to="/">Back to home page</v-btn>
+            <v-btn
+              color="primary"
+              to="/"
+            >
+              Back to home page
+            </v-btn>
           </v-col>
         </div>
       </v-row>
       <v-row v-else-if="discordResponse.access_token">
         <v-col>
-          got a code: {{discordResponse.access_token}}
+          Logged in, redirecting.
         </v-col>
       </v-row>
-      <redirect v-else href="https://discord.com/api/oauth2/authorize?client_id=745790085789909033&redirect_uri=http%3A%2F%2F192.168.1.32%3A8080%2Flogin&response_type=token&scope=identify%20guilds"/>
+      <redirect
+        v-else
+        :href="`https://discord.com/api/oauth2/authorize?client_id=745790085789909033&redirect_uri=${encodeURIComponent(`${window.location.protocol}//${window.location.host}/login`)}&response_type=token&scope=identify%20guilds`"
+      />
     </div>
   </v-container>
 </template>
@@ -42,7 +58,8 @@ export default {
   data() {
     return {
       query: this.$route.query,
-      discordResponse: null
+      discordResponse: null,
+      window
     }
   },
   mounted() {
@@ -56,6 +73,9 @@ export default {
         return result
       }, {})
 
+
+    if (this.$route.query.next) localStorage.setItem('login.next', this.$route.query.next)
+
     ;(async () => {
       const token = this.discordResponse?.access_token
       if (!token) return console.log('no token')
@@ -63,7 +83,8 @@ export default {
 
       this.$store.commit('setToken', token)
 
-      this.$router.push('/')
+      const next = localStorage.getItem('login.next')
+      this.$router.push(next ?? '/')
     })()
   }
 };

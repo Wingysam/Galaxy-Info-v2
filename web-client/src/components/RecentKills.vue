@@ -17,8 +17,14 @@ dayjs.extend(relativeTime)
 export default {
   name: 'RecentKills',
   props: {
-    killerShip: String,
-    victimShip: String
+    killerShip: {
+      type: String,
+      default: undefined
+    },
+    victimShip: {
+      type: String,
+      default: undefined
+    }
   },
   data () {
     return {

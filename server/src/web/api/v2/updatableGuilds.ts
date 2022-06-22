@@ -12,7 +12,8 @@ type Arg = {
 export async function updatableGuilds ({ GalaxyInfo }: Arg) {
   const router = Router()
 
-  router.get('/', frontendLoggedIn, async (req, res) => {
+  router.get('/', frontendLoggedIn(), async (req, res) => {
+    if (!req.discordUser) throw new Error('Not logged in')
     while (true) {
       let userGuilds = await (await fetch('https://discord.com/api/v9/users/@me/guilds', {
         headers: {

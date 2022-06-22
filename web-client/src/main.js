@@ -20,7 +20,7 @@ const store = new Vuex.Store({
         store.commit('setDiscordUser', false)
         if (opts.login && location.pathname === '/login') return false
         else if (!opts.login && location.pathname === '/') return false
-        router.push(opts.login ? '/login' : '/')
+        if (opts.login) router.push('/login?next=' + encodeURIComponent(location.pathname))
         return false
       }
       const userData = await (await fetch('https://discord.com/api/v9/users/@me', {
