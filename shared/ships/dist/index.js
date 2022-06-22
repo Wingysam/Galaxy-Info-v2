@@ -397,6 +397,12 @@ var Ships = class {
     }
     return ships;
   }
+  get(name) {
+    this.assertReady();
+    if (!this.ships.hasOwnProperty(name))
+      throw new ShipNotFoundError("No ship with that name found.");
+    return this.ships[name];
+  }
 };
 var Ship = class {
   constructor(ships, turrets, serializedShip) {
@@ -413,6 +419,10 @@ var Ship = class {
     this.oreHold = serializedShip.oreHold;
     this.secret = serializedShip.secret;
     this.nonPlayer = serializedShip.nonPlayer || ["Alien", "Titan"].includes(this.class);
+    this.canWarp = serializedShip.canWarp;
+    this.stealth = serializedShip.stealth;
+    if (serializedShip.customDrift)
+      this.customDrift = serializedShip.customDrift, this.vip = serializedShip.vip;
     this.health = serializedShip.health;
     this.speed = {
       top: serializedShip.topSpeed,
@@ -421,6 +431,7 @@ var Ship = class {
     };
     this.weapons = new ShipWeapons(turrets, serializedShip.weapons);
     this.fighters = new ShipFighters(ships, serializedShip.fighters);
+    this.extraMaterials = serializedShip.extraMaterials;
     this.speed.turn = clamp(this.speed.turn, ...CLAMPS.turnSpeed);
     if (!this.secret) {
       this.speed.top = clamp(this.speed.top, ...CLAMPS.topSpeed);
@@ -676,6 +687,8 @@ var Turret = class extends Weapon {
     this.name = serializedTurret.Name;
     this.range = serializedTurret.Range;
     this.reload = serializedTurret.Reload;
+    this.size = serializedTurret.TurretSize;
+    this.turretClass = serializedTurret.Class;
     this.affectedByLoyalty = !["Mining"].includes(serializedTurret.Class);
   }
   alpha(range, loyalty = 0) {

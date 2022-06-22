@@ -24,6 +24,10 @@ export type SerializedShip = {
   oreHold: number
   secret: boolean
   nonPlayer: boolean
+  canWarp: boolean
+  stealth: boolean
+  customDrift?: number
+  vip: boolean
   health: {
     shield: number
     hull: number
@@ -33,7 +37,10 @@ export type SerializedShip = {
   turnSpeed: number
   weapons: SerializedShipWeapons,
   fighters: string[]
+  extraMaterials: ExtraMaterials
 }
+
+export type ExtraMaterials = { [key: string ]: number | undefined }
 
 export type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E'
 
@@ -109,7 +116,7 @@ export class Ships {
     return this.ships[fuzzyfound]
   }
 
-  all (options: { secret?: boolean }) {
+  all (options: { secret?: boolean }): { [key: string]: Ship } {
     this.assertReady()
     if (!options) options = {}
     const ships = {}
@@ -118,6 +125,12 @@ export class Ships {
       ships[key] = this.ships[key]
     }
     return ships
+  }
+
+  get (name: string) {
+    this.assertReady()
+    if (!this.ships.hasOwnProperty(name)) throw new ShipNotFoundError('No ship with that name found.')
+    return this.ships[name]
   }
 }
 
@@ -134,12 +147,17 @@ export class Ship {
   oreHold: number
   secret: boolean
   nonPlayer: boolean
+  canWarp: boolean
+  stealth: boolean
+  customDrift?: number
+  vip: boolean
   health: { shield: number, hull: number }
   speed: {
     top: number, acceleration: number, turn: number
   }
   weapons: ShipWeapons
   fighters: ShipFighters
+  extraMaterials: ExtraMaterials
 
   private serializedShip: SerializedShip
 
@@ -158,6 +176,10 @@ export class Ship {
     this.oreHold = serializedShip.oreHold
     this.secret = serializedShip.secret
     this.nonPlayer = serializedShip.nonPlayer || ['Alien', 'Titan'].includes(this.class)
+    this.canWarp = serializedShip.canWarp
+    this.stealth = serializedShip.stealth
+    if (serializedShip.customDrift) this.customDrift = serializedShip.customDrift,
+    this.vip = serializedShip.vip
     this.health = serializedShip.health
 
     this.speed = {
@@ -168,6 +190,8 @@ export class Ship {
 
     this.weapons = new ShipWeapons(turrets, serializedShip.weapons)
     this.fighters = new ShipFighters(ships, serializedShip.fighters)
+
+    this.extraMaterials = serializedShip.extraMaterials
 
     this.speed.turn = clamp(this.speed.turn, ...CLAMPS.turnSpeed)
     if (!this.secret) {

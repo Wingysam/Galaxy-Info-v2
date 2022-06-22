@@ -19,8 +19,10 @@ export declare type SerializedTurret = {
     BeamSize: number;
     BaseAccuracy: number;
     SpeedDenominator: number;
+    TurretSize: TurretSize;
 };
 export declare type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL';
+export declare type TurretSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge';
 export declare type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien';
 export declare class Turrets {
     private turrets;
@@ -38,6 +40,8 @@ declare class Turret extends Weapon {
     name: string;
     reload: number;
     range: number;
+    size: TurretSize;
+    turretClass: TurretClass;
     private _alpha;
     private affectedByLoyalty;
     constructor(serializedTurret: SerializedTurret);

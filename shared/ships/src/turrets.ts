@@ -17,9 +17,11 @@ export type SerializedTurret = {
   Group: TurretGroup,
   BeamSize: number,
   BaseAccuracy: number,
-  SpeedDenominator: number
+  SpeedDenominator: number,
+  TurretSize: TurretSize
 }
 export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL'
+export type TurretSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
 export type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien'
 
 export class Turrets {
@@ -60,6 +62,8 @@ class Turret extends Weapon {
   name: string
   reload: number
   range: number
+  size: TurretSize
+  turretClass: TurretClass
 
   private _alpha: Alpha
   private affectedByLoyalty: boolean
@@ -80,6 +84,8 @@ class Turret extends Weapon {
     this.name = serializedTurret.Name
     this.range = serializedTurret.Range
     this.reload = serializedTurret.Reload
+    this.size = serializedTurret.TurretSize
+    this.turretClass = serializedTurret.Class
 
     this.affectedByLoyalty = !['Mining'].includes(serializedTurret.Class)
   }

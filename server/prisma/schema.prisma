@@ -39,6 +39,8 @@ enum ApiTokenScope {
   quests_write
 
   kills_read
+
+  galaxypedia
 }
 
 enum GalaxyEnvironment {

@@ -23,6 +23,10 @@ export declare type SerializedShip = {
     oreHold: number;
     secret: boolean;
     nonPlayer: boolean;
+    canWarp: boolean;
+    stealth: boolean;
+    customDrift?: number;
+    vip: boolean;
     health: {
         shield: number;
         hull: number;
@@ -32,6 +36,10 @@ export declare type SerializedShip = {
     turnSpeed: number;
     weapons: SerializedShipWeapons;
     fighters: string[];
+    extraMaterials: ExtraMaterials;
+};
+export declare type ExtraMaterials = {
+    [key: string]: number;
 };
 export declare type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E';
 export declare type SerializedShipWeapons = {
@@ -65,7 +73,10 @@ export declare class Ships {
     find(name: string): Ship;
     all(options: {
         secret?: boolean;
-    }): {};
+    }): {
+        [key: string]: Ship;
+    };
+    get(name: string): Ship;
 }
 export declare class Ship {
     name: string;
@@ -80,6 +91,10 @@ export declare class Ship {
     oreHold: number;
     secret: boolean;
     nonPlayer: boolean;
+    canWarp: boolean;
+    stealth: boolean;
+    customDrift?: number;
+    vip: boolean;
     health: {
         shield: number;
         hull: number;
@@ -91,6 +106,7 @@ export declare class Ship {
     };
     weapons: ShipWeapons;
     fighters: ShipFighters;
+    extraMaterials: ExtraMaterials;
     private serializedShip;
     constructor(ships: {
         [key: string]: Ship;
