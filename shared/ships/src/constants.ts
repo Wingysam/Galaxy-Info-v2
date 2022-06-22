@@ -103,6 +103,23 @@ const LOYALTY_REQUIREMENTS = {
   Admin: 0
 } as const
 
+const BASE_REQUIREMENTS = {
+  Fighter: 1,
+  Frigate: 1,
+  Destroyer: 1,
+  Cruiser: 1,
+  Battlecruiser: 1,
+  Battleship: 1,
+  Dreadnought: 2,
+  Carrier: 2,
+  'Super Capital': 3,
+  Titan: 1,
+  Miner: 1,
+  Freighter: 1,
+  Alien: 1,
+  Admin: 1
+} as const
+
 const BUILD_MENU_CLASSES = [
   'Miner',
   'Freighter',
@@ -122,4 +139,4 @@ const CLAMPS = {
   acceleration: [5, 50]
 } as const
 
-export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, LOYALTY_REQUIREMENTS, BUILD_MENU_CLASSES, CLAMPS }
+export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, LOYALTY_REQUIREMENTS, BASE_REQUIREMENTS, BUILD_MENU_CLASSES, CLAMPS }

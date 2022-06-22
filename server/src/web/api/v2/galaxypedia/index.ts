@@ -1,4 +1,4 @@
-import { LOYALTY_REQUIREMENTS, RESISTANCE, Ship, TurretClass, TurretSize } from '@galaxyinfo/ships'
+import { LOYALTY_REQUIREMENTS, BASE_REQUIREMENTS, RESISTANCE, Ship, TurretClass, TurretSize } from '@galaxyinfo/ships'
 import { Router } from 'express'
 import { firstBy } from 'thenby'
 import { scope } from '../../../middleware/scope'
@@ -27,6 +27,13 @@ function formatShip(ship: Ship) {
 
   const turretsSortedByRange = Array.from(ship.weapons.turrets.turrets.keys()).sort(firstBy('range', -1))
 
+  function formatNumberOrUndefined(num: number | undefined) {
+    if (!num) return
+    const floor = Math.floor(num)
+    if (floor === 0) return
+    return floor.toLocaleString()
+  }
+
   const result = {
     title: ship.name,
     shields: ship.health.shield.toLocaleString(),
@@ -41,16 +48,16 @@ function formatShip(ship: Ship) {
     huge_turrets: turretList('Huge'),
     '(f)_spinal': formatSpinal('f'),
     '(g)_spinal': formatSpinal('g'),
-    m_class_range: Math.floor(turretsSortedByRange[0]?.range || 0) || undefined,
-    r_class_range: Math.floor(turretsSortedByRange[turretsSortedByRange.length - 1]?.range || 0) || undefined,
+    m_class_range: formatNumberOrUndefined(turretsSortedByRange[0]?.range),
+    r_class_range: formatNumberOrUndefined(turretsSortedByRange[turretsSortedByRange.length - 1]?.range),
     mining_lasers: turretList('All', 'Mining'),
     mining_range: turretsSortedByRange.filter(turret => turret.turretClass === 'Mining')[0]?.range,
     fighters: fighterList.join('\n') || undefined,
-    cargo_hold: ship.cargoHold || undefined,
-    ore_hold: ship.oreHold || undefined,
+    cargo_hold: formatNumberOrUndefined(ship.cargoHold),
+    ore_hold: formatNumberOrUndefined(ship.oreHold),
     warp_drive: ship.canWarp ? 'Yes' : 'No',
     damage_res: `${Math.round(RESISTANCE[ship.class] * 100)}%`,
-    stealth: ship.stealth,
+    stealth: ship.stealth ? 'Yes' : 'No',
     cmax_drift: ship.customDrift ? `${Math.round(ship.customDrift * 100)}%` : undefined,
     turret_dps: Math.floor(dps.turret) || undefined,
     spinal_dps: Math.floor(dps.spinal) || undefined,
@@ -82,8 +89,8 @@ function formatShip(ship: Ship) {
     permit: ship.permit || undefined,
     description: ship.description,
     vip_required: ship.vip ? 'Yes' : 'No',
-    loyalty_required: LOYALTY_REQUIREMENTS[ship.class] ? `${Math.round(LOYALTY_REQUIREMENTS[ship.class] * 100)}%` : undefined,
-    explosion_radius: ship.explosionSize
+    loyalty_required: `${Math.round(LOYALTY_REQUIREMENTS[ship.class] * 100)}% + Level ${BASE_REQUIREMENTS[ship.class]} Starbase`,
+    explosion_radius: ship.explosionSize.toLocaleString()
   }
 
   function turretList(size: TurretSize | 'All', turretClass?: TurretClass) {
@@ -93,7 +100,7 @@ function formatShip(ship: Ship) {
       if (turretClass && turret.turretClass !== turretClass) continue
       list.push(`${count} ${turret.name}`)
     }
-    return list.join('\n') || undefined
+    return list.join('\n\n') || undefined
   }
 
   function formatSpinal(key: 'f' | 'g') {
