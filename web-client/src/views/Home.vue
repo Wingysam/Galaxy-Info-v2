@@ -19,23 +19,66 @@
           The ultimate solution to all information about Galaxy. Platform for gathering, organizing, and displaying various data. 
         </p>
 
-        <v-btn to="/guilds" color="blurple" class="mx-3 my-2">Configure your server</v-btn>
-        <v-btn to="/commands" color="secondary" class="mx-3 my-2">View commands</v-btn>
-        <v-btn to="/ships" color="secondary" class="mx-3 my-2">See all ships</v-btn>
-        <v-btn to="/ships" color="secondary" class="mx-3 my-2">Check Leaderboards</v-btn>
-        <v-btn to="/ships" color="blurple" class="mx-3 my-2">Get Help&nbsp;&nbsp;<v-icon>mdi-discord</v-icon></v-btn>
+        <v-btn
+          to="/guilds"
+          color="blurple"
+          class="mx-3 my-2"
+        >
+          Configure Your Server
+        </v-btn>
+        <v-btn
+          to="/ships"
+          color="secondary"
+          class="mx-3 my-2"
+        >
+          See all Ships
+        </v-btn>
+        <v-btn
+          to="/kills"
+          color="secondary"
+          class="mx-3 my-2"
+        >
+          See Recent Kills
+        </v-btn>
+        <v-btn
+          to="/kills/lb"
+          color="secondary"
+          class="mx-3 my-2"
+        >
+          Check Leaderboards
+        </v-btn>
+        <v-btn
+          to="/ships"
+          color="blurple"
+          class="mx-3 my-2"
+        >
+          Get Help&nbsp;&nbsp;<v-icon>mdi-discord</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
 
-    <div style="max-width: 70%;" class="mx-auto">
-      <h2 class="display-1 font-weight-heavy text-center">Why Galaxy Info?</h2>
+    <div
+      style="max-width: 70%;"
+      class="mx-auto"
+    >
+      <h2 class="display-1 font-weight-heavy text-center">
+        Why Galaxy Info?
+      </h2>
 
-      <div v-for="item in features" :key="item[0]">
+      <div
+        v-for="item in features"
+        :key="item[0]"
+      >
         <hr class="my-4">
         <v-row>
           <v-col sm="6">
-            <h3 class="display-1 font-weight-bold mb-3">{{ item[0] }}</h3>
-            <ul v-for="reason in item[2]" :key="reason">
+            <h3 class="display-1 font-weight-bold mb-3">
+              {{ item[0] }}
+            </h3>
+            <ul
+              v-for="reason in item[2]"
+              :key="reason"
+            >
               <li>{{ reason }}</li>
             </ul>
           </v-col>
@@ -64,9 +107,9 @@ export default {
           require('@/assets/marketing/ships.png'),
           [
             'Galaxy Info can display information on any ship in the game.',
-            'All information is up-to-date and accurate, powered by educated guesses™️.',
-            'Said guesses are educated with exploits.',
-            'Integrated with ship kills to provide stats such as average kill/death ratio with a given ship.'
+            'All information is up-to-date and accurate, with information pulled directly from the game assets.',
+            'Integrated with ship kills to provide stats such as average kill/death ratio with a given ship.',
+            'Detailed DPS breakdowns: Galaxy Info calculates the damage across shield and hull of every weapon of every ship. It is the most powerful ship information solution ever created.'
           ]
         ],
         [
