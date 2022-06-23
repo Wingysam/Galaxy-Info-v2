@@ -78,7 +78,7 @@ export default {
         kill.date = dayjs(kill.date).fromNow()
         return kill
       })
-      this.carnage = carnage[0].carnage
+      if (carnage.length > 0) this.carnage = carnage[0].carnage
       this.loaded = true
     })()
   }
