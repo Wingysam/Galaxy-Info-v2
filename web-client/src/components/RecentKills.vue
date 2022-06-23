@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <p>Total Carnage: ${{ carnage.toLocaleString() }}</p>
+    <p>Total Carnage: ${{ carnage ? carnage.toLocaleString() : '0' }}</p>
     <v-data-table
       :headers="headers"
       :items="kills"
