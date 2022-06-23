@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <p>Total Carnage: ${{ carnage.toLocaleString() }}</p>
     <v-data-table
       :headers="headers"
       :items="kills"
@@ -29,6 +30,7 @@ export default {
   data () {
     return {
       kills: [],
+      carnage: 0,
       loaded: false,
       headers: [
         {
@@ -70,12 +72,13 @@ export default {
       const qs = {}
       if (this.killerShip) qs.killer_ship = this.killerShip
       if (this.victimShip) qs.victim_ship = this.victimShip
-      const { kills } = await this.$api.http('/v2/kills', { qs })
+      const { carnage, kills } = await this.$api.http('/v2/kills', { qs })
       this.kills = kills.map(kill => {
         kill.victim_cost = kill.victim_cost.toLocaleString()
         kill.date = dayjs(kill.date).fromNow()
         return kill
       })
+      this.carnage = carnage[0].carnage
       this.loaded = true
     })()
   }

@@ -20,7 +20,33 @@ export async function kills ({ GalaxyInfo }: Arg) {
       if (typeof req.query.victim_ship == 'string') {
         victim_ship = req.query.victim_ship
       }
-      const kills = await GalaxyInfo.prisma.$queryRawUnsafe(`
+
+      const [carnage, kills] = await GalaxyInfo.prisma.$transaction([
+        GalaxyInfo.prisma.$queryRawUnsafe(`
+          SELECT
+            SUM(victim_cost) AS carnage,
+            COUNT(*)
+          FROM "Kill_clean"
+          WHERE
+            1=1
+            ${
+              killer_ship
+              ? format(
+                'AND killer_ship = %L',
+                killer_ship
+              )
+              : ''
+            }
+            ${
+              victim_ship
+              ? format(
+                'AND victim_ship = %L',
+                victim_ship
+              )
+              : ''
+            }
+        `),
+        GalaxyInfo.prisma.$queryRawUnsafe(`
         SELECT *
         FROM "Kill_clean"
         WHERE
@@ -44,7 +70,9 @@ export async function kills ({ GalaxyInfo }: Arg) {
         ORDER BY date DESC
         LIMIT 250
       `)
-      res.send(serialize({ kills }))
+      ])
+
+      res.send(serialize({ carnage, kills }))
     } catch (error) {
       res.send(`${error}`)
       return
