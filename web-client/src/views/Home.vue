@@ -48,7 +48,8 @@
           Check Leaderboards
         </v-btn>
         <v-btn
-          to="/ships"
+          href="https://discord.gg/cx2dXax"
+          target="_blank"
           color="blurple"
           class="mx-3 my-2"
         >
