@@ -339,6 +339,7 @@ export class ShipSpinal extends Weapon {
 export class ShipSpinalGun extends Weapon {
   reload: number
   barrels: number
+  interval: number
 
   private _alpha: Alpha
 
@@ -353,7 +354,8 @@ export class ShipSpinalGun extends Weapon {
       gun.barrels * spinalSize.damage * spinalType.damageDistribution[spinalType.damageDistribution.ideal]
     )
 
-    this.reload = (spinal.interval * (gun.barrels - 1)) + (spinalSize.reload * (Math.pow(SPINAL_RELOAD_EXPONENT, gun.barrels - 1)))
+    this.interval = spinal.interval
+    this.reload = (this.interval * (gun.barrels - 1)) + (spinalSize.reload * (Math.pow(SPINAL_RELOAD_EXPONENT, gun.barrels - 1)))
     this.barrels = gun.barrels
   }
 

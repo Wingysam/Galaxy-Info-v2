@@ -150,6 +150,7 @@ export declare class ShipSpinal extends Weapon {
 export declare class ShipSpinalGun extends Weapon {
     reload: number;
     barrels: number;
+    interval: number;
     private _alpha;
     constructor(spinal: SerializedSpinal, gun: SerializedSpinalGun);
     alpha(): Alpha;

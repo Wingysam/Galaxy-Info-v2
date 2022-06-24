@@ -227,7 +227,7 @@ export default {
         },
       ];
 
-      (stats.weapons.spinals = [
+      stats.weapons.spinals = [
         ...[this.ship.weapons.spinals.f, this.ship.weapons.spinals.g]
           .filter((spinal) => spinal)
           .map((spinal) => {
@@ -235,6 +235,7 @@ export default {
               name: `${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType}`,
               dps: floorDps(spinal.dps(this.range, this.loyalty / 100)),
               alpha: floorAlpha(spinal.alpha(this.range, this.loyalty / 100)),
+              interval: spinal.guns[0]?.interval,
               reload: spinal.reload.toFixed(2),
             };
           }),
@@ -247,8 +248,9 @@ export default {
             this.ship.weapons.spinals.alpha(this.range, this.loyalty / 100)
           ),
         },
-      ]),
-        (this.stats = stats);
+      ]
+
+      this.stats = stats
     },
   },
 };

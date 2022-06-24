@@ -14,7 +14,12 @@
 <script>
 export default {
   name: 'Weapons',
-  props: ['weapons'],
+  props: {
+    weapons: {
+      type: Array,
+      default () { return [] }
+    }
+  },
   data () {
     return {
       headers: [
@@ -52,6 +57,11 @@ export default {
         {
           text: 'Hull Alpha',
           value: 'alpha.hull',
+          sortable: false
+        },
+        {
+          text: 'Interval',
+          value: 'interval',
           sortable: false
         },
         {
