@@ -42,6 +42,7 @@ export class CarnageCommand extends GalaxyInfoCommand {
         if (!interaction.guild) throw new Error('Specify a player or try this in a guild.')
         const guild = await GalaxyInfo.guildConfigs.readGuild(BigInt(interaction.guild.id))
         players = guild.members
+        if (players.length === 0) allPlayers = true
       }
     }
 
@@ -90,8 +91,8 @@ export class CarnageCommand extends GalaxyInfoCommand {
       GalaxyInfo.prisma.$queryRaw`
         SELECT
           victim_ship AS ship,
-          COUNT(*),
-          SUM(victim_cost) AS carnage
+          TO_CHAR(COUNT(*), 'FM9,999,999,999,999,999,999,999') AS count,
+          TO_CHAR(SUM(victim_cost), 'FM9,999,999,999,999,999,999,999') AS carnage
         FROM "Kill_temp"
         GROUP BY victim_ship
         ORDER BY SUM(victim_cost) DESC
@@ -99,14 +100,14 @@ export class CarnageCommand extends GalaxyInfoCommand {
       `,
       GalaxyInfo.prisma.$queryRaw`
         SELECT
-          SUM(victim_cost) AS carnage,
-          COUNT(*)
+          TO_CHAR(SUM(victim_cost), 'FM9,999,999,999,999,999,999,999') AS carnage,
+          TO_CHAR(COUNT(*), 'FM9,999,999,999,999,999,999,999') AS count
         FROM "Kill_temp"
       `,
       GalaxyInfo.prisma.$queryRaw`
         SELECT
           victim_ship AS ship,
-          COUNT(*)
+          TO_CHAR(COUNT(*), 'FM9,999,999,999,999,999,999,999') AS count
         FROM "Kill_temp"
         GROUP BY victim_ship
         ORDER BY COUNT(*) DESC
@@ -126,13 +127,13 @@ export class CarnageCommand extends GalaxyInfoCommand {
         .length
 
       embed.addField('Top Ten Kills', '```ini\n' + topTen.map((ship: any) =>
-        `[-] x${ship.count.toString().padStart(longestNumber, '0')} ${ship.ship} ($${ship.carnage.toLocaleString()})`
+        `[-] x${ship.count.toString().padStart(longestNumber, '0')} ${ship.ship} ($${ship.carnage})`
       ).join('\n') + '\n```')
     })()
 
-    embed.addField('Carnage', '$' + totals[0].carnage.toLocaleString(), true)
-    embed.addField('Total Ships', totals[0].count.toLocaleString(), true)
-    embed.addField('Most Common', `${mostCommon[0].count.toLocaleString()}x ${mostCommon[0].ship}`, true)
+    embed.addField('Carnage', '$' + totals[0].carnage, true)
+    embed.addField('Total Ships', totals[0].count, true)
+    embed.addField('Most Common', `${mostCommon[0].count}x ${mostCommon[0].ship}`, true)
 
     await interaction.editReply({ embeds: [embed] })
   }
@@ -235,12 +236,14 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
           LIMIT 1
         ) AS player,
         carnage,
-        killed
+        killed,
+        TO_CHAR(carnage, 'FM9,999,999,999,999,999,999,999') AS carnage_fmt,
+        TO_CHAR(killed, 'FM9,999,999,999,999,999,999,999') AS killed_fmt
       FROM (
         SELECT
           ${reverse ? 'victim' : 'killer'}_id,
-          SUM(victim_cost) AS carnage,
-          COUNT(*) AS killed
+          COUNT(*) AS killed,
+          SUM(victim_cost) AS carnage
         FROM "Kill_temp"
         WHERE
           killer_id != -1
@@ -260,14 +263,14 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
       `),
       GalaxyInfo.prisma.$queryRaw`
         SELECT
-          SUM(victim_cost) AS carnage,
-          COUNT(*)
+          TO_CHAR(SUM(victim_cost), 'FM9,999,999,999,999,999,999,999') AS carnage,
+          TO_CHAR(COUNT(*), 'FM9,999,999,999,999,999,999,999') AS count
         FROM "Kill_temp"
       `,
       GalaxyInfo.prisma.$queryRaw`
         SELECT
           victim_ship AS ship,
-          COUNT(*)
+          TO_CHAR(COUNT(*), 'FM9,999,999,999,999,999,999,999') AS count
         FROM "Kill_temp"
         GROUP BY victim_ship
         ORDER BY COUNT(*) DESC
@@ -287,13 +290,13 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
         .length
 
       embed.addField('Top Ten Carnage' + (page > 1 ? ` (Page ${page})` : ''), '```ini\n' + topTen.map((player: any) =>
-        `[${player.pos.toString().padStart(longestNumber, '0')}] ${player.player} $${player.carnage.toLocaleString()} (${player.killed.toLocaleString()})`
+        `[${player.pos.toString().padStart(longestNumber, '0')}] ${player.player} $${player.carnage_fmt} (${player.killed_fmt})`
       ).join('\n') + '\n```')
     })()
 
-    embed.addField('Carnage', '$' + totals[0].carnage.toLocaleString(), true)
-    embed.addField('Total Ships', totals[0].count.toLocaleString(), true)
-    embed.addField('Most Common', `${mostCommon[0].count.toLocaleString()}x ${mostCommon[0].ship}`, true)
+    embed.addField('Carnage', '$' + totals[0].carnage, true)
+    embed.addField('Total Ships', totals[0].count, true)
+    embed.addField('Most Common', `${mostCommon[0].count}x ${mostCommon[0].ship}`, true)
 
     await interaction.editReply({ embeds: [embed] })
   }
