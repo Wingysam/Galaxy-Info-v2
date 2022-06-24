@@ -9,7 +9,7 @@ import type { Turret } from '@galaxyinfo/ships'
 import { firstBy } from 'thenby'
 import { BUILD_MENU_CLASSES, LOYALTY_REQUIREMENTS, RESISTANCE } from '@galaxyinfo/ships'
 import type { Galaxypedia } from '../Galaxypedia'
-import type GalaxyDevelopersIngest from '../ingest/services/GalaxyDevelopers'
+import type GalaxyStaffIngest from '../ingest/services/GalaxyStaff'
 import type { Channel } from '@prisma/client'
 
 const NBSP = '\u00A0'
@@ -50,10 +50,10 @@ export class ShipCommand extends GalaxyInfoCommand {
     }
     
     if (info.secret) {
-      const galaxyDevelopersIngest = GalaxyInfo.ingest.services.get('GalaxyDevelopersIngest') as GalaxyDevelopersIngest
-      if (!galaxyDevelopersIngest) throw new Error('GalaxyDevelopersIngest missing')
+      const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+      if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
       
-      if (!galaxyDevelopersIngest.developers.includes(interaction.user.id)) throw new Error(`**${info.name}** is scrambled. If you think this is unintentional, please contact a developer.`)
+      if (!galaxyStaffIngest.developers.members.includes(interaction.user.id)) throw new Error(`**${info.name}** is scrambled. If you think this is unintentional, please contact a developer.`)
       await interaction.deferReply({ ephemeral: true })
     } else if (!channelConfig || channelConfig.commands) {
       await interaction.deferReply()

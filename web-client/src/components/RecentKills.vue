@@ -5,7 +5,16 @@
       :headers="headers"
       :items="kills"
       :loading="!loaded"
-    />
+      item-key="link"
+    >
+      <template
+        v-slot:item.link="{ item }"
+      >
+        <v-btn :to="item.link">
+          View Kill
+        </v-btn>
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 
@@ -33,6 +42,12 @@ export default {
       carnage: 0,
       loaded: false,
       headers: [
+        {
+          text: 'Link',
+          value: 'link',
+          sortable: false,
+          width: '1em'
+        },
         {
           text: 'Killer',
           value: 'killer_name',
@@ -74,6 +89,7 @@ export default {
       if (this.victimShip) qs.victim_ship = this.victimShip
       const { carnage, kills } = await this.$api.http('/v2/kills', { qs })
       this.kills = kills.map(kill => {
+        kill.link = `/kills/${kill.id}`
         kill.victim_cost = kill.victim_cost.toLocaleString()
         kill.date = dayjs(kill.date).fromNow()
         return kill

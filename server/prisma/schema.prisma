@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["filterJson", "fullTextSearch"]
+  previewFeatures = ["filterJson", "fullTextSearch", "improvedQueryRaw"]
 }
 
 datasource db {
@@ -68,6 +68,8 @@ model Kill {
   victim_cost    BigInt
   victim_limited Boolean
   refunded       Boolean
+  refunded_override Boolean @default(false)
+  refunded_override_history Json[]
   nuke           Boolean
   date           DateTime
 }

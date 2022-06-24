@@ -4,7 +4,7 @@ import { scope } from '../../../middleware/scope'
 import type { SerializedShips, SerializedTurrets } from '@galaxyinfo/ships'
 import { serialize } from '@galaxyinfo/serialization'
 import frontendLoggedIn from '../../../middleware/frontendLoggedIn'
-import type GalaxyDevelopersIngest from 'ingest/services/GalaxyDevelopers'
+import type GalaxyStaffIngest from 'ingest/services/GalaxyStaff'
 
 type Arg = {
   GalaxyInfo: GalaxyInfo
@@ -23,10 +23,10 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
 
     const allowedShips: SerializedShips = {}
 
-    const galaxyDevelopersIngest = GalaxyInfo.ingest.services.get('GalaxyDevelopersIngest') as GalaxyDevelopersIngest
-    if (!galaxyDevelopersIngest) throw new Error('GalaxyDevelopersIngest missing')
+    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+    if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
 
-    const includeSecret = user && galaxyDevelopersIngest.developers.includes(user)
+    const includeSecret = user && galaxyStaffIngest.developers.members.includes(user)
 
     for (const ship of Object.keys(serializedShips)) {
       if (!serializedShips[ship].secret || includeSecret) allowedShips[ship] = serializedShips[ship]

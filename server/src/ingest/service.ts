@@ -7,7 +7,7 @@ export type IngestServiceArg = {
   client: Client,
   log: LogFunction
 }
-type LogFunction = (...message: any[]) => void
+export type LogFunction = (...message: any[]) => void
 
 export abstract class IngestService extends EventEmitter {
   GalaxyInfo: GalaxyInfo

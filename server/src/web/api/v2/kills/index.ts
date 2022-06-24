@@ -1,8 +1,10 @@
 import format from 'pg-format'
 
-import { serialize } from '@galaxyinfo/serialization'
-import { Router } from 'express'
+import { deserialize, serialize } from '@galaxyinfo/serialization'
+import { Router, json } from 'express'
 import { scope } from '../../../middleware/scope'
+import type GalaxyStaffIngest from 'ingest/services/GalaxyStaff'
+import frontendLoggedIn from '../../../middleware/frontendLoggedIn'
 
 type Arg = {
   GalaxyInfo: GalaxyInfo
@@ -77,6 +79,55 @@ export async function kills ({ GalaxyInfo }: Arg) {
       res.send(`${error}`)
       return
     }
+  })
+
+  router.get('/:id', scope('kills_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
+    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+    const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
+    const isAdmin = req.discordUser && staff.includes(req.discordUser.id)
+
+    const id = BigInt(req.params.id)
+    const kill = await GalaxyInfo.prisma.kill.findFirst({
+      where: {
+        id
+      }
+    })
+    res.send(serialize({ kill, isAdmin }))
+  })
+
+  router.post('/:id/refund', frontendLoggedIn(), json(), async (req, res) => {
+    if (!req.discordUser) throw new Error('not logged in')
+    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+    const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
+    const isAdmin = staff.includes(req.discordUser.id)
+    if (!isAdmin) throw new Error('must be admin')
+
+    const data = deserialize(req.body)
+
+    const refunded_override = !!data.refunded_override
+    const refunded = refunded_override && !!data.refunded
+
+    const id = BigInt(req.params.id)
+    const kill = await GalaxyInfo.prisma.kill.findFirst({
+      where: {
+        id
+      },
+      rejectOnNotFound: true
+    })
+    kill.refunded_override_history.push({
+      admin: req.discordUser.id,
+      refunded,
+      refunded_override
+    })
+    kill.refunded = refunded
+    kill.refunded_override = refunded_override
+    await GalaxyInfo.prisma.kill.update({
+      where: {
+        id
+      },
+      data: kill
+    })
+    res.send(serialize({ kill }))
   })
 
   return router

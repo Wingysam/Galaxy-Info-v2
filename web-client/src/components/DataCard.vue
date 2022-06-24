@@ -1,7 +1,12 @@
 <template>
   <v-container>
-    <v-card class="pa-4">
-      <v-card-title>{{ title }}</v-card-title>
+    <v-card
+      class="pa-4"
+      :loading="loading"
+    >
+      <v-card-title v-if="title">
+        {{ title }}
+      </v-card-title>
       <v-list dense>
         <v-list-item
           v-for="[k, v] in processed"
@@ -22,12 +27,16 @@ export default {
   name: 'DataCard',
   props: {
     title: {
-      type: String,
+      type: [String, Boolean],
       default: 'Data'
     },
     data: {
       type: Array,
       default () { return [] }
+    },
+    loading: {
+      type: Boolean,
+      default () { return false }
     }
   },
   computed: {

@@ -115,6 +115,8 @@ export class ShipKillsIngestParser extends DiscordLogIngesterParser {
       victim_cost: await min(BigInt(Number(matches[7].replaceAll(',', ''))), BigInt(Math.pow(2, 31))),
       victim_limited: ['[EVENT SHIP KILL]', '[PRIZE SHIP KILL]'].includes(title || ''),
       refunded: false,
+      refunded_override: false,
+      refunded_override_history: [],
       nuke,
       date: message.createdAt
     }
