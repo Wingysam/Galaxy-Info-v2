@@ -235,7 +235,7 @@ export default {
               name: `${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType}`,
               dps: floorDps(spinal.dps(this.range, this.loyalty / 100)),
               alpha: floorAlpha(spinal.alpha(this.range, this.loyalty / 100)),
-              interval: spinal.guns[0]?.interval,
+              interval: spinal.guns[0]?.interval.toFixed(2),
               reload: spinal.reload.toFixed(2),
             };
           }),
