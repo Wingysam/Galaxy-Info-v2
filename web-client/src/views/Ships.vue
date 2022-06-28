@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <v-row class="pb-5">
-      <v-col shrink style="flex-grow: 0; white-space: nowrap;">
+      <v-col
+        shrink
+        style="flex-grow: 0; white-space: nowrap;"
+      >
         <div style="display: flex; height: 100%; align-items: center;">
           <h2>Ship Index</h2>
         </div>
@@ -15,48 +18,48 @@
           outlined
           hide-details
           dense
-        ></v-text-field>
+        />
       </v-col>
     </v-row>
-      <v-row>
-        <v-col>
-          <v-slider
-            v-model="range"
-            :min="0"
-            :max="12000"
-            :step="250"
-            label="Range"
-            class="align-center"
-          >
-            <template v-slot:append>
-              <v-text-field
-                v-model="range"
-                class="mt-0 pt-0"
-                type="number"
-                style="width: 4em"
-              ></v-text-field>
-            </template>
-          </v-slider>
-        </v-col>
-        <v-col>
-          <v-slider
-            v-model="loyalty"
-            :min="0"
-            :max="33"
-            label="Loyalty"
-            class="align-center"
-          >
-            <template v-slot:append>
-              <v-text-field
-                v-model="loyalty"
-                class="mt-0 pt-0"
-                type="number"
-                style="width: 4em"
-              ></v-text-field>
-            </template>
-          </v-slider>
-        </v-col>
-      </v-row>
+    <v-row>
+      <v-col>
+        <v-slider
+          v-model="range"
+          :min="0"
+          :max="12000"
+          :step="250"
+          label="Range"
+          class="align-center"
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="range"
+              class="mt-0 pt-0"
+              type="number"
+              style="width: 4em"
+            />
+          </template>
+        </v-slider>
+      </v-col>
+      <v-col>
+        <v-slider
+          v-model="loyalty"
+          :min="0"
+          :max="33"
+          label="Loyalty"
+          class="align-center"
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="loyalty"
+              class="mt-0 pt-0"
+              type="number"
+              style="width: 4em"
+            />
+          </template>
+        </v-slider>
+      </v-col>
+    </v-row>
     <v-data-table
       hide-default-footer
       group-by="Class"
@@ -74,8 +77,14 @@
       <template
         v-slot:item.name="{ item }"
       >
-        <router-link class="shiplink" :to="`/ships/${encodeURIComponent(item.name)}`">
-          <span class="limited" v-if="item.limited">{{ item.name }}</span>
+        <router-link
+          class="shiplink"
+          :to="`/ships/${encodeURIComponent(item.name)}`"
+        >
+          <span
+            v-if="item.limited"
+            class="limited"
+          >{{ item.name }}</span>
           <span v-else>{{ item.name }}</span>
         </router-link>
       </template>
@@ -163,6 +172,10 @@ export default {
       sortBy: ['limited', 'dps.average']
     }
   },
+  watch: {
+    loyalty() { this.updateShipTable() },
+    range() { this.updateShipTable() }
+  },
   mounted () {
     (async () => {
       await this.updateShips()
@@ -182,7 +195,8 @@ export default {
     async updateShipTable() {
       worker.postMessage(['calculate', {
         range: this.range,
-        loyalty: this.loyalty / 100
+        loyalty: this.loyalty / 100,
+        test: this.$route.query.test === 'true'
       }])
     },
 
@@ -197,10 +211,6 @@ export default {
       if (sort[0] === 'limited') return
       this.sortBy = ['limited', sort[sort.length - 1]]
     }
-  },
-  watch: {
-    loyalty() { this.updateShipTable() },
-    range() { this.updateShipTable() }
   }
 }
 </script>
