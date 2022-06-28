@@ -15,12 +15,12 @@ onmessage = async e => {
 
     return
   }
-  const { range, loyalty } = e.data[1]
+  const { range, loyalty, test } = e.data[1]
 
   const shipTable = []
 
   for (const ship of Object.values(ships.all())) {
-    if (ship.test) continue
+    if (ship.test !== test) continue
     const dps = ship.weapons.dps(range, loyalty)
     if (dps.average === 0 && !ship.fighters.hasFighters) continue
     shipTable.push({

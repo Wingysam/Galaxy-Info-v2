@@ -6,6 +6,7 @@ export declare class ShipsNotInitializedError extends Error {
 export declare class ShipsNotDumpedError extends Error {
 }
 export declare class ShipNotFoundError extends Error {
+    constructor();
 }
 export declare type SerializedShips = {
     [key: string]: SerializedShip;

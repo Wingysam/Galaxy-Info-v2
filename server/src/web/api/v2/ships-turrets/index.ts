@@ -29,7 +29,7 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
     const includeSecret = user && galaxyStaffIngest.developers.members.includes(user)
 
     for (const ship of Object.keys(serializedShips)) {
-      if (!serializedShips[ship].secret || includeSecret) allowedShips[ship] = serializedShips[ship]
+      if (includeSecret || (!serializedShips[ship].secret && !serializedShips[ship].test)) allowedShips[ship] = serializedShips[ship]
     }
 
     const serializedTurrets = (await GalaxyInfo.prisma.keyValue.findUnique({
@@ -52,7 +52,7 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
     }
   })
 
-  router.get('/', scope('ships_read', 'turrets_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
+  router.get('/raw', scope('ships_read', 'turrets_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
     try {
       const { serializedShips, serializedTurrets } = await getDumps(req.discordUser?.id)
       res.send({ serializedShips, serializedTurrets })

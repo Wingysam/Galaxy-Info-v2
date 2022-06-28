@@ -8,7 +8,11 @@ import { CLAMPS, RESISTANCE } from '.'
 
 export class ShipsNotInitializedError extends Error {}
 export class ShipsNotDumpedError extends Error {}
-export class ShipNotFoundError extends Error {}
+export class ShipNotFoundError extends Error {
+  constructor() {
+    super('Could not find a ship with that name.')
+  }
+}
 
 export type SerializedShips = { [key: string] : SerializedShip }
 export type SerializedShip = {
@@ -112,7 +116,7 @@ export class Ships {
     this.assertReady()
     if (this.ships.hasOwnProperty(name)) return this.ships[name]
     const fuzzyfound = fuzzyfind(name, Object.keys(this.ships))[0]
-    if (!fuzzyfound) throw new ShipNotFoundError('Could not find a ship with that name.')
+    if (!fuzzyfound) throw new ShipNotFoundError()
     return this.ships[fuzzyfound]
   }
 
@@ -121,7 +125,7 @@ export class Ships {
     if (!options) options = {}
     const ships = {}
     for (const key in this.ships) {
-      if (options.secret === false && this.ships[key].secret) continue
+      if (options.secret === false && (this.ships[key].secret || this.ships[key].test)) continue
       ships[key] = this.ships[key]
     }
     return ships
@@ -129,7 +133,7 @@ export class Ships {
 
   get (name: string) {
     this.assertReady()
-    if (!this.ships.hasOwnProperty(name)) throw new ShipNotFoundError('No ship with that name found.')
+    if (!this.ships.hasOwnProperty(name)) throw new ShipNotFoundError()
     return this.ships[name]
   }
 }

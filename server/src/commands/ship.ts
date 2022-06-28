@@ -4,7 +4,7 @@ import format from 'pg-format'
 
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { EMOJIS } from '../emoji'
-import type { Ship, ShipFighters, ShipSpinal, ShipTurrets } from '@galaxyinfo/ships'
+import { Ship, ShipFighters, ShipNotFoundError, ShipSpinal, ShipTurrets } from '@galaxyinfo/ships'
 import type { Turret } from '@galaxyinfo/ships'
 import { firstBy } from 'thenby'
 import { BUILD_MENU_CLASSES, LOYALTY_REQUIREMENTS, RESISTANCE } from '@galaxyinfo/ships'
@@ -49,11 +49,17 @@ export class ShipCommand extends GalaxyInfoCommand {
       loyalty = loyalty / 100
     }
     
-    if (info.secret) {
+    if (info.secret || info.test) {
       const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
       if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
       
-      if (!galaxyStaffIngest.developers.members.includes(interaction.user.id)) throw new Error(`**${info.name}** is scrambled. If you think this is unintentional, please contact a developer.`)
+      if (!galaxyStaffIngest.developers.members.includes(interaction.user.id)) {
+        if (info.test) {
+          throw new ShipNotFoundError()
+        } else {
+          throw new Error(`**${info.name}** is scrambled. If you think this is unintentional, please contact a developer.`)
+        }
+      }
       await interaction.deferReply({ ephemeral: true })
     } else if (!channelConfig || channelConfig.commands) {
       await interaction.deferReply()
