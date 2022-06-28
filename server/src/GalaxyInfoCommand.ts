@@ -61,7 +61,7 @@ export abstract class GalaxyInfoCommand {
         } else {
           await interaction.reply({
             content: error.message,
-            ephemeral: this.ephemeral
+            ephemeral: channelEphemeral
           })
         }
       } catch {
