@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import { sleep } from './sleep'
 
 type ConstructorArg = {
   GalaxyInfo: GalaxyInfo
@@ -31,7 +32,10 @@ export default class GalaxyInfoRobloxInterface {
    * @param name the name of the Roblox user
    * @returns the ID of the Roblox user
    */
-  async nameToId (name: string): Promise<bigint> {
+  async nameToId (name: string, backoff?: number): Promise<bigint> {
+    if (backoff) {
+      await sleep(backoff)
+    }
     name = name.toLowerCase()
     const existing = await this.GalaxyInfo.prisma.user.findUnique({
       where: {
@@ -40,7 +44,14 @@ export default class GalaxyInfoRobloxInterface {
     })
     if (existing?.id) return existing.id
 
-    let fromRoblox = (await (await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(name)}`)).json() as RobloxAPIGetByUsername)
+    let fromRoblox: RobloxAPIGetByUsername
+    try {
+      fromRoblox = (await (await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(name)}`)).json() as RobloxAPIGetByUsername)
+    } catch {
+      backoff = backoff ? backoff * 2 : 1000
+      log(name, backoff, 'Roblox API returned an invalid response')
+      return this.nameToId(name, backoff)
+    }
 
     if ('success' in fromRoblox) { // success is undefined when it should be true, success being present means it's false
       if (fromRoblox.success) {
