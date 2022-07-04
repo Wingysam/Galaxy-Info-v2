@@ -6,7 +6,9 @@ import { CLASSES as SHIP_CLASSES } from '@galaxyinfo/ships'
 
 function assertShipClassesValid (shipClasses: string[]) {
   for (const shipClass of shipClasses) {
-    if (SHIP_CLASSES.map(shipClass => shipClass.toLowerCase()).includes(shipClass.toLowerCase())) throw new Error(`"${shipClass}" is not a valid class.`)
+    const validClasses = SHIP_CLASSES.map(shipClass => shipClass.toLowerCase())
+    const specifiedClass = shipClass.toLowerCase()
+    if (!validClasses.includes(specifiedClass)) throw new Error(`"${shipClass}" is not a valid class.`)
   }
 }
 
