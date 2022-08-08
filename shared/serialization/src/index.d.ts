@@ -1,11 +1,7 @@
-declare type Serialized = {
-    bigints: string[];
-    objects: string[];
-    arrays: string[];
-    dates: string[];
-    errors: string[];
-    data: any;
-};
-export declare function serialize(data: Object): Serialized;
+declare type Serialized = [
+    'object' | 'array' | 'bigint' | 'date' | 'error' | 'native',
+    any
+];
+export declare function serialize(data: any): Serialized;
 export declare function deserialize(serialized: Serialized): any;
 export {};

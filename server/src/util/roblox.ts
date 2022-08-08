@@ -45,11 +45,13 @@ export default class GalaxyInfoRobloxInterface {
     if (existing?.id) return existing.id
 
     let fromRoblox: RobloxAPIGetByUsername
+    let text
     try {
-      fromRoblox = (await (await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(name)}`)).json() as RobloxAPIGetByUsername)
+      text = await (await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(name)}`)).text()
+      fromRoblox = (JSON.parse(text) as RobloxAPIGetByUsername)
     } catch {
-      backoff = backoff ? backoff * 2 : 1000
-      log(name, backoff, 'Roblox API returned an invalid response')
+      backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
+      log(name, backoff, 'Roblox API returned an invalid response', text)
       return this.nameToId(name, backoff)
     }
 

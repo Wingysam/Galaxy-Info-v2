@@ -21,74 +21,79 @@
         />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <v-slider
-          v-model="range"
-          :min="0"
-          :max="12000"
-          :step="250"
-          label="Range"
-          class="align-center"
-        >
-          <template v-slot:append>
-            <v-text-field
-              v-model="range"
-              class="mt-0 pt-0"
-              type="number"
-              style="width: 4em"
-            />
-          </template>
-        </v-slider>
-      </v-col>
-      <v-col>
-        <v-slider
-          v-model="loyalty"
-          :min="0"
-          :max="33"
-          label="Loyalty"
-          class="align-center"
-        >
-          <template v-slot:append>
-            <v-text-field
-              v-model="loyalty"
-              class="mt-0 pt-0"
-              type="number"
-              style="width: 4em"
-            />
-          </template>
-        </v-slider>
-      </v-col>
+    <v-row v-if="error">
+      {{ error }}
     </v-row>
-    <v-data-table
-      hide-default-footer
-      group-by="Class"
-      dense
-      :sort-by="sortBy"
-      :sort-desc="[false, true]"
-      :group-desc="true"
-      :headers="tableHeaders"
-      :items="shipTable"
-      :items-per-page="shipTable.length"
-      :search="tableSearch"
-      :loading="shipTable.length === 0"
-      @update:sort-by="sortUpdate"
-    >
-      <template
-        v-slot:item.name="{ item }"
+    <div v-else>
+      <v-row>
+        <v-col>
+          <v-slider
+            v-model="range"
+            :min="0"
+            :max="12000"
+            :step="250"
+            label="Range"
+            class="align-center"
+          >
+            <template v-slot:append>
+              <v-text-field
+                v-model="range"
+                class="mt-0 pt-0"
+                type="number"
+                style="width: 4em"
+              />
+            </template>
+          </v-slider>
+        </v-col>
+        <v-col>
+          <v-slider
+            v-model="loyalty"
+            :min="0"
+            :max="33"
+            label="Loyalty"
+            class="align-center"
+          >
+            <template v-slot:append>
+              <v-text-field
+                v-model="loyalty"
+                class="mt-0 pt-0"
+                type="number"
+                style="width: 4em"
+              />
+            </template>
+          </v-slider>
+        </v-col>
+      </v-row>
+      <v-data-table
+        hide-default-footer
+        group-by="Class"
+        dense
+        :sort-by="sortBy"
+        :sort-desc="[false, true]"
+        :group-desc="true"
+        :headers="tableHeaders"
+        :items="shipTable"
+        :items-per-page="shipTable.length"
+        :search="tableSearch"
+        :loading="shipTable.length === 0"
+        @update:sort-by="sortUpdate"
       >
-        <router-link
-          class="shiplink"
-          :to="`/ships/${encodeURIComponent(item.name)}`"
+        <template
+          v-slot:item.name="{ item }"
         >
-          <span
-            v-if="item.limited"
-            class="limited"
-          >{{ item.name }}</span>
-          <span v-else>{{ item.name }}</span>
-        </router-link>
-      </template>
-    </v-data-table>
+          <router-link
+            class="shiplink"
+            :to="`/ships/${encodeURIComponent(item.name)}`"
+          >
+            <span
+              v-if="item.limited"
+              class="limited"
+            >{{ item.name }}</span>
+            <span v-else>{{ item.name }}</span>
+          </router-link>
+        </template>
+      </v-data-table>
+    </div>
   </v-container>
 </template>
 
@@ -102,6 +107,7 @@ export default {
   components: {},
   data () {
     return {
+      error: null,
       ships: null,
       shipTable: [],
       range: 0,
@@ -183,6 +189,10 @@ export default {
 
       worker.onmessage = e => {
         this.shipTable = e.data
+        if (e.data.length === 0) {
+          if (this.$route.query.test === 'true') this.error = 'You must be a developer to see test ships.'
+          else this.error = 'No ships found; open an issue or ticket please.'
+        }
       }
     })()
   },

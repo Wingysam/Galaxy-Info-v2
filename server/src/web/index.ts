@@ -1,4 +1,5 @@
 import express from 'express'
+import 'express-async-errors'
 
 import GalaxyInfoWebApi from './api'
 import { apiToken } from './middleware/apiToken'
@@ -34,6 +35,12 @@ export class GalaxyInfoWeb {
     app.use('/api', await GalaxyInfoWebApi({ GalaxyInfo: this.GalaxyInfo }))
 
     app.get('/', (_, res) => res.send('should be frontend'))
+
+    app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+      console.error(err)
+      res.status(500)
+      res.end()
+    })
 
     app.listen(config.port, () => {
       log('Listening on', config.port)

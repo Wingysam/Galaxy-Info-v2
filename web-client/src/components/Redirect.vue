@@ -1,6 +1,8 @@
 <template>
   <v-container>
-    <p v-if="error">Failed to redirect.</p>
+    <p v-if="error">
+      Failed to redirect.
+    </p>
   </v-container>
 </template>
 
@@ -8,8 +10,14 @@
 export default {
   name: 'Redirect',
   props: {
-    href: String,
-    to: String
+    href: {
+      type: String,
+      default: undefined
+    },
+    to: {
+      type: String,
+      default: undefined
+    }
   },
   data () {
     return {

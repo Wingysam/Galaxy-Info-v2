@@ -55,6 +55,12 @@ enum QuestCompletionServerType {
   Private
 }
 
+enum CommandShipImagePlacement {
+  none
+  embed
+  upload
+}
+
 model Kill {
   id             BigInt   @id
   killer_id      BigInt
@@ -110,9 +116,7 @@ model Guild {
 
   members BigInt[]
 
-  command_ship_compact          Boolean?
-  command_ship_image_size       Int?
-  command_ship_detailed_enabled Boolean?
+  command_ship_image_placement CommandShipImagePlacement?
 }
 
 model Channel {
@@ -126,6 +130,7 @@ model Channel {
 
   kill_log_enabled         Boolean?
   kill_log_members         Boolean?
+  include_all Boolean?
   kill_log_custom_users    BigInt[]
   kill_log_embed           Boolean?
   kill_log_pin_limiteds    Boolean?

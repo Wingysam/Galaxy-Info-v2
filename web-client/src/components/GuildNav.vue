@@ -1,5 +1,8 @@
 <template>
-  <v-container class="ml-0 mr-1" style="max-width: 100%; /* there's a style setting max-width so we have to override it, that's why we don't use width here */">
+  <v-container
+    class="ml-0 mr-1"
+    style="max-width: 100%; /* there's a style setting max-width so we have to override it, that's why we don't use width here */"
+  >
     <v-row>
       <v-col style="flex-grow: 0;">
         <v-card
@@ -16,7 +19,9 @@
               <v-list-item
                 v-for="item in items"
                 :key="item.title"
-                exact link :to="item.to"
+                exact
+                link
+                :to="item.to"
               >
                 <v-list-item-icon>
                   <v-icon>{{ item.icon }}</v-icon>
@@ -32,18 +37,36 @@
       </v-col>
       <v-col style="min-width: 70%; max-width: 100%; /* same max-width trick here */">
         <div v-if="guild.loaded">
-          <div class="ma-0" style="white-space: nowrap; display: flex;">
+          <div
+            class="ma-0"
+            style="white-space: nowrap; display: flex;"
+          >
             <span class="d-inline-block">
-              <v-img :src="guild.icon || require('@/assets/discord.svg')" width="4em" height="4em" contain transition="slide-x-transition"/>
+              <v-img
+                :src="guild.icon || require('@/assets/discord.svg')"
+                width="4em"
+                height="4em"
+                contain
+                transition="slide-x-transition"
+              />
             </span>
-            <span class="d-inline-block ml-4" style="overflow: hidden;">
-              <h2 class="text-h2" style="height: 1.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ guild.name }}</h2>
+            <span
+              class="d-inline-block ml-4"
+              style="overflow: hidden;"
+            >
+              <h2
+                class="text-h2"
+                style="height: 1.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+              >{{ guild.name }}</h2>
             </span>
           </div>
-          <slot/>
+          <slot />
         </div>
-        <div v-else class="mt-2">
-          <v-progress-circular indeterminate/>
+        <div
+          v-else
+          class="mt-2"
+        >
+          <v-progress-circular indeterminate />
         </div>
       </v-col>
     </v-row>
@@ -53,7 +76,12 @@
 <script>
 export default {
   name: 'GuildNav',
-  props: [ 'guild' ],
+  props: {
+    guild: {
+      type: Object,
+      default: undefined
+    }
+  },
   data () {
     return {
       items: [

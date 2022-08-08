@@ -4,6 +4,7 @@ import { TextChannel } from 'discord.js'
 import { deserialize, serialize } from '@galaxyinfo/serialization'
 import type { Channel, Prisma } from '.prisma/client'
 import { getBotGuild, getUserGuild } from '../../../util/getGuild'
+import { firstBy } from 'thenby'
 
 type Arg = {
   GalaxyInfo: GalaxyInfo
@@ -25,11 +26,14 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
     const guildConfig = await GalaxyInfo.guildConfigs.readGuild(guildId)
 
-    const djsChannels = Array.from(
+    // @ts-expect-error
+    const djsChannels: TextChannel[] = Array.from(
       botGuild.channels.cache
         .filter(channel => channel instanceof TextChannel)
         .values()
     )
+
+    djsChannels.sort(firstBy((a: TextChannel, b: TextChannel) => (a.parent?.position ?? 0) - (b.parent?.position ?? 0)).thenBy('position'))
 
     const channelConfigs = await GalaxyInfo.guildConfigs.readChannel(guildId, djsChannels.map(chan => BigInt(chan.id)))
 
@@ -58,7 +62,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
       if (!body.channels) {
         return res.send(serialize({
-          error: 'no channels wyd'
+          error: 'no channels'
         }))
       }
       if (!(body.channels instanceof Array)) {
@@ -91,9 +95,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
       const GUILD_KEYS = [
         'members',
 
-        'command_ship_compact',
-        'command_ship_image_size',
-        'command_ship_detailed_enabled'
+        'command_ship_image_placement',
       ] as const
 
       for (const key of GUILD_KEYS) {
@@ -127,6 +129,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
           'kill_log_enabled',
           'kill_log_members',
+          'include_all',
           'kill_log_custom_users',
           'kill_log_embed',
           'kill_log_pin_limiteds',

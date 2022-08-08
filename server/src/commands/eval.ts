@@ -41,7 +41,6 @@ export default class extends GalaxyInfoCommand {
     }
   }
 
-  // @ts-expect-error
   private async eval (interaction: CommandInteraction, args: { json: boolean, async: boolean, showHidden: boolean, depth: number }, code: string) {
     let time = Date.now()
     let success: boolean | undefined
@@ -51,6 +50,9 @@ export default class extends GalaxyInfoCommand {
     let type: Type | undefined
     try {
       if (args.async) code = `(async () => {\n${code}\n})();`
+
+      // @ts-expect-error
+      const { GalaxyInfo } = interaction.client
 
       // eslint-disable-next-line no-eval
       result = eval(code)

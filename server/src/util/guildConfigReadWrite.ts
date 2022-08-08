@@ -14,9 +14,7 @@ export class GuildConfigs {
       guild: {
         members: [],
 
-        command_ship_compact: false,
-        command_ship_image_size: 1,
-        command_ship_detailed_enabled: true
+        command_ship_image_placement: 'upload',
       },
       channel: {
         commands: true,
@@ -26,6 +24,8 @@ export class GuildConfigs {
 
         kill_log_enabled: false,
         kill_log_members: true,
+        include_all: false,
+        kill_log_custom_users: [],
         kill_log_embed: true,
         kill_log_pin_limiteds: true,
         kill_log_template_normal: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} destroyed {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",

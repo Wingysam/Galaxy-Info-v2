@@ -4,14 +4,27 @@
       class="ma-4"
       :loading="!guild.loaded"
       @click="reloadData"
-    >Refresh</v-btn>
-    <div v-if="error" class="ma-8">
-      <p style="color: red;">{{ error }}</p>
+    >
+      Refresh
+    </v-btn>
+    <div
+      v-if="error"
+      class="ma-8"
+    >
+      <p style="color: red;">
+        {{ error }}
+      </p>
       <p>An error occured, please contact Wingy#3538 on Discord or reload the page.</p>
     </div>
-    <GuildNav :guild="guild" v-else>
+    <GuildNav
+      v-else
+      :guild="guild"
+    >
       <div class="mr-4">
-        <div v-if="forceRequired" class="mb-4">
+        <div
+          v-if="forceRequired"
+          class="mb-4"
+        >
           <p><v-icon>mdi-alert</v-icon> The configuration was updated while you were editing. Overwrite changes?</p>
           <v-btn
             color="red"
@@ -22,39 +35,66 @@
           </v-btn>
         </div>
         <v-btn
-          color="primary"
-          class="mb-4"
-          @click="save()" 
-          :loading="saving"
           v-else
+          color="primary"
+          class="mb-4" 
+          :loading="saving"
+          @click="save()"
         >
           <span class="mr-2">Save</span>
           <v-icon>mdi-floppy</v-icon>
         </v-btn>
-        <pre class="mb-4 d-none"><code style="display: block; overflow-x: scroll;">{{JSON.stringify(guild, (key, value) => typeof value === "bigint" ? value.toString() + "n" : value, 2)}}</code></pre>
+        <pre class="mb-4 d-none"><code style="display: block; overflow-x: scroll;">{{ JSON.stringify(guild, (key, value) => typeof value === "bigint" ? value.toString() + "n" : value, 2) }}</code></pre>
         <div v-if="section === 'general'">
-          <h2 class="display-1 font-weight-bold mb-3">General</h2>
-          <v-text-field label="Prefix" v-model="guild.config.prefix" style="width: 5em;"/>
+          <h2 class="display-1 font-weight-bold mb-3">
+            General
+          </h2>
+          <h3 class="mb-3">
+            Members (one roblox id per line)
+          </h3>
+          <RobloxUserIdArrayInput v-model="guild.config.members" />
         </div>
         <div v-else-if="section === 'commands'">
-          <h2 class="display-1 font-weight-bold mb-3">Commands</h2>
+          <h2 class="display-1 font-weight-bold mb-3">
+            Commands
+          </h2>
           <v-card class="pa-4">
-          <h3 class="display-1 font-weight-light mb-2">{{ guild.config.prefix }}ship</h3>
-          <v-switch v-model="guild.config.command_ship_compact" label="Compact" persistent-hint hint="Makes the result smaller, does not have an image, does not have an embed."/>
-          <v-switch v-model="guild.config.command_ship_detailed_enabled" label="Enable detailed option" persistent-hint hint="Returns more detailed stats of a ship, somewhat floods chat if abused."/>
-          <v-radio-group v-model="guild.config.command_ship_image_size" label="Image size">
-            <v-radio label="Small" :value="1"/>
-            <v-radio label="Large" :value="2"/>
-          </v-radio-group>
+            <h3 class="display-1 font-weight-light mb-2">
+              /ship
+            </h3>
+            <v-radio-group
+              v-model="guild.config.command_ship_image_placement"
+              label="Image Placement"
+            >
+              <v-radio
+                label="Don't show an image"
+                value="none"
+              />
+              <v-radio
+                label="Upload it above the embed"
+                value="upload"
+              />
+              <v-radio
+                label="Put it at the bottom of the embed"
+                value="embed"
+              />
+            </v-radio-group>
           </v-card>
         </div>
         <div v-else-if="section === 'channels'">
-          <h2 class="display-1 font-weight-bold mb-3">Channels</h2>
+          <h2 class="display-1 font-weight-bold mb-3">
+            Channels
+          </h2>
           <v-row>
             <v-col style="flex-grow: 0; white-space: nowrap;">
-              <v-radio-group mandatory class="mt-0" v-model="selectedChannel">
+              <v-radio-group
+                v-model="selectedChannel"
+                mandatory
+                class="mt-0"
+              >
                 <v-radio
-                  v-for="channel in guild.channels" :key="channel.id.toString()"
+                  v-for="channel in guild.channels"
+                  :key="channel.id.toString()"
                   :label="'#' + channel.name"
                   :value="channel"
                 />
@@ -62,34 +102,91 @@
             </v-col>
             <v-col>
               <v-card class="pa-4">
-                <h3 class="display-1 font-weight-light mb-2">#{{ selectedChannel.name }}</h3>
-                <h4 class="mb-4">General</h4>
-                <v-switch class="mt-0" v-model="selectedChannel.config.commands" label="Show command results"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.admin_event_pings" label="Admin event pings"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.dps_updates" label="Announce DPS changes"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.permits" label="Announce when a permit is added to Mega Base"/>
-                <h4 class="mb-4">Kill Log</h4>
-                <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_enabled" label="This is a kill log channel"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_embed" label="Place the message in an embed"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_pin_limiteds" label="Automatically pin limited kills/deaths"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_daily_stats" label="Post daily statistics for your members"/>
-                <v-switch class="mt-0" v-model="selectedChannel.config.kill_log_members" label="Include all of your guild members in this kill log"/>
-                <h5 class="mb-4">Custom users</h5>
-                <p>Include these users in this kill log</p>
-                <v-chip-group>
-                  <v-chip
-                    v-for="member of selectedChannel.config.kill_log_custom_users"
-                    :key="member.id"
-                  >
-                  </v-chip>
-                </v-chip-group>
-                <h5 class="mb-4">Templates</h5>
-                <v-text-field class="mt-0" v-model="selectedChannel.config.kill_log_template_normal" label="Normal"/>
-                <v-text-field class="mt-0" v-model="selectedChannel.config.kill_log_template_nuke" label="Nuke"/>
-                <h5 class="mb-4">Classes</h5>
-                <p class="my-4">When you kill a build menu ship</p>
+                <h3 class="display-1 font-weight-light mb-2">
+                  #{{ selectedChannel.name }}
+                </h3>
+                <h4 class="mb-4">
+                  General
+                </h4>
+                <v-switch
+                  v-model="selectedChannel.config.commands"
+                  class="mt-0"
+                  label="Show command results"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.admin_event_pings"
+                  class="mt-0"
+                  label="Admin event pings"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.permits"
+                  class="mt-0"
+                  label="Announce when a permit is added to Mega Base"
+                />
+                <h4 class="mb-4">
+                  Kill Log
+                </h4>
+                <v-switch
+                  v-model="selectedChannel.config.kill_log_enabled"
+                  class="mt-0"
+                  label="This is a kill log channel"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.kill_log_embed"
+                  class="mt-0"
+                  label="Place the message in an embed"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.kill_log_pin_limiteds"
+                  class="mt-0"
+                  label="Automatically pin limited kills/deaths"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.kill_log_daily_stats"
+                  class="mt-0"
+                  label="Post daily statistics instead of a live feed"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.kill_log_members"
+                  class="mt-0"
+                  label="Include all of your members in this kill log"
+                />
+                <v-switch
+                  v-model="selectedChannel.config.include_all"
+                  class="mt-0"
+                  label="Include everyone in this kill log"
+                />
+                <h5 class="mb-4">
+                  Custom users
+                </h5>
+                <p>Include these users in this kill log (one roblox id per line)</p>
+                <RobloxUserIdArrayInput v-model="selectedChannel.config.kill_log_custom_users" />
+                <h5 class="mb-4">
+                  Templates
+                </h5>
+                <v-text-field
+                  v-model="selectedChannel.config.kill_log_template_normal"
+                  class="mt-0"
+                  label="Normal"
+                />
+                <v-text-field
+                  v-model="selectedChannel.config.kill_log_template_nuke"
+                  class="mt-0"
+                  label="Nuke"
+                />
+                <h5 class="mb-4">
+                  Classes
+                </h5>
+                <p class="my-4">
+                  When you kill a build menu ship
+                </p>
                 <v-row>
-                  <v-col v-for="shipClass in shipClasses" :key="shipClass" class="pa-0 ml-2" style="flex-grow: 0;">
+                  <v-col
+                    v-for="shipClass in shipClasses"
+                    :key="shipClass"
+                    class="pa-0 ml-2"
+                    style="flex-grow: 0;"
+                  >
                     <v-checkbox
                       v-model="selectedChannel.config.kill_log_bm_kill_classes"
                       :label="shipClass.replace('_', ' ')"
@@ -98,9 +195,16 @@
                     />
                   </v-col>
                 </v-row>
-                <p class="my-4">When you kill a limited ship</p>
+                <p class="my-4">
+                  When you kill a limited ship
+                </p>
                 <v-row>
-                  <v-col v-for="shipClass in shipClasses" :key="shipClass" class="pa-0 ml-2" style="flex-grow: 0;">
+                  <v-col
+                    v-for="shipClass in shipClasses"
+                    :key="shipClass"
+                    class="pa-0 ml-2"
+                    style="flex-grow: 0;"
+                  >
                     <v-checkbox
                       v-model="selectedChannel.config.kill_log_limited_kill_classes"
                       :label="shipClass.replace('_', ' ')"
@@ -109,9 +213,16 @@
                     />
                   </v-col>
                 </v-row>
-                <p class="my-4">When you lose a build menu ship</p>
+                <p class="my-4">
+                  When you lose a build menu ship
+                </p>
                 <v-row>
-                  <v-col v-for="shipClass in shipClasses" :key="shipClass" class="pa-0 ml-2" style="flex-grow: 0;">
+                  <v-col
+                    v-for="shipClass in shipClasses"
+                    :key="shipClass"
+                    class="pa-0 ml-2"
+                    style="flex-grow: 0;"
+                  >
                     <v-checkbox
                       v-model="selectedChannel.config.kill_log_bm_death_classes"
                       :label="shipClass.replace('_', ' ')"
@@ -120,9 +231,16 @@
                     />
                   </v-col>
                 </v-row>
-                <p class="my-4">When you lose a limited ship</p>
+                <p class="my-4">
+                  When you lose a limited ship
+                </p>
                 <v-row>
-                  <v-col v-for="shipClass in shipClasses" :key="shipClass" class="pa-0 ml-2" style="flex-grow: 0;">
+                  <v-col
+                    v-for="shipClass in shipClasses"
+                    :key="shipClass"
+                    class="pa-0 ml-2"
+                    style="flex-grow: 0;"
+                  >
                     <v-checkbox
                       v-model="selectedChannel.config.kill_log_limited_death_classes"
                       :label="shipClass.replace('_', ' ')"
@@ -145,10 +263,11 @@
 
 <script>
 import GuildNav from '@/components/GuildNav.vue'
+import RobloxUserIdArrayInput from '@/components/RobloxUserIdArrayInput.vue'
 
 export default {
   name: 'Guild',
-  components: { GuildNav },
+  components: { GuildNav, RobloxUserIdArrayInput },
   data () {
     return {
       guild: { config: {}, loaded: false },
@@ -159,8 +278,6 @@ export default {
         config: {}
       },
       shipClasses: [
-        'Admin',
-        'Fighter',
         'Miner',
         'Freighter',
         'Frigate',

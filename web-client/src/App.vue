@@ -44,7 +44,7 @@
 
       <v-btn
         v-else-if="$store.state.discordUser === false"
-        :to="`/login?next=${encodeURIComponent(window.location.pathname)}`"
+        :to="`/login?next=${encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)}`"
         color="blurple"
       >
         <span class="mr-2">Log In</span>
