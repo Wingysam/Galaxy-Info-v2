@@ -44,6 +44,13 @@ export class IngestServices {
       if (!client.user) return log('Error: client.user is falsy')
       log(`Logged in as ${client.user.tag}!`)
 
+      // this should be genericized to allow easier maintenance
+      client.on('messageCreate', async (message) => {
+        if (message.guildId !== '204965774618656769') return
+        if (!message.content.toLowerCase().includes('yname') && !message.content.includes('993019299025399898')) return
+        try { await message.react('862868503006675004') } catch {}
+      })
+
       const services = await getServices()
       for (const serviceConstructor of services) {
         const service = new serviceConstructor({
