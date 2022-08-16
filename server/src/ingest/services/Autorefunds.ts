@@ -34,7 +34,7 @@ export default class AutorefundsIngest extends IngestService {
   }
 
   private async handleAutorefunds (refunds: Autorefund[]) {
-    for (const refund of refunds) this.emit('completion', refund)
+    for (const refund of refunds) this.emit('refund', refund)
     await this.uploadToDatabase(refunds)
   }
 
