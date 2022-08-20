@@ -78,7 +78,7 @@ export class DiscordLogIngester {
     await this.fetchAndParseAndPrependToBufferAndBeginBufferFlush(fetcher)
   }
 
-  async refetch () {
+  async rescan () {
     const foundChannel = await IngestionChannel.findChannel(this.client, this.channelLocation)
     const fetcher = new DiscordLogFetcher(foundChannel)
     await this.fetchAndParseAndPrependToBufferAndBeginBufferFlush(fetcher)
