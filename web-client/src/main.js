@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 import { Api } from '@/util/Api'
+import { ClientShips, ClientTurrets } from '@galaxyinfo/ships'
 
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
@@ -46,12 +48,26 @@ const store = new Vuex.Store({
   }
 })
 
-Vue.prototype.$api = new Api({ store })
+const api = new Api({ store })
+Vue.prototype.$api = api
 new Vue({
   vuetify,
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+;(async () => {
+  const { serializedShips, serializedTurrets } = await api.http(
+    '/v2/ships-turrets'
+  )
+  const turrets = new ClientTurrets()
+  await turrets.init(serializedTurrets)
+  const ships = new ClientShips(turrets)
+  await ships.init(serializedShips)
+  store.state.ships = ships
+  globalThis.ships = ships
+})()
+
 
 if (location.pathname !== '/login') store.state.fetchDiscordUser()

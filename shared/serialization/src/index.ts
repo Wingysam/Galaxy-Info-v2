@@ -1,6 +1,6 @@
 type Serialized = [
-  'object' | 'array' | 'bigint' | 'date' | 'error' | 'native',
-  any
+  'object' | 'array' | 'bigint' | 'date' | 'error' | 'undefined' | 'native',
+  any?
 ]
 
 export function serialize (data: any): Serialized {
@@ -21,7 +21,10 @@ export function serialize (data: any): Serialized {
     return ['date', data.toISOString()]
   } else if (data instanceof Error) {
     return ['error', data.message ?? JSON.stringify(data) ?? data ?? 'unknown error']
+  } else if (typeof data === 'undefined') {
+    return ['undefined']
   } else {
+    if (globalThis.console) globalThis.console.log({unserializableData: data})
     throw new Error('data unserializable')
   }
 }
@@ -49,6 +52,10 @@ const deserializers = {
 
   error (data: any) {
     return new Error(data)
+  },
+
+  undefined () {
+    return
   },
 
   native (data: any) {

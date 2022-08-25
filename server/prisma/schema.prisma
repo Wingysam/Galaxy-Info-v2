@@ -130,7 +130,7 @@ model Channel {
 
   kill_log_enabled         Boolean?
   kill_log_members         Boolean?
-  include_all Boolean?
+  kill_log_include_all Boolean?
   kill_log_custom_users    BigInt[]
   kill_log_embed           Boolean?
   kill_log_pin_limiteds    Boolean?

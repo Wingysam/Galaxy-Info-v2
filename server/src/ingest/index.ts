@@ -23,6 +23,7 @@ async function getServices(): Promise<(new(arg: IngestServiceArg) => IngestServi
 export class IngestServices {
   private GalaxyInfo
   public services: AwaitableCollection<string, IngestService>
+  client!: Client
 
   constructor ({ GalaxyInfo }: ConstructorArg) {
     this.GalaxyInfo = GalaxyInfo
@@ -39,17 +40,11 @@ export class IngestServices {
         'GUILD_MEMBERS'
       ]
     })
+    this.client = client
 
     client.once('ready', async () => {
       if (!client.user) return log('Error: client.user is falsy')
       log(`Logged in as ${client.user.tag}!`)
-
-      // this should be genericized to allow easier maintenance
-      client.on('messageCreate', async (message) => {
-        if (message.guildId !== '204965774618656769') return
-        if (!message.content.toLowerCase().includes('yname') && !message.content.includes('993019299025399898')) return
-        try { await message.react('862868503006675004') } catch {}
-      })
 
       const services = await getServices()
       for (const serviceConstructor of services) {

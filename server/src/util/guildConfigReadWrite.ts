@@ -7,7 +7,7 @@ type ConstructorArg = {
 // The purpose of this class is to allow reading/writing guild/channel configurations with defaults
 export class GuildConfigs {
   private GalaxyInfo: GalaxyInfo
-  private defaults
+  defaults
   constructor ({ GalaxyInfo }: ConstructorArg) {
     this.GalaxyInfo = GalaxyInfo
     this.defaults = {
@@ -24,7 +24,7 @@ export class GuildConfigs {
 
         kill_log_enabled: false,
         kill_log_members: true,
-        include_all: false,
+        kill_log_include_all: false,
         kill_log_custom_users: [],
         kill_log_embed: true,
         kill_log_pin_limiteds: true,

@@ -129,7 +129,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
           'kill_log_enabled',
           'kill_log_members',
-          'include_all',
+          'kill_log_include_all',
           'kill_log_custom_users',
           'kill_log_embed',
           'kill_log_pin_limiteds',

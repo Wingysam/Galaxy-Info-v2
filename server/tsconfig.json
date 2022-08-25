@@ -11,7 +11,8 @@
     "baseUrl": "src/",
     "paths": {
       "@galaxyinfo/*": ["../../shared/*"]
-    }
+    },
+    "esModuleInterop": true
   },
   "includes": [ "src" ],
   "exclude": [ "dist", "node_modules" ]
