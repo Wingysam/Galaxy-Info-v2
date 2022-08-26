@@ -24,7 +24,7 @@ export function serialize (data: any): Serialized {
   } else if (typeof data === 'undefined') {
     return ['undefined']
   } else {
-    if (globalThis.console) globalThis.console.log({unserializableData: data})
+    if (globalThis.console) globalThis.console.log({unserializableData: data, type: typeof data })
     throw new Error('data unserializable')
   }
 }
