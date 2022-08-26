@@ -74,7 +74,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
       `)
       ])
 
-      res.send(serialize({ carnage, kills }))
+      res.send(serialize({ carnage: BigInt(carnage[0].carnage.truncated().toString()) , kills }))
     } catch (error) {
       res.send(`${error}`)
       return
