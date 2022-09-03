@@ -23,7 +23,7 @@ export declare type SerializedTurret = {
 };
 export declare type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL';
 export declare type TurretSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge';
-export declare type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien';
+export declare type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien' | 'Test' | 'Modelers';
 export declare class Turrets {
     private turrets;
     private initialized;
@@ -40,13 +40,18 @@ declare class Turret extends Weapon {
     name: string;
     reload: number;
     range: number;
+    group: TurretGroup;
     size: TurretSize;
     turretClass: TurretClass;
+    baseAccuracy: number;
+    trackingAccuracy: number;
+    test: Boolean;
     private _alpha;
     private affectedByLoyalty;
     constructor(serializedTurret: SerializedTurret);
     alpha(range?: number, loyalty?: number): Alpha;
     dps(range?: number, loyalty?: number): Dps;
+    accuracyDeviation(absoluteVelocity: number): number;
 }
 export declare class ClientTurrets extends Turrets {
     constructor();

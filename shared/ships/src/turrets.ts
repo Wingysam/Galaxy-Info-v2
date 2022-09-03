@@ -22,7 +22,7 @@ export type SerializedTurret = {
 }
 export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL'
 export type TurretSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
-export type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien'
+export type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien' | 'Test' | 'Modelers'
 
 export class Turrets {
   private turrets: { [key: string]: Turret }
@@ -62,9 +62,13 @@ class Turret extends Weapon {
   name: string
   reload: number
   range: number
+  group: TurretGroup
   size: TurretSize
   turretClass: TurretClass
-
+  baseAccuracy: number
+  trackingAccuracy: number
+  test: Boolean
+  
   private _alpha: Alpha
   private affectedByLoyalty: boolean
 
@@ -84,9 +88,13 @@ class Turret extends Weapon {
     this.name = serializedTurret.Name
     this.range = serializedTurret.Range
     this.reload = serializedTurret.Reload
+    this.group = serializedTurret.Group
     this.size = serializedTurret.TurretSize
     this.turretClass = serializedTurret.Class
-
+    this.baseAccuracy = serializedTurret.BaseAccuracy
+    this.trackingAccuracy = serializedTurret.SpeedDenominator
+    this.test = ['Test', 'Modelers'].includes(this.group)
+    
     this.affectedByLoyalty = !['Mining'].includes(serializedTurret.Class)
   }
 
@@ -99,6 +107,13 @@ class Turret extends Weapon {
   dps(range?: number, loyalty = 0) {
     const alphaAtRange = this.alpha(range, loyalty)
     return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload)
+  }
+
+  accuracyDeviation(absoluteVelocity: number) {
+    if (this.size === 'Large' && absoluteVelocity > 80) absoluteVelocity *= 1 + (absoluteVelocity - 80) * 0.003
+    if (this.size === 'Medium' && absoluteVelocity > 120) absoluteVelocity *= 1 + (absoluteVelocity - 120) * 0.003
+    if (this.size === 'Small' && absoluteVelocity > 170) absoluteVelocity *= 1 + (absoluteVelocity - 170) * 0.003
+    return this.baseAccuracy + (absoluteVelocity / this.trackingAccuracy)
   }
 }
 
