@@ -6,7 +6,9 @@ const GROUPS = [
   'Medium',
   'Large',
   'Huge',
-  'Alien'
+  'Alien',
+  'Test',
+  'Modelers'
 ]
 
 let turrets

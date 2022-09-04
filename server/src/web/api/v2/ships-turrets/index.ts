@@ -39,7 +39,12 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
       rejectOnNotFound: true
     }) as any).value as SerializedTurrets
 
-    return { serializedShips: allowedShips, serializedTurrets }
+    const allowedTurrets: SerializedTurrets = {}
+    for (const turret of Object.keys(serializedTurrets)) {
+      if (includeSecret || (!['Test', 'Modelers'].includes(serializedTurrets[turret].Group))) allowedTurrets[turret] = serializedTurrets[turret]
+    }
+
+    return { serializedShips: allowedShips, serializedTurrets: allowedTurrets }
   }
 
   router.get('/', scope('ships_read', 'turrets_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
