@@ -3,7 +3,7 @@ import frontendLoggedIn from '../../middleware/frontendLoggedIn'
 import { TextChannel } from 'discord.js'
 import { deserialize, serialize } from '@galaxyinfo/serialization'
 import type { Channel, Prisma } from '.prisma/client'
-import { getBotGuild, getUserGuild } from '../../../util/getGuild'
+import { getBotGuild, getUserGuildOrThrowIfNoPerms } from '../../../util/getGuild'
 import { firstBy } from 'thenby'
 
 type Arg = {
@@ -17,7 +17,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
     if (!req.discordUser) throw new Error('Not logged in')
     let botGuild
     try {
-      botGuild = await getBotGuild(req.discordUser._token, req.params.guildId, GalaxyInfo.client)
+      botGuild = await getBotGuild(req.discordUser.id, req.discordUser._token, req.params.guildId, GalaxyInfo.client)
     } catch (error) {
       return res.send(serialize({ error }))
     }
@@ -73,7 +73,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
       if (!req.discordUser) throw new Error('Not logged in')
 
-      const userGuild = await getUserGuild(req.discordUser._token, req.params.guildId)
+      const userGuild = await getUserGuildOrThrowIfNoPerms(GalaxyInfo, req.discordUser._token, req.discordUser.id, req.params.guildId)
 
       const validatedGuildId = BigInt(userGuild.id)
 

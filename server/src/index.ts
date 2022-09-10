@@ -29,7 +29,8 @@ declare global {
     web: GalaxyInfoWeb,
     ships: ServerShips,
     turrets: ServerTurrets,
-    galaxypedia: Galaxypedia
+    galaxypedia: Galaxypedia,
+    devs: string[]
   }
 }
 
@@ -48,6 +49,10 @@ function log (...args: any) {
   const config = await parseConfig()
 
   const GalaxyInfo: any = {}
+  GalaxyInfo.devs = [ // We hard code this because the devs of the app should always be the same
+  '235804673578237952', // Wingy
+  '993019299025399898' // yname
+]
 
   GalaxyInfo.config = config
 
