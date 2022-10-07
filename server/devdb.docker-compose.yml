@@ -10,7 +10,9 @@ services:
       - 20321:5432
     volumes:
       - ./data/pg:/var/lib/postgresql/data
+    restart: always
   admin:
     image: adminer
     ports:
       - 20322:8080
+    restart: always
