@@ -10,7 +10,7 @@ const PP = (configSite: string) => `
 - When you use the [configuration website](${configSite}), the bot will store the settings you provide it with. Your guild ID will also be stored to allow the bot to know which guild the settings belong to.
 - You can delete all guild configuration with /clear-galaxy-info-data.
 
-If you have any concerns, please DM Wingy#3538. My privacy settings are set to allow DMs from members of the support server: https://discord.gg/cx2dXax
+If you have any concerns, please message yname#7161. You can ping me in the support server: https://discord.gg/cx2dXax
 `
 
 export class PrivacyPolicyCommand extends GalaxyInfoCommand {
