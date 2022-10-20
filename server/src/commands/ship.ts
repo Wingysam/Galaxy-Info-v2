@@ -94,7 +94,7 @@ export class ShipCommand extends GalaxyInfoCommand {
         WHERE
           ${format('LOWER(victim_ship) = LOWER(%L)', info.name)}
       `),
-    ])
+    ]) as any
 
     function processTurret(turret: Turret, count: number) {
       return {
