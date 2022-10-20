@@ -53,7 +53,7 @@ export class ShipCommand extends GalaxyInfoCommand {
       const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
       if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
       
-      if (!galaxyStaffIngest.developers.members.includes(interaction.user.id)) {
+      if (!galaxyStaffIngest.testShipAccess.members.includes(interaction.user.id)) {
         if (info.test) {
           throw new ShipNotFoundError()
         } else {

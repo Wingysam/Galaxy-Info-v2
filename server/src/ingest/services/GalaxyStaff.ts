@@ -1,21 +1,27 @@
+import { EventEmitter } from 'events'
 import type { Client, Guild } from "discord.js";
 import _ from "lodash";
 import { IngestService, IngestServiceArg, LogFunction } from "../service";
 
 export default class GalaxyStaffIngest extends IngestService {
   developers!: GalaxyStaffIngestRole
+  devAdvisors!: GalaxyStaffIngestRole
+  testShipAccess!: GalaxyStaffIngestAlias
   admins!: GalaxyStaffIngestRole
 
   constructor(arg: IngestServiceArg) {
     super(arg)
     try { this.developers = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxyDevelopment, 'Dev', arg.client, this.log) } catch {}
+    try { this.devAdvisors = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxyDevelopment, 'Dev Advisor', arg.client, this.log) } catch {}
     try { this.admins = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxy, 'Admins', arg.client, this.log) } catch {}
+
+    try { this.testShipAccess = new GalaxyStaffIngestAlias(this.developers, this.devAdvisors) } catch {}
   }
 
   async init () {}
 }
 
-class GalaxyStaffIngestRole {
+class GalaxyStaffIngestRole extends EventEmitter {
   members: string[]
   private guildId: string
   private roleName: string
@@ -24,6 +30,7 @@ class GalaxyStaffIngestRole {
 
   private guild!: Guild
   constructor(guildId: string | undefined, roleName: string, client: Client, log: LogFunction) {
+    super()
     this.members = []
     if (!guildId) throw new Error('No guild id')
     this.guildId = guildId
@@ -59,9 +66,33 @@ class GalaxyStaffIngestRole {
       if (!_.isEqual(members, this.members)) this.log('Updated members', members)
   
       this.members = members
+      this.emit('members', members)
     } catch (error) {
       if (!(error instanceof Error)) return
       this.log('Failed to update cache:', error.message)
     }
+  }
+}
+
+class GalaxyStaffIngestAlias {
+  members!: string[]
+  private roles: GalaxyStaffIngestRole[]
+
+  constructor(...roles: GalaxyStaffIngestRole[]) {
+    this.roles = roles
+    this.update()
+    for (const role of roles) {
+      role.on('members', () => {
+        this.update()
+      })
+    }
+  }
+  
+  private update() {
+    this.members = []
+    for (const role of this.roles) {
+      this.members = [...this.members, ...role.members]
+    }
+    this.members = _.uniq(this.members)
   }
 }
