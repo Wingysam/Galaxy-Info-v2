@@ -106,7 +106,7 @@ function log (...args: any) {
       
       const body = Array.from(client.commands.values()).map(command => command.builder)
       
-      for (const guild of [ config.guilds.bot, config.guilds.galaxyDevelopment ]) {
+      for (const guild of [ config.guilds.bot, config.guilds.galaxyDevelopment, config.guilds.galaxy ]) {
         if (!guild) continue
         await rest.put(
           Routes.applicationGuildCommands(client.user.id, guild),
