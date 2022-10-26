@@ -56,7 +56,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
     }))
   })
 
-  router.post('/:guildId', frontendLoggedIn(), json(), async (req, res) => {
+  router.post('/:guildId', frontendLoggedIn(), json({ limit: '50mb' }), async (req, res) => {
     try {
       const body = deserialize(req.body)
 
