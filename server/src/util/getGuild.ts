@@ -12,7 +12,7 @@ export async function getUserGuildOrThrowIfNoPerms (GalaxyInfo: GalaxyInfo, disc
     await sleep(userGuilds.retry_after * 1000)
     return await getUserGuildOrThrowIfNoPerms(GalaxyInfo, discordUserId, token, guildid)
   }
-  if (userGuilds.message) throw new Error(JSON.stringify(userGuilds))
+  if (userGuilds.message && !GalaxyInfo.devs.includes(discordUserId)) throw new Error(JSON.stringify(userGuilds))
 
   const userGuild = userGuilds.find((guild: any) => guild.id === guildid)
   if (!userGuild) throw new Error("didn't find guild")
