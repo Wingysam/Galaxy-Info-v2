@@ -73,7 +73,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
       if (!req.discordUser) throw new Error('Not logged in')
 
-      const userGuild = await getUserGuildOrThrowIfNoPerms(GalaxyInfo, req.discordUser._token, req.discordUser.id, req.params.guildId)
+      const userGuild = await getUserGuildOrThrowIfNoPerms(GalaxyInfo, req.discordUser.id, req.discordUser._token, req.params.guildId)
 
       const validatedGuildId = BigInt(userGuild.id)
 
