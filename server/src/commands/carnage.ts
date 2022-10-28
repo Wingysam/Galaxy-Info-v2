@@ -148,6 +148,7 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
       .addStringOption(option => option.setName('players').setDescription('Only show these players on the leaderboard'))
       .addIntegerOption(option => option.setName('page').setDescription('Page to view on the leaderboard'))
       .addStringOption(option => option.setName('ship').setDescription('Filter to only kills with this ship'))
+      .addBooleanOption(option => option.setName('ships').setDescription('Show output by killer ship'))
       .addStringOption(option => option.setName('class').setDescription('Restricts to only kills of this class.'))
       .addBooleanOption(option => option.setName('reverse').setDescription('Displays how much the player has lost rather than killed'))
       .addBooleanOption(option => option.setName('limited').setDescription('Only include limited kills'))
@@ -162,6 +163,7 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
     const playerNames = (interaction.options.getString('players') ?? '').split(',').filter(str => str)
     const page = interaction.options.getInteger('page') ?? 1
     const ship = interaction.options.getString('ship')
+    const ships = interaction.options.getBoolean('ships')
     const shipClasses = (interaction.options.getString('class') ?? '').split(',').filter(str => str)
     const reverse = !!interaction.options.getBoolean('reverse')
     const limited = !!interaction.options.getBoolean('limited')
@@ -231,19 +233,19 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
       GalaxyInfo.prisma.$queryRawUnsafe(`
         SELECT
         ROW_NUMBER() OVER (ORDER BY ${count ? 'killed' : 'carnage'} DESC) AS pos,
-        (
+        ${ships ? `${reverse ? 'victim' : 'killer'}_ship AS player` : `(
           SELECT nameq.name
           FROM "Kill_usermap" AS nameq
           WHERE nameq.id = result.${reverse ? 'victim' : 'killer'}_id
           LIMIT 1
-        ) AS player,
+        ) AS player`},
         carnage,
         killed,
         TO_CHAR(carnage, 'FM9,999,999,999,999,999,999,999') AS carnage_fmt,
         TO_CHAR(killed, 'FM9,999,999,999,999,999,999,999') AS killed_fmt
       FROM (
         SELECT
-          ${reverse ? 'victim' : 'killer'}_id,
+          ${ships ? `${reverse ? 'victim' : 'killer'}_ship` : `${reverse ? 'victim' : 'killer'}_id`},
           COUNT(*) AS killed,
           SUM(victim_cost) AS carnage
         FROM "Kill_temp"
@@ -257,7 +259,7 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
                 'NPC'
               )`
           }
-        GROUP BY ${reverse ? 'victim' : 'killer'}_id
+        GROUP BY ${ships ? `${reverse ? 'victim' : 'killer'}_ship` : `${reverse ? 'victim' : 'killer'}_id`}
       ) AS result
       ORDER BY ${count ? 'killed' : 'carnage'} DESC
       LIMIT 10 OFFSET ${afterPos}
