@@ -12,11 +12,16 @@ function assertShipClassesValid (shipClasses: string[]) {
   }
 }
 
+function findLongestNumber(numbers: string[]) {
+  return numbers.sort((a: string, b: string) => b.length - a.length)[0].length
+}
+
 export class CarnageCommand extends GalaxyInfoCommand {
   constructor() {
     const builder = new SlashCommandBuilder()
       .setName('carnage')
       .addStringOption(option => option.setName('player').setDescription('The player or players to view carnage for.'))
+      .addIntegerOption(option => option.setName('page').setDescription('Page to view on the leaderboard'))
       .addStringOption(option => option.setName('ship').setDescription('Filter to only kills with this ship'))
       .addStringOption(option => option.setName('class').setDescription('Restricts to only kills of this class.'))
       .addBooleanOption(option => option.setName('reverse').setDescription('Displays how much the player has lost rather than killed'))
@@ -28,10 +33,16 @@ export class CarnageCommand extends GalaxyInfoCommand {
     const GalaxyInfo = interaction.client.GalaxyInfo
 
     const playerNames = (interaction.options.getString('player') ?? '').split(',').filter(str => str)
+    const page = interaction.options.getInteger('page') ?? 1
     const ship = interaction.options.getString('ship')
     const shipClasses = (interaction.options.getString('class') ?? '').split(',').filter(str => str)
     const reverse = interaction.options.getBoolean('reverse')
     const limited = interaction.options.getBoolean('limited')
+
+    if (Number.isNaN(page)) throw new Error('Page should be a number. If you meant to use a -flag or -option, make sure to remember the `-`.')
+    if (!Number.isSafeInteger(page) || page <= 0) throw new Error('Page must be a positive integer.')
+    if (page > 10) throw new Error('For performance reasons, page must be at most 10.')
+    const afterPos = (page - 1) * 10
 
     let players: any[] = []
     let allPlayers = false
@@ -92,13 +103,14 @@ export class CarnageCommand extends GalaxyInfoCommand {
       `),
       GalaxyInfo.prisma.$queryRaw`
         SELECT
+          ROW_NUMBER() OVER (ORDER BY SUM(victim_cost) DESC) AS pos,
           victim_ship AS ship,
           TO_CHAR(COUNT(*), 'FM9,999,999,999,999,999,999,999') AS count,
           TO_CHAR(SUM(victim_cost), 'FM9,999,999,999,999,999,999,999') AS carnage
         FROM "Kill_temp"
         GROUP BY victim_ship
         ORDER BY SUM(victim_cost) DESC
-        LIMIT 10
+        LIMIT 10 OFFSET ${afterPos}
       `,
       GalaxyInfo.prisma.$queryRaw`
         SELECT
@@ -123,13 +135,18 @@ export class CarnageCommand extends GalaxyInfoCommand {
     if (!topTen.length) throw new Error('No kills found.')
 
     ;(() => {
-      const longestNumber = topTen
-        .map((ship: any) => ship.count.toString())
-        .sort((a: string, b: string) => b.length - a.length)[0]
-        .length
+      const longestCount = findLongestNumber(
+        topTen
+          .map((ship: any) => ship.count.toString())
+      )
+
+      const longestPos = findLongestNumber(
+        topTen
+          .map((player: any) => player.pos.toString())
+      )
 
       embed.addField('Top Ten Kills', '```ini\n' + topTen.map((ship: any) =>
-        `[-] x${ship.count.toString().padStart(longestNumber, '0')} ${ship.ship} ($${ship.carnage})`
+        `[${ship.pos.toString().padStart(longestPos, '0')}] x${ship.count.toString().padStart(longestCount, '0')} ${ship.ship} ($${ship.carnage})`
       ).join('\n') + '\n```')
     })()
 
@@ -288,10 +305,10 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
     if (!topTen.length) throw new Error('No kills found.')
 
     ;(() => {
-      const longestNumber = topTen
-        .map((player: any) => player.pos.toString())
-        .sort((a: string, b: string) => b.length - a.length)[0]
-        .length
+      const longestNumber = findLongestNumber(
+        topTen
+          .map((player: any) => player.pos.toString())
+      )
 
       embed.addField('Top Ten Carnage' + (page > 1 ? ` (Page ${page})` : ''), '```ini\n' + topTen.map((player: any) =>
         `[${player.pos.toString().padStart(longestNumber, '0')}] ${player.player} $${player.carnage_fmt} (${player.killed_fmt})`
