@@ -14,7 +14,6 @@ export default class ShipKillsIngest extends IngestService {
 
   constructor (arg: IngestServiceArg) {
     super(arg)
-    this.init()
   }
 
   async init () {
