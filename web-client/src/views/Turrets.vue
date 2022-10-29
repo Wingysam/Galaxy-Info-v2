@@ -99,7 +99,18 @@
         :search="tableSearch"
         :loading="turretTable.length === 0"
         @update:sort-by="sortUpdate"
-      />
+      >
+        <template
+          v-slot:item.name="{ item }"
+        >
+          <router-link
+            class="turretlink"
+            :to="`/turrets/${encodeURIComponent(item.name)}`"
+          >
+            {{ item.name }}
+          </router-link>
+        </template>
+      </v-data-table>
     </div>
   </v-container>
 </template>
@@ -226,5 +237,10 @@ export default {
 
   th[role="columnheader"] {
     white-space: nowrap;
+  }
+
+  a.turretlink {
+    text-decoration: none;
+    color: #dedede;
   }
 </style>
