@@ -1,5 +1,4 @@
 import type { Channel, Guild, Prisma } from '.prisma/client'
-import { GalaxyShipClass } from '.prisma/client'
 
 type ConstructorArg = {
   GalaxyInfo: GalaxyInfo
