@@ -17,10 +17,11 @@ export async function getUserGuildOrThrowIfNoPerms (GalaxyInfo: GalaxyInfo, disc
   const userGuild = userGuilds.find((guild: any) => guild.id === guildid)
   if (!userGuild) throw new Error("didn't find guild")
 
+  const guildPermissions = new Permissions(userGuild.permissions)
   if (
     !GalaxyInfo.devs.includes(discordUserId)
-    && !new Permissions(userGuild.permissions)
-      .has(['ADMINISTRATOR', 'MANAGE_GUILD'])
+    && !guildPermissions.has('ADMINISTRATOR')
+    && !guildPermissions.has('MANAGE_GUILD')
   ) throw new Error('not correct perms')
 
   return userGuild

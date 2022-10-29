@@ -26,9 +26,10 @@ export async function updatableGuilds ({ GalaxyInfo }: Arg) {
       }
       if (userGuilds.message) return res.send(serialize({ error: userGuilds }))
 
-      userGuilds = userGuilds.filter((guild: any) =>
-        new Permissions(guild.permissions).has(['ADMINISTRATOR', 'MANAGE_GUILD'])
-      )
+      userGuilds = userGuilds.filter((guild: any) => {
+        const guildPermissions = new Permissions(guild.permissions)
+        return guildPermissions.has('ADMINISTRATOR') || guildPermissions.has('MANAGE_GUILD')
+      })
 
       const botGuilds: any[] = ((await Promise.all(userGuilds.map(async (userGuild: any): Promise<any> => {
         const botGuild = GalaxyInfo.client.guilds.resolve(userGuild.id)
