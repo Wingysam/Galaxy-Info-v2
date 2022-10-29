@@ -4,7 +4,6 @@ type Serialized = [
 ]
 
 export function serialize (data: any): Serialized {
-
   if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean' || data === null) {
     return ['native', data]
   } else if (Object.prototype.toString.call(data) === '[object Object]') {
