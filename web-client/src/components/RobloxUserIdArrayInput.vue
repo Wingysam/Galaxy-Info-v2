@@ -33,6 +33,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.textbox = this.value.join('\n')
+  },
   methods: {
     parseAndUpdate() {
       const ids = []
