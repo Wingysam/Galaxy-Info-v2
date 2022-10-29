@@ -50,7 +50,6 @@ export class ShipKillsExport {
             Carrier: '621337546068328471',
             'Super Capital': '621337546034642954'
           }
-//          const emoji = this.GalaxyInfo.ingest.client.emojis.resolve((IDS as any)[shipClass] ?? FALLBACK_ID)
           return `<:emoji:${(IDS as any)[shipClass] ?? FALLBACK_ID}>`
         }
 
