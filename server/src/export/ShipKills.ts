@@ -20,7 +20,9 @@ export class ShipKillsExport {
     shipKillsIngest.on('kill', async (kill: Kill) => {
       console.log(kill)
       const channels: any = await this.GalaxyInfo.prisma.$queryRaw`
-        SELECT id, kill_log_embed, kill_log_pin_limiteds, kill_log_template_normal, kill_log_template_nuke, (SELECT members FROM "Guild" WHERE "Guild".id = "Channel".guild) AS members, kill_log_members, kill_log_include_all, kill_log_custom_users
+        SELECT
+          id, kill_log_embed, kill_log_pin_limiteds, kill_log_template_normal, kill_log_template_nuke, (SELECT members FROM "Guild" WHERE "Guild".id = "Channel".guild) AS members, kill_log_members, kill_log_include_all, kill_log_custom_users,
+          kill_log_limited_kill_classes, kill_log_bm_kill_classes, kill_log_limited_death_classes, kill_log_bm_death_classes
         FROM "Channel"
         WHERE
           kill_log_enabled
@@ -28,10 +30,10 @@ export class ShipKillsExport {
       for (const channelRow of channels) {
         const isAll = channelRow.kill_log_include_all
 
-        const killerIsMember = channelRow.kill_log_members && channelRow.members?.includes(kill.killer_id)
+        const killerIsMember = (channelRow.kill_log_members ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_members) && channelRow.members?.includes(kill.killer_id)
         const killerIsCustom = channelRow.kill_log_custom_users?.includes(kill.killer_id)
 
-        const victimIsMember = channelRow.kill_log_members && channelRow.members?.includes(kill.victim_id)
+        const victimIsMember = (channelRow.kill_log_members ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_members) && channelRow.members?.includes(kill.victim_id)
         const victimIsCustom = channelRow.kill_log_custom_users?.includes(kill.victim_id)
 
         const isLimited = kill.victim_limited && !NON_LIMITED_QUEST_SHIPS.includes(kill.victim_ship)
@@ -84,14 +86,14 @@ export class ShipKillsExport {
         const shouldEmbed = channelRow.kill_log_embed ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_embed
 
         if (isAll || killerIsMember || killerIsCustom) {
-          if (isLimited && channelRow.kill_log_limited_kill_classes?.includes(kill.victim_class)) continue
-          if (!isLimited && channelRow.kill_log_bm_kill_classes?.includes(kill.victim_class)) continue
+          if (isLimited && !(channelRow.kill_log_limited_kill_classes ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_limited_kill_classes)?.includes(kill.victim_class)) continue
+          if (!isLimited && !(channelRow.kill_log_bm_kill_classes ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_bm_kill_classes)?.includes(kill.victim_class)) continue
           try {
             await channel.send(await generateMessageBody(true, shouldEmbed, kill.nuke ? templateNuke : templateNormal))
           } catch {} // no perms, discord outage, etc
         } else if (victimIsMember || victimIsCustom) {
-          if (isLimited && channelRow.kill_log_limited_death_classes?.includes(kill.victim_class)) continue
-          if (!isLimited && channelRow.kill_log_bm_death_classes?.includes(kill.victim_class)) continue
+          if (isLimited && !(channelRow.kill_log_limited_death_classes ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_limited_death_classes)?.includes(kill.victim_class)) continue
+          if (!isLimited && !(channelRow.kill_log_bm_death_classes ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_bm_death_classes)?.includes(kill.victim_class)) continue
           try {
             await channel.send(await generateMessageBody(false, shouldEmbed, kill.nuke ? templateNuke : templateNormal))
           } catch {}

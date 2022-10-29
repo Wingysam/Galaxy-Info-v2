@@ -1,4 +1,5 @@
 import type { Channel, Guild, Prisma } from '.prisma/client'
+import { GalaxyShipClass } from '.prisma/client'
 
 type ConstructorArg = {
   GalaxyInfo: GalaxyInfo
@@ -30,7 +31,12 @@ export class GuildConfigs {
         kill_log_pin_limiteds: true,
         kill_log_template_normal: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} destroyed {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",
         kill_log_template_nuke: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} 💥 nuked 💥 {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",
-        kill_log_daily_stats: false
+        kill_log_daily_stats: false,
+
+        kill_log_bm_kill_classes: Object.keys(GalaxyShipClass),
+        kill_log_limited_kill_classes: Object.keys(GalaxyShipClass),
+        kill_log_bm_death_classes: Object.keys(GalaxyShipClass),
+        kill_log_limited_death_classes: Object.keys(GalaxyShipClass)
       }
     }
   }
