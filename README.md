@@ -4,9 +4,10 @@
 | --- | --- |
 
 ## Dev
+run each of these in a different terminal:
 ```
-backend: docker-compose -f devdb.docker-compose.yml up
-backend: npm run dev1
-backend: npm run dev2
-frontend: VUE_APP_API=http://192.168.1.32:3000/api npm run serve
+cd server && docker-compose -f devdb.docker-compose.yml up
+cd server && npm run dev1
+cd server && npm run dev2
+cd web-client && VUE_APP_API=http://localhost:3000/api npm run serve
 ```
