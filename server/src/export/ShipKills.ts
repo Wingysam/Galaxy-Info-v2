@@ -1,6 +1,6 @@
 import { NON_LIMITED_QUEST_SHIPS } from "@galaxyinfo/ships/dist";
 import type { Kill } from "@prisma/client";
-import { MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import type { LogFunction } from "ingest/service";
 import type ShipKillsIngest from "ingest/services/ShipKills";
 import { substitute } from '../util/templating';
@@ -85,18 +85,25 @@ export class ShipKillsExport {
         const templateNuke = channelRow.kill_log_template_nuke ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_template_nuke
         const shouldEmbed = channelRow.kill_log_embed ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_embed
 
+        let message: Message | undefined
         if (isAll || killerIsMember || killerIsCustom) {
           if (isLimited && !channelRow.kill_log_limited_kill_classes?.includes(kill.victim_class)) continue
           if (!isLimited && !channelRow.kill_log_bm_kill_classes?.includes(kill.victim_class)) continue
           try {
-            await channel.send(await generateMessageBody(true, shouldEmbed, kill.nuke ? templateNuke : templateNormal))
+            message = await channel.send(await generateMessageBody(true, shouldEmbed, kill.nuke ? templateNuke : templateNormal))
           } catch {} // no perms, discord outage, etc
         } else if (victimIsMember || victimIsCustom) {
           if (isLimited && !channelRow.kill_log_limited_death_classes?.includes(kill.victim_class)) continue
           if (!isLimited && !channelRow.kill_log_bm_death_classes?.includes(kill.victim_class)) continue
           try {
-            await channel.send(await generateMessageBody(false, shouldEmbed, kill.nuke ? templateNuke : templateNormal))
+            message = await channel.send(await generateMessageBody(false, shouldEmbed, kill.nuke ? templateNuke : templateNormal))
           } catch {}
+        }
+
+        if (message && isLimited && (channelRow.kill_log_pin_limiteds ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_pin_limiteds)) {
+          try {
+            await message.pin()
+          } catch {} // no perms or max pins / discord api issue
         }
       }
     })
