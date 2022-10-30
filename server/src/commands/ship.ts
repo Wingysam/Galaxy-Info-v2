@@ -154,7 +154,7 @@ export class ShipCommand extends GalaxyInfoCommand {
 
     embed.addField('Weapons', ([turretText, spinalText, fighterText].filter(text => text.trim()).join('\n\n')) || 'None', true)
     embed.addField('DPS', `Shield: ${Math.floor(dps.shield)}\nHull: ${Math.floor(dps.hull)}\nAverage: ${Math.floor(dps.average)}` + (info.fighters.hasFighters ? `\n\nWith fighters: ${Math.floor(dps.average + info.fighters.dps().average)}` : ''), true)
-    embed.addField('Alpha', `Shield: ${Math.floor(alpha.shield)}\nHull: ${Math.floor(alpha.hull)}\nMax: ${Math.floor(alpha.max)}`, true)
+    embed.addField('Alpha', `Shield: ${Math.floor(alpha.shield)}\nHull: ${Math.floor(alpha.hull)}\nMax: ${Math.floor(alpha.max)}\nExplosion Size: ${info.explosionSize}`, true)
 
     const imageResolved = await image
     interaction.editReply({ files: imageResolved ? [imageResolved] : [], embeds: [embed] })
