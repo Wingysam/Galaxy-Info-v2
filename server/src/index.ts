@@ -44,6 +44,16 @@ function log (...args: any) {
   console.log('[Init]', ...args)
 }
 
+;(() => {
+  let previous = performance.now()
+  setInterval(() => {
+    const now = performance.now()
+    const diff = now - previous
+    if (diff > 1500) console.log('long event loop cycle:', diff)
+    previous = now
+  }, 1)
+})()
+
 ;(async () => {
   dotenv()
   const config = await parseConfig()
