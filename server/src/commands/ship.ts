@@ -96,6 +96,17 @@ export class ShipCommand extends GalaxyInfoCommand {
       `),
     ]) as any
 
+    function checkIfBotHasEmojiPermissions() {
+      if (!interaction.channel) return true
+      if (!('permissionsFor' in interaction.channel)) return true
+      if (!interaction.guild) return true
+      if (!interaction.guild.me) return false
+      const permissions = interaction.channel.permissionsFor(interaction.guild.me, true)
+      const hasPermission = permissions.has('USE_EXTERNAL_EMOJIS')
+      return hasPermission
+    }
+    const botHasEmojiPermissions = checkIfBotHasEmojiPermissions()
+
     function processTurret(turret: Turret, count: number) {
       return {
         name: turret.name,
@@ -113,7 +124,8 @@ export class ShipCommand extends GalaxyInfoCommand {
     function generateSpinalText(letter: 'f' | 'g', spinal?: ShipSpinal) {
       if (!spinal) return
       const dps = spinal.dps(range ?? undefined)
-      return `${EMOJIS.spinal[letter]} ${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType} (${Math.floor(dps.average)}${NBSP}DPS)`
+      const displayLetter = botHasEmojiPermissions ? EMOJIS.spinal[letter] : `[${letter.toUpperCase}]`
+      return `${displayLetter} ${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType} (${Math.floor(dps.average)}${NBSP}DPS)`
     }
     const spinalText = [
       generateSpinalText('f', info.weapons.spinals.f), generateSpinalText('g', info.weapons.spinals.g)
@@ -146,7 +158,7 @@ export class ShipCommand extends GalaxyInfoCommand {
 
     embed.addField('Health', `🛡️ ${info.health.shield} / 🛠️ ${info.health.hull}\n🗯️ Resistance: ${Math.round(RESISTANCE[info.class] * 100)}%`, true)
     embed.addField('Speed', `Top Speed: ${Math.floor(info.speed.top)}\nTurn Speed: ${info.speed.turn.toFixed(2)}\nAcceleration: ${Math.floor(info.speed.acceleration)}`, true)
-    embed.addField('Storage', `${EMOJIS.classIcons.freighter} Cargo Hold: ${info.cargoHold}\n${EMOJIS.classIcons.miner} Ore Hold: ${info.oreHold}`, true)
+    embed.addField('Storage', `${botHasEmojiPermissions ? EMOJIS.classIcons.freighter + ' ' : ''}Cargo Hold: ${info.cargoHold}\n${botHasEmojiPermissions ? EMOJIS.classIcons.miner + ' ' : ''}Ore Hold: ${info.oreHold}`, true)
     
     embed.addField('Availability', availabilityType, true)
     embed.addField('Class', info.class, true)
