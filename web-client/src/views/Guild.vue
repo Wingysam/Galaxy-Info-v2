@@ -113,16 +113,6 @@
                   class="mt-0"
                   label="Show command results"
                 />
-                <v-switch
-                  v-model="selectedChannel.config.admin_event_pings"
-                  class="mt-0"
-                  label="Admin event pings"
-                />
-                <v-switch
-                  v-model="selectedChannel.config.permits"
-                  class="mt-0"
-                  label="Announce when a permit is added to Mega Base"
-                />
                 <h4 class="mb-4">
                   Kill Log
                 </h4>
@@ -140,11 +130,6 @@
                   v-model="selectedChannel.config.kill_log_pin_limiteds"
                   class="mt-0"
                   label="Automatically pin limited kills/deaths"
-                />
-                <v-switch
-                  v-model="selectedChannel.config.kill_log_daily_stats"
-                  class="mt-0"
-                  label="Post daily statistics instead of a live feed"
                 />
                 <v-switch
                   v-model="selectedChannel.config.kill_log_members"
