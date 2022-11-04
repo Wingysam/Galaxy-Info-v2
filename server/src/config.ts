@@ -7,7 +7,7 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
     token?: string,
     verbose: boolean,
     quests: {
-      npcHook?: string
+      npcHooks?: string[]
     }
   },
   web: {
@@ -115,7 +115,7 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   // Ingest service
   await option('ingest.token', 'should')
   await option('ingest.verbose', 'may', false, async opt => opt === 'true')
-  await option('ingest.quests.npcHook', 'should')
+  await option('ingest.quests.npcHooks', 'should', undefined, async hooks => hooks.split(','))
 
   // Galaxy Server
   await option('galaxy.guild', 'should')

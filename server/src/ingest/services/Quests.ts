@@ -1,4 +1,4 @@
-import type { Message } from 'discord.js'
+import { Message, MessageEmbed } from 'discord.js'
 import { WebhookClient } from 'discord.js'
 import { performance } from 'perf_hooks'
 import { IngestService, IngestServiceArg } from '../service'
@@ -19,12 +19,12 @@ export type QuestCompletion = {
 
 // The Quests ingest is responsible for emitting `QuestCompletion`s, uploading them to database, and logging admin spawns.
 export default class QuestsIngest extends IngestService {
-  private npcHook?: WebhookClient
+  private npcHooks?: WebhookClient[]
 
   constructor (arg: IngestServiceArg) {
     super(arg)
 
-    if (this.GalaxyInfo.config.ingest.quests.npcHook) this.npcHook = new WebhookClient({ url: this.GalaxyInfo.config.ingest.quests.npcHook })
+    if (this.GalaxyInfo.config.ingest.quests.npcHooks) this.npcHooks = this.GalaxyInfo.config.ingest.quests.npcHooks.map(url => new WebhookClient({ url }))
   }
 
   async init () {
@@ -67,12 +67,15 @@ export default class QuestsIngest extends IngestService {
       '-6942011': 'Kneall Koderadicator Fleet',
       '-365345': 'Harvest King'
     }
-    if (!this.npcHook) return
+    if (!this.npcHooks) return
     for (const completion of questCompletions) {
       const quest = QUESTS[completion.questId]
       if (!quest) continue
       if (completion.environment !== 'Galaxy') continue
-      await this.npcHook.send(`**${completion.username}** spawned a *${quest}*.`)
+      const embed = new MessageEmbed()
+      embed.setDescription(`**${completion.username}** spawned a *${quest}*.`)
+      embed.setTimestamp(completion.date)
+      this.npcHooks.forEach(hook => hook.send({ embeds: [ embed ] }))
     }
   }
 
