@@ -85,6 +85,7 @@ export class ShipCommand extends GalaxyInfoCommand {
         FROM "Kill_clean"
         WHERE
           ${format('LOWER(killer_ship) = LOWER(%L)', info.name)}
+          AND date > NOW() - INTERVAL '30 days'
       `),
       GalaxyInfo.prisma.$queryRawUnsafe(`
         SELECT
@@ -93,6 +94,7 @@ export class ShipCommand extends GalaxyInfoCommand {
         FROM "Kill_clean"
         WHERE
           ${format('LOWER(victim_ship) = LOWER(%L)', info.name)}
+          AND date > NOW() - INTERVAL '30 days'
       `),
     ]) as any
 
@@ -162,7 +164,7 @@ export class ShipCommand extends GalaxyInfoCommand {
     
     embed.addField('Availability', availabilityType, true)
     embed.addField('Class', info.class, true)
-    embed.addField('Carnage', `💀 Kills: ${carnage[0].count ?? '0'} ($${(carnage[0].carnage ?? 0).toLocaleString()})\n💥 Losses: ${reverseCarnage[0].count ?? 0} ($${(reverseCarnage[0].carnage ?? 0).toLocaleString()})`, true)
+    embed.addField('Carnage (past 30d)', `💀 Kills: ${carnage[0].count ?? '0'} ($${(carnage[0].carnage ?? 0).toLocaleString()})\n💥 Losses: ${reverseCarnage[0].count ?? 0} ($${(reverseCarnage[0].carnage ?? 0).toLocaleString()})`, true)
 
     embed.addField('Weapons', ([turretText, spinalText, fighterText].filter(text => text.trim()).join('\n\n')) || 'None', true)
     embed.addField('DPS', `Shield: ${Math.floor(dps.shield)}\nHull: ${Math.floor(dps.hull)}\nAverage: ${Math.floor(dps.average)}` + (info.fighters.hasFighters ? `\n\nWith fighters: ${Math.floor(dps.average + info.fighters.dps().average)}` : ''), true)
