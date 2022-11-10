@@ -113,7 +113,7 @@ export class ShipCommand extends GalaxyInfoCommand {
       return {
         name: turret.name,
         count,
-        dps: Math.floor(turret.dps(range ?? undefined).multiply(count).average)
+        dps: Math.floor(turret.dps(range ?? undefined, loyalty ?? undefined).multiply(count).average)
       }
     }
     function generateTurretText(turrets: ShipTurrets) {
