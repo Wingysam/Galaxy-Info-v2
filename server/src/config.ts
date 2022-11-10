@@ -1,7 +1,10 @@
 export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
   bot: {
     token: string,
-    clientSecret: string
+    clientSecret: string,
+    staffCommands: {
+      webhook?: string
+    }
   },
   ingest: {
     token?: string,
@@ -29,6 +32,13 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
     kvKeys: {
       serializedShips: string,
       serializedTurrets: string
+    }
+  },
+  openCloud: {
+    galaxyMain: {
+      key: string,
+      universeId: number,
+      datastoreScope: string
     }
   }
 }
@@ -111,6 +121,7 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   // Primary operations configuration
   await option('bot.token', 'must')
   await option('bot.clientSecret', 'must')
+  await option('bot.staffCommands.webhook', 'should')
 
   // Ingest service
   await option('ingest.token', 'should')
@@ -134,6 +145,11 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   await option('db.queryLog', 'may', false, async opt => opt === 'true')
   await option('db.kvKeys.serializedShips', 'may', 'ships_dump')
   await option('db.kvKeys.serializedTurrets', 'may', 'turrets_dump')
+
+  // Open Cloud
+  await option('openCloud.galaxyMain.key', 'must')
+  await option('openCloud.galaxyMain.universeId', 'must', undefined, async universeId => Number(universeId))
+  await option('openCloud.galaxyMain.datastoreScope', 'may', 'Galaxy')
 
   return cfg
 }

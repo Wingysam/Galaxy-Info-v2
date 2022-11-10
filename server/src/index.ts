@@ -2,10 +2,11 @@ require('module-alias/register')
 
 import { config as dotenv } from 'dotenv'
 
-import { Intents } from 'discord.js'
+import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 import { PrismaClient } from '@prisma/client'
+import { OpenCloudClient } from '@dynabloxjs/opencloud'
 
 import { GalaxyInfoConfig, parseConfig } from './config'
 import GalaxyInfoRobloxInterface from './util/roblox'
@@ -30,7 +31,11 @@ declare global {
     ships: ServerShips,
     turrets: ServerTurrets,
     galaxypedia: Galaxypedia,
-    devs: string[]
+    devs: string[],
+    openCloud: {
+      galaxyMain: OpenCloudClient
+    },
+    staffCommandsWebhook?: WebhookClient
   }
 }
 
@@ -90,6 +95,17 @@ function log (...args: any) {
   }
 
   GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo })
+
+  GalaxyInfo.openCloud = {}
+  GalaxyInfo.openCloud.galaxyMain = new OpenCloudClient({
+    credentialsValue: config.openCloud.galaxyMain.key,
+    ratelimiterShouldYield: true,
+    requestRetryCount: 1000
+  })
+
+  if (config.bot.staffCommands.webhook) {
+    GalaxyInfo.staffCommandsWebhook = new WebhookClient({ url: config.bot.staffCommands.webhook })
+  }
 
   const client = new GalaxyInfoClient({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES],
