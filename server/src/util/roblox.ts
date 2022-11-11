@@ -17,6 +17,12 @@ type RobloxAPIGetByUsername = {
   // has other properties, but they aren't used by this
 }
 
+type RobloxAPIGetByUserId = {
+  id: number
+  name: string
+  // has other properties that aren't used
+}
+
 function log (...message: any[]) {
   console.log('[Roblox Interface]', ...message)
 }
@@ -92,13 +98,16 @@ export default class GalaxyInfoRobloxInterface {
     return BigInt(fromRoblox.Id)
   }
 
-  // TODO: implement this
   /**
    * Maps a Roblox ID to a username
    * @param id The ID of the Roblox user
    * @returns the name of the Roblox user
    */
-  async idToName (id: bigint): Promise<string> {
+  async idToName (id: bigint, backoff?: number): Promise<string> {
+    if (backoff) {
+      await sleep(backoff)
+    }
+
     const existing = await this.GalaxyInfo.prisma.user.findFirst({
       where: {
         id: id
@@ -106,20 +115,29 @@ export default class GalaxyInfoRobloxInterface {
     })
     if (existing) return existing.name
 
-    const fromRoblox = ''
-    if (fromRoblox === '') throw new Error('Not implemented')
+    let fromRoblox: RobloxAPIGetByUserId
+    let text
+    try {
+      text = await (await fetch(`https://users.roblox.com/v1/users/${encodeURIComponent(id.toString())}`)).text()
+      fromRoblox = (JSON.parse(text) as RobloxAPIGetByUserId)
+    } catch {
+      backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
+      log(id, backoff, 'Roblox API returned an invalid response', text)
+      return this.idToName(id, backoff)
+    }
+
     try {
       await this.GalaxyInfo.prisma.user.create({
         data: {
-          name: fromRoblox,
+          name: fromRoblox.name,
           id
         }
       })
     } catch {
       log('Already exists')
-      return fromRoblox
+      return fromRoblox.name
     }
     log('Saved data for', fromRoblox)
-    return fromRoblox
+    return fromRoblox.name
   }
 }

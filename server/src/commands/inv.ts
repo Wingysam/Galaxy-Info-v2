@@ -39,10 +39,21 @@ export class InvCommand extends GalaxyInfoCommand {
   public async interactionCreate(interaction: CommandInteraction, _expectsEphemeral: boolean, channelConfig?: AllProps<Channel>) {
     const GalaxyInfo = interaction.client.GalaxyInfo
 
+    const playerName = interaction.options.getString('player', true)
+    const playerId = await GalaxyInfo.roblox.nameToId(playerName)
+    const dsKey = `u_${playerId}`
+
     const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
     if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
     if (!([...galaxyStaffIngest.admins.members, ...galaxyStaffIngest.developers.members].includes(interaction.user.id))) {
-      throw new Error('You have to be an admin or a dev to use this.')
+      const bloxlinkData = await GalaxyInfo.bloxlink.SearchDiscordToRoblox(interaction.user.id, interaction.guildId)
+      if (!bloxlinkData.success) throw new Error("Can't use the Bloxlink API right now. Try again later.")
+      if (!bloxlinkData.user) throw new Error('Try verifying on Bloxlink first.')
+      const verifiedAccountId = BigInt(bloxlinkData.user.robloxId)
+      if (verifiedAccountId !== playerId) {
+        const verifiedAccountName = await GalaxyInfo.roblox.idToName(verifiedAccountId)
+        throw new Error(`You can only check the inventory of ${verifiedAccountName}.`)
+      }
     }
 
     if (GalaxyInfo.staffCommandsWebhook) {
@@ -55,9 +66,6 @@ export class InvCommand extends GalaxyInfoCommand {
       GalaxyInfo.staffCommandsWebhook.send({ embeds: [embed] })
     }
 
-    const playerName = interaction.options.getString('player', true)
-    const playerId = await GalaxyInfo.roblox.nameToId(playerName)
-    const dsKey = `u_${playerId}`
     
     interaction.editReply('Fetching Stats')
     const statsDs = await this.readDatastore('stats', dsKey)

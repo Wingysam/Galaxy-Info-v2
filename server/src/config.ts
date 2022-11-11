@@ -40,6 +40,9 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
       universeId: number,
       datastoreScope: string
     }
+  },
+  bloxlink: {
+    apiKey: string
   }
 }
 
@@ -150,6 +153,9 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   await option('openCloud.galaxyMain.key', 'must')
   await option('openCloud.galaxyMain.universeId', 'must', undefined, async universeId => Number(universeId))
   await option('openCloud.galaxyMain.datastoreScope', 'may', 'Galaxy')
+
+  // Bloxlink
+  await option('bloxlink.apiKey', 'must')
 
   return cfg
 }

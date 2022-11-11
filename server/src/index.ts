@@ -7,6 +7,7 @@ import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 import { PrismaClient } from '@prisma/client'
 import { OpenCloudClient } from '@dynabloxjs/opencloud'
+import * as Bloxlink from 'bloxlink-sdk'
 
 import { GalaxyInfoConfig, parseConfig } from './config'
 import GalaxyInfoRobloxInterface from './util/roblox'
@@ -35,7 +36,8 @@ declare global {
     openCloud: {
       galaxyMain: OpenCloudClient
     },
-    staffCommandsWebhook?: WebhookClient
+    staffCommandsWebhook?: WebhookClient,
+    bloxlink: any
   }
 }
 
@@ -95,6 +97,9 @@ function log (...args: any) {
   }
 
   GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo })
+
+  Bloxlink.initialise(config.bloxlink.apiKey)
+  GalaxyInfo.bloxlink = Bloxlink
 
   GalaxyInfo.openCloud = {}
   GalaxyInfo.openCloud.galaxyMain = new OpenCloudClient({
