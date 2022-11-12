@@ -6,6 +6,7 @@ import type GalaxyStaffIngest from '../ingest/services/GalaxyStaff'
 import type { Channel } from '@prisma/client'
 import type { StandardDataStore } from '@dynabloxjs/opencloud/types/src/classes/opencloud/StandardDataStore'
 import { sleep } from '../util/sleep'
+import moment from 'moment'
 
 const DATASTORES = {
   stats: 'Stats',
@@ -122,7 +123,7 @@ export class InvCommand extends GalaxyInfoCommand {
     interaction.editReply('Fetching Log')
     const logDs = await this.readDatastore('log', dsKey)
     const log = logDs.map((log: any) => {
-      return `${new Date(log[0] * 1000).toISOString().split('T')[0]} ${GalaxyInfo.gameConstants.logCodes.get(BigInt(log[1])) ?? `[${log[1]}]`}: ${log[2]}`
+      return `${moment(log[0] * 1000).utc().format('YYYY-MM-DD HH:mm [UTC]')} ${GalaxyInfo.gameConstants.logCodes.get(BigInt(log[1])) ?? `[${log[1]}]`}: ${log[2]}`
     }).reverse()
 
     await interaction.editReply({
