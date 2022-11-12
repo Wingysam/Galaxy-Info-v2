@@ -78,7 +78,10 @@ export class ShipKillsExport {
           return { content: text }
         }
 
-        const channel = await this.GalaxyInfo.client.channels.fetch(`${channelRow.id}`)
+        let channel
+        try {
+          channel = await this.GalaxyInfo.client.channels.fetch(`${channelRow.id}`)
+        } catch {}
         if (!channel || !channel.isText()) continue
 
         const templateNormal = channelRow.kill_log_template_normal ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_template_normal
