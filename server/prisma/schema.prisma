@@ -34,6 +34,8 @@ enum ApiTokenScope {
   turrets_read
   turrets_write
 
+  game_constants_write
+
   quests_read
   quests_read_fresh
   quests_write

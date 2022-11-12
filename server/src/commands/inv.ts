@@ -116,13 +116,13 @@ export class InvCommand extends GalaxyInfoCommand {
     interaction.editReply('Fetching Warehouse')
     const warehouseDs = await this.readDatastore('warehouse', dsKey)
     const warehouse = Object.entries(warehouseDs).map(([id, amt]: [string, any]) => {
-      return `${id}: ${amt.toLocaleString()}`
+      return `${GalaxyInfo.gameConstants.items.get(BigInt(id))?.name ?? `[${id}]`}: ${amt.toLocaleString()}`
     })
 
     interaction.editReply('Fetching Log')
     const logDs = await this.readDatastore('log', dsKey)
     const log = logDs.map((log: any) => {
-      return `${new Date(log[0] * 1000).toISOString().split('T')[0]} ${log[1]}: ${log[2]}`
+      return `${new Date(log[0] * 1000).toISOString().split('T')[0]} ${GalaxyInfo.gameConstants.logCodes.get(BigInt(log[1])) ?? `[${log[1]}]`}: ${log[2]}`
     }).reverse()
 
     await interaction.editReply({

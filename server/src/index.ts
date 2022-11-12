@@ -19,6 +19,7 @@ import { ServerShips } from '@galaxyinfo/ships'
 import { ServerTurrets } from '@galaxyinfo/ships'
 import { GalaxyInfoClient } from './GalaxyInfoClient'
 import { Galaxypedia } from './Galaxypedia'
+import { GameConstants } from './GameConstants'
 
 declare global {
   type GalaxyInfo = { // eslint-disable-line no-unused-vars
@@ -37,7 +38,8 @@ declare global {
       galaxyMain: OpenCloudClient
     },
     staffCommandsWebhook?: WebhookClient,
-    bloxlink: any
+    bloxlink: any,
+    gameConstants: GameConstants
   }
 }
 
@@ -81,6 +83,9 @@ function log (...args: any) {
   await GalaxyInfo.turrets.init()
   GalaxyInfo.ships = new ServerShips(GalaxyInfo)
   await GalaxyInfo.ships.init()
+
+  GalaxyInfo.gameConstants = new GameConstants(GalaxyInfo)
+  await GalaxyInfo.gameConstants.init()
 
   if (GalaxyInfo.config.db.queryLog) {
     ;(GalaxyInfo.prisma as PrismaClient).$use(async (params, next) => {
