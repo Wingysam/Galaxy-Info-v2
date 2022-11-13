@@ -111,7 +111,7 @@ export class InvCommand extends GalaxyInfoCommand {
     interaction.editReply('Fetching Ships')
     const shipsDs = await this.readDatastore('ships', dsKey)
     const ships = Object.entries(shipsDs).map(([shipName, info]: [string, any]) => {
-      return `${shipName}: ${info.Shield ? `${info?.Shield}/${info?.Hull}` : 'never spawned'}`
+      return `${shipName}: ${info.Hull ? `${info?.Shield}/${info?.Hull}` : 'never spawned'}`
     })
 
     interaction.editReply('Fetching Warehouse')

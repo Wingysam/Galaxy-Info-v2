@@ -29,7 +29,7 @@ export class NeverSpawnedCommand extends GalaxyInfoCommand {
     interaction.editReply('Fetching Ships')
     const shipsDs = await this.readDatastore(dsKey)
     const ships = Object.entries(shipsDs)
-      .filter(([_, info]: [string, any]) => info.Shield === undefined)
+      .filter(([_, info]: [string, any]) => info.Hull === undefined)
       .map(([shipName, _]: [string, any]) => `${shipName}`)
       .sort()
 
