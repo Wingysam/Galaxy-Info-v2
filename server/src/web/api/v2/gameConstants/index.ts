@@ -16,7 +16,8 @@ export async function gameConstants ({ GalaxyInfo }: Arg) {
 
       const constants = {
         items: req.body.items,
-        logCodes: req.body.logCodes
+        logCodes: req.body.logCodes,
+        classes: req.body.classes
       }
 
       await GalaxyInfo.prisma.keyValue.upsert({
