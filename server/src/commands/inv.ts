@@ -126,6 +126,12 @@ export class InvCommand extends GalaxyInfoCommand {
       return `${moment(log[0] * 1000).utc().format('YYYY-MM-DD HH:mm [UTC]')} ${GalaxyInfo.gameConstants.logCodes.get(BigInt(log[1])) ?? `[${log[1]}]`}: ${log[2]}`
     }).reverse()
 
+    const logTruncationPercentage = ((JSON.stringify(logDs).length / 250000) * 100).toFixed(2) + '%'
+    stats.addFields({
+      name: 'Log Truncation Percentage',
+      value: logTruncationPercentage
+    })
+
     await interaction.editReply({
       content: `Inventory for ${playerName}:`,
       embeds: [ stats ],
