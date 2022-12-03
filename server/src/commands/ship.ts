@@ -26,9 +26,13 @@ export class ShipCommand extends GalaxyInfoCommand {
   }
 
   private async getShipImage(galaxypedia: Galaxypedia, ship: string): Promise<string | null> {
-    const info = await galaxypedia.getImageInfo(`File:${ship}-icon.png`)
-    if (!info) return null
-    return info.url || null
+    try {
+      const info = await galaxypedia.getImageInfo(`File:${ship}-icon.png`)
+      if (!info) return null
+      return info.url || null
+    } catch {
+      return null
+    }
   }
 
   public async interactionCreate(interaction: CommandInteraction, _expectsEphemeral: boolean, channelConfig?: AllProps<Channel>) {
