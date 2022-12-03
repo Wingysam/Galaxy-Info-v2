@@ -77,7 +77,7 @@ export class ShipCommand extends GalaxyInfoCommand {
     if (!((BUILD_MENU_CLASSES as any).includes(info.class))) availabilityType = PRIZE_SHIP
     if (['Alien', 'Titan'].includes(info.class)) availabilityType = NPC
 
-    const [carnage, reverseCarnage] = await GalaxyInfo.prisma.$transaction([
+    const [carnage, reverseCarnagePlayer, reverseCarnageNpc] = await GalaxyInfo.prisma.$transaction([
       GalaxyInfo.prisma.$queryRawUnsafe(`
         SELECT
           SUM(victim_cost) AS carnage,
@@ -94,6 +94,21 @@ export class ShipCommand extends GalaxyInfoCommand {
         FROM "Kill_clean"
         WHERE
           ${format('LOWER(victim_ship) = LOWER(%L)', info.name)}
+          AND killer_id != -1
+          AND NOT killer_name IN ('Alien', 'Pirate')
+          AND date > NOW() - INTERVAL '30 days'
+      `),
+      GalaxyInfo.prisma.$queryRawUnsafe(`
+        SELECT
+          SUM(victim_cost) AS carnage,
+          COUNT(*)
+        FROM "Kill_clean"
+        WHERE
+          ${format('LOWER(victim_ship) = LOWER(%L)', info.name)}
+          AND (
+            killer_id != -1
+            OR killer_name IN ('Alien', 'Pirate')
+          )
           AND date > NOW() - INTERVAL '30 days'
       `),
     ]) as any
@@ -164,7 +179,7 @@ export class ShipCommand extends GalaxyInfoCommand {
     
     embed.addField('Availability', availabilityType, true)
     embed.addField('Class', info.class, true)
-    embed.addField('Carnage (past 30d)', `💀 Kills: ${carnage[0].count ?? '0'} ($${(carnage[0].carnage ?? 0).toLocaleString()})\n💥 Losses: ${reverseCarnage[0].count ?? 0} ($${(reverseCarnage[0].carnage ?? 0).toLocaleString()})`, true)
+    embed.addField('Carnage (past 30d)', `💀 Kills: ${carnage[0].count ?? '0'} ($${(carnage[0].carnage ?? 0).toLocaleString()})\n💥 Losses (Players): ${reverseCarnagePlayer[0].count ?? 0} ($${(reverseCarnagePlayer[0].carnage ?? 0).toLocaleString()})\n💥 Losses (NPCs): ${reverseCarnageNpc[0].count ?? 0} ($${(reverseCarnageNpc[0].carnage ?? 0).toLocaleString()})`, true)
 
     embed.addField('Weapons', ([turretText, spinalText, fighterText].filter(text => text.trim()).join('\n\n')) || 'None', true)
     embed.addField('DPS', `Shield: ${Math.floor(dps.shield)}\nHull: ${Math.floor(dps.hull)}\nAverage: ${Math.floor(dps.average)}` + (info.fighters.hasFighters ? `\n\nWith fighters: ${Math.floor(dps.average + info.fighters.dps().average)}` : ''), true)
