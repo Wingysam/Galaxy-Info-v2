@@ -1,5 +1,3 @@
-import { promisify } from 'node:util'
-
 import Nodemw from 'nodemw'
 
 export class Galaxypedia extends Nodemw {
@@ -7,7 +5,14 @@ export class Galaxypedia extends Nodemw {
     super({
       server: 'robloxgalaxy.wiki'
     })
+  }
 
-    this.getImageInfo = promisify(super.getImageInfo)
+  getImageInfo (filename: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+        super.getImageInfo(filename, (err: Error | undefined, output: any) => {
+          if (err) return reject(err)
+          resolve(output)
+        })
+      })
   }
 }
