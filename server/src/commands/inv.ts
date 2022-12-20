@@ -69,7 +69,10 @@ export class InvCommand extends GalaxyInfoCommand {
 
     
     interaction.editReply('Fetching Stats')
-    const statsDs = await this.readDatastore('stats', dsKey)
+    let statsDs
+    try {
+      statsDs = await this.readDatastore('stats', dsKey)
+    } catch {}
     const stats = new MessageEmbed()
     stats.addFields(
       {
@@ -108,23 +111,33 @@ export class InvCommand extends GalaxyInfoCommand {
       }
     )
     
+    let ships = ['failed to load']
+    try {
     interaction.editReply('Fetching Ships')
     const shipsDs = await this.readDatastore('ships', dsKey)
-    const ships = Object.entries(shipsDs).map(([shipName, info]: [string, any]) => {
+    ships = Object.entries(shipsDs).map(([shipName, info]: [string, any]) => {
       return `${shipName}: ${info.Hull === undefined ? 'never spawned' : `${info?.Shield}/${info?.Hull}`}`
     })
+  } catch {}
 
+  let warehouse = ['failed to load']
+  try {
     interaction.editReply('Fetching Warehouse')
     const warehouseDs = await this.readDatastore('warehouse', dsKey)
-    const warehouse = Object.entries(warehouseDs).map(([id, amt]: [string, any]) => {
+    warehouse = Object.entries(warehouseDs).map(([id, amt]: [string, any]) => {
       return `${GalaxyInfo.gameConstants.items.get(BigInt(id))?.name ?? `[${id}]`}: ${amt.toLocaleString()}`
     })
+    } catch {}
 
-    interaction.editReply('Fetching Log')
-    const logDs = await this.readDatastore('log', dsKey)
-    const log = logDs.map((log: any) => {
-      return `${moment(log[0] * 1000).utc().format('YYYY-MM-DD HH:mm [UTC]')} ${GalaxyInfo.gameConstants.logCodes.get(BigInt(log[1])) ?? `[${log[1]}]`}: ${log[2]}`
-    }).reverse()
+    let logDs = ['']
+    let log = ['failed to load']
+    try {
+      interaction.editReply('Fetching Log')
+      logDs = await this.readDatastore('log', dsKey)
+      log = logDs.map((log: any) => {
+        return `${moment(log[0] * 1000).utc().format('YYYY-MM-DD HH:mm [UTC]')} ${GalaxyInfo.gameConstants.logCodes.get(BigInt(log[1])) ?? `[${log[1]}]`}: ${log[2]}`
+      }).reverse()
+    } catch {}
 
     const logTruncationPercentage = ((JSON.stringify(logDs).length / 250000) * 100).toFixed(2) + '%'
     stats.addFields({
