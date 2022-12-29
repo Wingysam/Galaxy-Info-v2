@@ -16,7 +16,7 @@ const PERMITS = [
   ['Class E Permit', '42']
 ]
 
-export class InvCommand extends GalaxyInfoCommand {
+export class PermitsCommand extends GalaxyInfoCommand {
   private datastore: StandardDataStore
 
   constructor(GalaxyInfo: GalaxyInfo) {
