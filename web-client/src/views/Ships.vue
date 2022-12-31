@@ -189,7 +189,13 @@ export default {
 
       worker.onmessage = e => {
         this.shipTable = e.data
-        if (e.data.length === 0) {
+          .filter(ship => {
+            if (this.$route.query.class) {
+              if (ship.Class.trim() !== this.$route.query.class) return false
+            }
+            return true
+          })
+        if (this.shipTable.length === 0) {
           if (this.$route.query.test === 'true') this.error = 'You must be a developer to see test ships.'
           else this.error = 'No ships found; open an issue or ticket please.'
         }
