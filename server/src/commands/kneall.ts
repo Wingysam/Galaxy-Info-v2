@@ -1,9 +1,9 @@
 import type { CommandInteraction } from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
 
+import type GalaxyStaffIngest from 'ingest/services/GalaxyStaff'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { EMOJIS } from '../emoji'
-import { GameDevOnly } from '../preconditions/GameDevOnly'
 
 export class KneallTranslatorCommand extends GalaxyInfoCommand {
   constructor(_GalaxyInfo: GalaxyInfo) {
@@ -19,7 +19,7 @@ export class KneallTranslatorCommand extends GalaxyInfoCommand {
         .setDescription('Translates the message back to text')
       )
       .setDescription('Translate a message to kneall')
-    super({ builder, preconditions: [GameDevOnly], instant: true })
+    super({ builder, preconditions: [KneallTranslationPrecondition], instant: true })
   }
 
   public async interactionCreate(interaction: CommandInteraction, ephemeral: boolean) {
@@ -37,5 +37,14 @@ export class KneallTranslatorCommand extends GalaxyInfoCommand {
 
     const translated = text.toLowerCase().split('').map(letter => (EMOJIS.kneall as {[key: string]: string})[letter] ?? letter).join('')
     await interaction.reply({ ephemeral, content: translated })
+  }
+}
+
+class KneallTranslationPrecondition {
+  public static async run (interaction: CommandInteraction) {
+    const galaxyStaffIngest = interaction.client.GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+    if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
+    
+    if (!galaxyStaffIngest.kneallTranslation.members.includes(interaction.user.id)) throw new Error('Only certain Galaxy staff members may run this command.')
   }
 }
