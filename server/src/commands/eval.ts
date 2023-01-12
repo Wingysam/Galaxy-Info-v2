@@ -4,7 +4,7 @@ import { codeBlock } from '@sapphire/utilities'
 import type { CommandInteraction } from 'discord.js'
 import { inspect } from 'util'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
-import { DevOnly } from '../preconditions/DevOnly'
+import { BotDevOnly } from '../preconditions/BotDevOnly'
 
 export default class extends GalaxyInfoCommand {
   constructor() {
@@ -16,7 +16,7 @@ export default class extends GalaxyInfoCommand {
       .addBooleanOption(option => option.setName('show-hidden').setDescription('Shows hidden JS properties'))
       .addIntegerOption(option => option.setName('depth').setDescription('How deep the display of the response object should be'))
       .setDescription('Evaluate arbitrary JavaScript')
-    super({ builder, preconditions: [ DevOnly ], ephemeral: true })
+    super({ builder, preconditions: [ BotDevOnly ], ephemeral: true })
   }
 
   public async interactionCreate (interaction: CommandInteraction): Promise<any> {

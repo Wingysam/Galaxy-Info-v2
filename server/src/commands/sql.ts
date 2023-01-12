@@ -3,7 +3,7 @@ import { codeBlock } from '@sapphire/utilities'
 import type { CommandInteraction } from 'discord.js'
 import EasyTable from 'easy-table'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
-import { DevOnly } from '../preconditions/DevOnly'
+import { BotDevOnly } from '../preconditions/BotDevOnly'
 
 export class SqlCommand extends GalaxyInfoCommand {
   private GalaxyInfo: GalaxyInfo
@@ -13,7 +13,7 @@ export class SqlCommand extends GalaxyInfoCommand {
       .setName('sql')
       .addStringOption(option => option.setName('sql').setDescription('The SQL to evaluate').setRequired(true))
       .setDescription('Evaluate SQL')
-    super({ builder, preconditions: [ DevOnly ], ephemeral: true })
+    super({ builder, preconditions: [ BotDevOnly ], ephemeral: true })
     this.GalaxyInfo = GalaxyInfo
   }
 
