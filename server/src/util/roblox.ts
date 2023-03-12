@@ -1,9 +1,7 @@
 import fetch from 'node-fetch'
 import { sleep } from './sleep'
 
-type ConstructorArg = {
-  GalaxyInfo: GalaxyInfo
-}
+import prisma from '../prismaClient'
 
 type RobloxAPIGetByUsername = {
   code: number,
@@ -27,10 +25,8 @@ function log (...message: any[]) {
   console.log('[Roblox Interface]', ...message)
 }
 
-export default class GalaxyInfoRobloxInterface {
-  private GalaxyInfo: GalaxyInfo
-  constructor ({ GalaxyInfo }: ConstructorArg) {
-    this.GalaxyInfo = GalaxyInfo
+class GalaxyInfoRobloxInterface {
+  constructor () {
   }
 
   /**
@@ -43,7 +39,7 @@ export default class GalaxyInfoRobloxInterface {
       await sleep(backoff)
     }
     name = name.toLowerCase()
-    const existing = await this.GalaxyInfo.prisma.user.findUnique({
+    const existing = await prisma.user.findUnique({
       where: {
         name
       }
@@ -78,7 +74,7 @@ export default class GalaxyInfoRobloxInterface {
     } // 5xx i think
 
     try {
-      await this.GalaxyInfo.prisma.user.upsert({
+      await prisma.user.upsert({
         create: {
           name,
           id: fromRoblox.Id
@@ -108,7 +104,7 @@ export default class GalaxyInfoRobloxInterface {
       await sleep(backoff)
     }
 
-    const existing = await this.GalaxyInfo.prisma.user.findFirst({
+    const existing = await prisma.user.findFirst({
       where: {
         id: id
       }
@@ -127,7 +123,7 @@ export default class GalaxyInfoRobloxInterface {
     }
 
     try {
-      await this.GalaxyInfo.prisma.user.create({
+      await prisma.user.create({
         data: {
           name: fromRoblox.name,
           id
@@ -141,3 +137,5 @@ export default class GalaxyInfoRobloxInterface {
     return fromRoblox.name
   }
 }
+
+export default new GalaxyInfoRobloxInterface()

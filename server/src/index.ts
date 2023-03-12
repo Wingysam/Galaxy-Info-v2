@@ -5,12 +5,12 @@ import { config as dotenv } from 'dotenv'
 import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-import { PrismaClient } from '@prisma/client'
 import { OpenCloudClient } from '@dynabloxjs/opencloud'
 import * as Bloxlink from 'bloxlink-sdk'
 
 import { GalaxyInfoConfig, parseConfig } from './config'
-import GalaxyInfoRobloxInterface from './util/roblox'
+import prisma from './prismaClient'
+import roblox from './util/roblox'
 import { IngestServices } from './ingest'
 import { GalaxyInfoWeb } from './web'
 import { GuildConfigs } from './util/guildConfigReadWrite'
@@ -26,8 +26,8 @@ declare global {
     guildConfigs: GuildConfigs,
     config: GalaxyInfoConfig,
     ingest: IngestServices,
-    prisma: PrismaClient,
-    roblox: GalaxyInfoRobloxInterface,
+    prisma: typeof prisma,
+    roblox: typeof roblox,
     client: GalaxyInfoClient,
     web: GalaxyInfoWeb,
     ships: ServerShips,
@@ -75,8 +75,9 @@ function log (...args: any) {
 
   GalaxyInfo.config = config
 
-  GalaxyInfo.prisma = new PrismaClient()
+  GalaxyInfo.prisma = prisma
 
+  GalaxyInfo.roblox = roblox
   GalaxyInfo.ingest = new IngestServices({ GalaxyInfo })
 
   GalaxyInfo.turrets = new ServerTurrets(GalaxyInfo)
@@ -88,7 +89,7 @@ function log (...args: any) {
   await GalaxyInfo.gameConstants.init()
 
   if (GalaxyInfo.config.db.queryLog) {
-    ;(GalaxyInfo.prisma as PrismaClient).$use(async (params, next) => {
+    prisma.$use(async (params, next) => {
       const before = Date.now()
 
       const result = await next(params)
@@ -101,7 +102,6 @@ function log (...args: any) {
     })
   }
 
-  GalaxyInfo.roblox = new GalaxyInfoRobloxInterface({ GalaxyInfo })
 
   Bloxlink.initialise(config.bloxlink.apiKey)
   GalaxyInfo.bloxlink = Bloxlink

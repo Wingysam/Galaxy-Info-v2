@@ -4,7 +4,7 @@ import type { Kill } from '.prisma/client'
 import type { Message } from 'discord.js'
 
 import { DiscordLogIngester, DiscordLogIngesterParser } from '../DiscordLogIngester'
-import type GalaxyInfoRobloxInterface from '../../util/roblox'
+import roblox from '../../util/roblox'
 import { IngestService, IngestServiceArg } from '../service'
 import { min } from '../../util/clampBigInt'
 
@@ -24,7 +24,7 @@ export default class ShipKillsIngest extends IngestService {
       }
     })
 
-    const parser = new ShipKillsIngestParser(this.GalaxyInfo.roblox)
+    const parser = new ShipKillsIngestParser()
 
     this.dli = new DiscordLogIngester({
       client: this.client,
@@ -55,12 +55,10 @@ export default class ShipKillsIngest extends IngestService {
 }
 
 export class ShipKillsIngestParser extends DiscordLogIngesterParser {
-  private roblox: GalaxyInfoRobloxInterface
   public parse
 
-  constructor (roblox: GalaxyInfoRobloxInterface) {
+  constructor () {
     super()
-    this.roblox = roblox
     this.parse = this._parse.bind(this)
   }
 
@@ -89,14 +87,14 @@ export class ShipKillsIngestParser extends DiscordLogIngesterParser {
     let killer_id
     try {
       if (matches[3] === 'Base') killer_id = -1n
-      else killer_id = await this.roblox.nameToId(killer_name)
+      else killer_id = await roblox.nameToId(killer_name)
     } catch (error) {
       throw new Error(`${killer_name} does not exist ${error}`)
     }
 
     let victim_id
     try {
-      victim_id = await this.roblox.nameToId(victim_name)
+      victim_id = await roblox.nameToId(victim_name)
     } catch (error) {
       throw new Error(`${victim_name} does not exist ${error}`)
     }
