@@ -26,18 +26,52 @@ function log (...message: any[]) {
 }
 
 class GalaxyInfoRobloxInterface {
-  constructor () {
-  }
+  private nameToIdQueue: {
+    name: string
+    resolve: (id: bigint) => unknown
+    reject: (err: unknown) => unknown
+  }[] = []
+  private runningNameToIdQueue = false
 
   /**
    * Maps a Roblox username to an ID
    * @param name the name of the Roblox user
    * @returns the ID of the Roblox user
    */
-  async nameToId (name: string, backoff?: number): Promise<bigint> {
+  nameToId (name: string): Promise<bigint> {
+    const promise = new Promise((resolve, reject) => {
+      this.nameToIdQueue.push({ name, resolve, reject })
+    }) as Promise<bigint>
+    this.checkNameToIdQueue()
+    return promise
+  }
+
+  private async checkNameToIdQueue () {
+    if (this.runningNameToIdQueue) return
+    this.runningNameToIdQueue = true
+
+    log('starting name to id queue')
+
+    while (this.nameToIdQueue.length) {
+      const queueItem = this.nameToIdQueue.shift()
+      if (!queueItem) break
+      const { name, resolve, reject } = queueItem
+      try {
+        const output = await this.runNameToId(name)
+        resolve(output)
+      } catch (err) {
+        reject(err)
+      }
+    }
+
+    this.runningNameToIdQueue = false
+  }
+
+  private async runNameToId (name: string, backoff?: number): Promise<bigint> {
     if (backoff) {
       await sleep(backoff)
     }
+
     name = name.toLowerCase()
     const existing = await prisma.user.findUnique({
       where: {
@@ -54,7 +88,7 @@ class GalaxyInfoRobloxInterface {
     } catch {
       backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
       log(name, backoff, 'Roblox API returned an invalid response', text)
-      return this.nameToId(name, backoff)
+      return this.runNameToId(name, backoff)
     }
 
     if ('success' in fromRoblox) { // success is undefined when it should be true, success being present means it's false
