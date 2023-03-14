@@ -32,6 +32,7 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
     queryLog: boolean,
     kvKeys: {
       serializedShips: string,
+      serializedTestShips: string,
       serializedTurrets: string,
       gameConstants: string
     }
@@ -150,6 +151,7 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   // DB
   await option('db.queryLog', 'may', false, async opt => opt === 'true')
   await option('db.kvKeys.serializedShips', 'may', 'ships_dump')
+  await option('db.kvKeys.serializedTestShips', 'may', 'ships_dump_test')
   await option('db.kvKeys.serializedTurrets', 'may', 'turrets_dump')
   await option('db.kvKeys.gameConstants', 'may', 'game_constants_dump')
 

@@ -136,6 +136,12 @@ export class Ships {
     if (!this.ships.hasOwnProperty(name)) throw new ShipNotFoundError()
     return this.ships[name]
   }
+
+  fromSerializedShip (serializedShip: SerializedShip) {
+    this.assertReady()
+    const ship = new Ship(this.ships, this.turrets, serializedShip)
+    return ship
+  }
 }
 
 export class Ship {
@@ -302,6 +308,7 @@ export class ShipSpinal extends Weapon {
   range: number
   reload: number
   barrels: number
+  interval: number
   weaponSize: SpinalWeaponSize
   weaponType: SpinalWeaponType
   private guns: ShipSpinalGun[]
@@ -311,6 +318,9 @@ export class ShipSpinal extends Weapon {
     this.range = SPINALS[serializedSpinal.weaponType][serializedSpinal.weaponSize].range
     this.guns = []
     for (const gun of serializedSpinal.guns) this.guns.push(new ShipSpinalGun(serializedSpinal, gun))
+
+    if (this.guns.length === 0) throw new Error('Spinal has no guns')
+    this.interval = this.guns[0].interval
 
     this.weaponSize = serializedSpinal.weaponSize
     this.weaponType = serializedSpinal.weaponType
@@ -433,30 +443,36 @@ export class ServerShips extends Ships {
 
   async init() {
     try {
-      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const mainCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedShips
         },
         rejectOnNotFound: true
       }) as any
-      await super.load(cache.value)
+      const testCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+        where: {
+          key: this.GalaxyInfo.config.db.kvKeys.serializedTestShips
+        },
+        rejectOnNotFound: true
+      }) as any
+      await super.load({ ...mainCache.value, ...testCache.value })
     } catch (error) {
       log('Ships database reset.', error)
     }
     log('Initialized')
   }
 
-  async save(ships: SerializedShips) {
+  async save(ships: SerializedShips, test: boolean) {
     await this.GalaxyInfo.prisma.keyValue.upsert({
       create: {
-        key: this.GalaxyInfo.config.db.kvKeys.serializedShips,
+        key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips,
         value: ships
       },
       update: {
         value: ships
       },
       where: {
-        key: this.GalaxyInfo.config.db.kvKeys.serializedShips
+        key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips
       }
     })
     await super.load(ships)

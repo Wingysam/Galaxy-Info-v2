@@ -78,6 +78,7 @@ export declare class Ships {
         [key: string]: Ship;
     };
     get(name: string): Ship;
+    fromSerializedShip(serializedShip: SerializedShip): Ship;
 }
 export declare class Ship {
     name: string;
@@ -141,6 +142,7 @@ export declare class ShipSpinal extends Weapon {
     range: number;
     reload: number;
     barrels: number;
+    interval: number;
     weaponSize: SpinalWeaponSize;
     weaponType: SpinalWeaponType;
     private guns;
@@ -175,5 +177,5 @@ export declare class ServerShips extends Ships {
     private GalaxyInfo;
     constructor(GalaxyInfo: GalaxyInfo);
     init(): Promise<void>;
-    save(ships: SerializedShips): Promise<void>;
+    save(ships: SerializedShips, test: boolean): Promise<void>;
 }

@@ -30,6 +30,7 @@ enum ApiTokenScope {
   ships_read_secret
   ships_read_model
   ships_write
+  ships_compute_stats
 
   turrets_read
   turrets_write
