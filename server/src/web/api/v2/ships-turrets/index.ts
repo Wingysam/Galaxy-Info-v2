@@ -14,12 +14,21 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
   const router = Router()
 
   async function getDumps(user?: string) {
-    const serializedShips = (await GalaxyInfo.prisma.keyValue.findUnique({
+    const serializedShipsMain = (await GalaxyInfo.prisma.keyValue.findUnique({
       where: {
         key: GalaxyInfo.config.db.kvKeys.serializedShips
       },
       rejectOnNotFound: true
     }) as any).value as SerializedShips
+
+    const serializedShipsTest = (await GalaxyInfo.prisma.keyValue.findUnique({
+      where: {
+        key: GalaxyInfo.config.db.kvKeys.serializedTestShips
+      },
+      rejectOnNotFound: true
+    }) as any).value as SerializedShips
+
+    const serializedShips = { ...serializedShipsMain, ...serializedShipsTest }
 
     const allowedShips: SerializedShips = {}
 
