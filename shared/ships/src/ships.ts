@@ -475,6 +475,12 @@ export class ServerShips extends Ships {
         key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips
       }
     })
-    await super.load(ships)
+    const otherShips = (await this.GalaxyInfo.prisma.keyValue.findUnique({
+      where: {
+        key: test ? this.GalaxyInfo.config.db.kvKeys.serializedShips : this.GalaxyInfo.config.db.kvKeys.serializedTestShips
+      },
+      rejectOnNotFound: true
+    })).value
+    await super.load({ ...ships, ...otherShips })
   }
 }
