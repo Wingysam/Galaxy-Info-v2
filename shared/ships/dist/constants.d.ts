@@ -63,13 +63,13 @@ declare const SPINALS: {
         readonly Tiny: {
             readonly damage: 28;
             readonly reload: 0.8;
-            readonly range: 4500;
+            readonly range: 3000;
             readonly velocity: 5000;
         };
         readonly Small: {
             readonly damage: 40;
             readonly reload: 1;
-            readonly range: 4750;
+            readonly range: 4000;
             readonly velocity: 4500;
         };
         readonly Medium: {
@@ -81,13 +81,13 @@ declare const SPINALS: {
         readonly Large: {
             readonly damage: 120;
             readonly reload: 2.4;
-            readonly range: 5250;
+            readonly range: 6000;
             readonly velocity: 3500;
         };
         readonly Huge: {
             readonly damage: 198;
             readonly reload: 3.6;
-            readonly range: 5500;
+            readonly range: 6500;
             readonly velocity: 3000;
         };
     };
@@ -100,25 +100,25 @@ declare const SPINALS: {
         readonly Tiny: {
             readonly damage: 40;
             readonly reload: 1.6;
-            readonly range: 5500;
+            readonly range: 3000;
             readonly velocity: 3000;
         };
         readonly Small: {
             readonly damage: 60;
             readonly reload: 2;
-            readonly range: 5750;
+            readonly range: 4000;
             readonly velocity: 2800;
         };
         readonly Medium: {
             readonly damage: 112;
             readonly reload: 3.2;
-            readonly range: 6000;
+            readonly range: 5000;
             readonly velocity: 2600;
         };
         readonly Large: {
             readonly damage: 160;
             readonly reload: 4;
-            readonly range: 6250;
+            readonly range: 6000;
             readonly velocity: 2400;
         };
         readonly Huge: {
@@ -137,31 +137,31 @@ declare const SPINALS: {
         readonly Tiny: {
             readonly damage: 200;
             readonly reload: 5;
-            readonly range: 8000;
+            readonly range: 5000;
             readonly velocity: 700;
         };
         readonly Small: {
             readonly damage: 330;
             readonly reload: 6;
-            readonly range: 9000;
+            readonly range: 6000;
             readonly velocity: 600;
         };
         readonly Medium: {
             readonly damage: 490;
             readonly reload: 7;
-            readonly range: 10000;
+            readonly range: 7000;
             readonly velocity: 500;
         };
         readonly Large: {
             readonly damage: 680;
             readonly reload: 8;
-            readonly range: 11000;
+            readonly range: 9000;
             readonly velocity: 400;
         };
         readonly Huge: {
             readonly damage: 900;
             readonly reload: 9;
-            readonly range: 12000;
+            readonly range: 10000;
             readonly velocity: 300;
         };
     };

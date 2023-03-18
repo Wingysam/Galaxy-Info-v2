@@ -31,30 +31,31 @@ const TURRET_CLASS_DAMAGE_DISTRIBUTIONS = { // verified in StructureHealth 2022-
   PDL: DAMAGE_TYPE_DISTRIBUTIONS.Laser
 } as const
 
+// verified in SpinalData 2023-03-18
 const SPINALS = {
-  Phaser: { // https://discord.com/channels/@me/379755318722428933/963849248393265172
+  Phaser: {
     damageDistribution: DAMAGE_TYPE_DISTRIBUTIONS.Laser,
-    Tiny: { damage: 28, reload: .8, range: 4500, velocity: 5000 },
-    Small: { damage: 40, reload: 1, range: 4750, velocity: 4500 },
+    Tiny: { damage: 28, reload: .8, range: 3000, velocity: 5000 },
+    Small: { damage: 40, reload: 1, range: 4000, velocity: 4500 },
     Medium: { damage: 72, reload: 1.6, range: 5000, velocity: 4000 },
-    Large: { damage: 120, reload: 2.4, range: 5250, velocity: 3500 },
-    Huge: { damage: 198, reload: 3.6, range: 5500, velocity: 3000}
+    Large: { damage: 120, reload: 2.4, range: 6000, velocity: 3500 },
+    Huge: { damage: 198, reload: 3.6, range: 6500, velocity: 3000}
   },
   Cannon: {
     damageDistribution: DAMAGE_TYPE_DISTRIBUTIONS.Kinetic,
-    Tiny: { damage: 40, reload: 1.6, range: 5500, velocity: 3000 },
-    Small: { damage: 60, reload: 2, range: 5750, velocity: 2800 },
-    Medium: { damage: 112, reload: 3.2, range: 6000, velocity: 2600 },
-    Large: { damage: 160, reload: 4, range: 6250, velocity: 2400 },
+    Tiny: { damage: 40, reload: 1.6, range: 3000, velocity: 3000 },
+    Small: { damage: 60, reload: 2, range: 4000, velocity: 2800 },
+    Medium: { damage: 112, reload: 3.2, range: 5000, velocity: 2600 },
+    Large: { damage: 160, reload: 4, range: 6000, velocity: 2400 },
     Huge: { damage: 270, reload: 6, range: 6500, velocity: 2200 }
   },
   Torpedo: {
     damageDistribution: DAMAGE_TYPE_DISTRIBUTIONS.Missile,
-    Tiny: { damage: 200, reload: 5, range: 8000, velocity: 700 },
-    Small: { damage: 330, reload: 6, range: 9000, velocity: 600 },
-    Medium: { damage: 490, reload: 7, range: 10000, velocity: 500 },
-    Large: { damage: 680, reload: 8, range: 11000, velocity: 400 },
-    Huge: { damage: 900, reload: 9, range: 12000, velocity: 300 }
+    Tiny: { damage: 200, reload: 5, range: 5000, velocity: 700 },
+    Small: { damage: 330, reload: 6, range: 6000, velocity: 600 },
+    Medium: { damage: 490, reload: 7, range: 7000, velocity: 500 },
+    Large: { damage: 680, reload: 8, range: 9000, velocity: 400 },
+    Huge: { damage: 900, reload: 9, range: 10000, velocity: 300 }
   }
 } as const
 
