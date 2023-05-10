@@ -4,16 +4,11 @@ import { sleep } from './sleep'
 import prisma from '../prismaClient'
 
 type RobloxAPIGetByUsername = {
-  code: number,
-  message: string
-} | {
-  success: false,
-  errorMessage: string
-} | {
-  Id: number,
-  username: string
-  // has other properties, but they aren't used by this
-}
+    data: {
+        id: number
+        // and others that are not used
+    }[]
+  }
 
 type RobloxAPIGetByUserId = {
   id: number
@@ -91,30 +86,19 @@ class GalaxyInfoRobloxInterface {
       return this.runNameToId(name, backoff)
     }
 
-    if ('success' in fromRoblox) { // success is undefined when it should be true, success being present means it's false
-      if (fromRoblox.success) {
-        log('my assumption about success was wrong', fromRoblox)
-        process.exit()
+    if (fromRoblox.data.length === 0) {
+        log('Failed to fetch', name, fromRoblox)
+        return 0n
       }
-      fromRoblox = {
-        Id: -1,
-        username: name
-      }
-    }
-
-    if ('code' in fromRoblox) {
-      log('Failed to fetch', name, fromRoblox)
-      return 0n
-    } // 5xx i think
 
     try {
       await prisma.user.upsert({
         create: {
           name,
-          id: fromRoblox.Id
+          id: fromRoblox.data[0].id
         },
         update: {
-          id: fromRoblox.Id
+          id: fromRoblox.data[0].id
         },
         where: {
           name
@@ -122,10 +106,10 @@ class GalaxyInfoRobloxInterface {
       })
     } catch {
       log(name, 'Already exists')
-      return BigInt(fromRoblox.Id)
+      return BigInt(fromRoblox.data[0].id)
     }
     log('Saved data for', name)
-    return BigInt(fromRoblox.Id)
+    return BigInt(fromRoblox.data[0].id)
   }
 
   /**
@@ -156,7 +140,7 @@ class GalaxyInfoRobloxInterface {
         ],
         body: JSON.stringify({id})
       }))
-      fromRoblox = (JSON.parse(text) as RobloxAPIGetByUserId)
+      fromRoblox = (JSON.parse(id) as RobloxAPIGetByUserId)
     } catch {
       backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
       log(id, backoff, 'Roblox API returned an invalid response', text)
