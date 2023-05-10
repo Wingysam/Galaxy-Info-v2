@@ -148,7 +148,14 @@ class GalaxyInfoRobloxInterface {
     let fromRoblox: RobloxAPIGetByUserId
     let text
     try {
-      text = await (await fetch(`https://users.roblox.com/v1/users/${encodeURIComponent(id.toString())}`)).text()
+      text = await (await request(`https://users.roblox.com/v1/usernames/users`, {
+        method: "POST",
+        headers: { "Content-type": "application/json"},
+        usernames: [
+            name
+        ],
+        body: JSON.stringify({id})
+      }))
       fromRoblox = (JSON.parse(text) as RobloxAPIGetByUserId)
     } catch {
       backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
