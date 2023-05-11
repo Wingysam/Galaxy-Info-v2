@@ -78,7 +78,11 @@ class GalaxyInfoRobloxInterface {
     let fromRoblox: RobloxAPIGetByUsername
     let text
     try {
-      text = await (await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(name)}`)).text()
+      text = await (await fetch(`https://users.roblox.com/v1/usernames/users`, {
+        method: "POST",
+        headers: { "Content-type": "application/json"},
+        body: JSON.stringify({usernames: [name]})
+      })).text()
       fromRoblox = (JSON.parse(text) as RobloxAPIGetByUsername)
     } catch {
       backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
@@ -132,15 +136,8 @@ class GalaxyInfoRobloxInterface {
     let fromRoblox: RobloxAPIGetByUserId
     let text
     try {
-      text = await (await request(`https://users.roblox.com/v1/usernames/users`, {
-        method: "POST",
-        headers: { "Content-type": "application/json"},
-        usernames: [
-            name
-        ],
-        body: JSON.stringify({id})
-      }))
-      fromRoblox = (JSON.parse(id) as RobloxAPIGetByUserId)
+      text = await (await fetch(`https://users.roblox.com/v1/users/${encodeURIComponent(id.toString())}`)).text()
+      fromRoblox = (JSON.parse(text) as RobloxAPIGetByUserId)
     } catch {
       backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
       log(id, backoff, 'Roblox API returned an invalid response', text)
