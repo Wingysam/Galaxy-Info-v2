@@ -5,7 +5,6 @@ import { config as dotenv } from 'dotenv'
 import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-import { OpenCloudClient } from '@dynabloxjs/opencloud'
 import * as Bloxlink from 'bloxlink-sdk'
 
 import { GalaxyInfoConfig, parseConfig } from './config'
@@ -34,9 +33,6 @@ declare global {
     turrets: ServerTurrets,
     galaxypedia: Galaxypedia,
     devs: string[],
-    openCloud: {
-      galaxyMain: OpenCloudClient
-    },
     staffCommandsWebhook?: WebhookClient,
     bloxlink: any,
     gameConstants: GameConstants
@@ -105,13 +101,6 @@ function log (...args: any) {
 
   Bloxlink.initialise(config.bloxlink.apiKey)
   GalaxyInfo.bloxlink = Bloxlink
-
-  GalaxyInfo.openCloud = {}
-  GalaxyInfo.openCloud.galaxyMain = new OpenCloudClient({
-    credentialsValue: config.openCloud.galaxyMain.key,
-    ratelimiterShouldYield: true,
-    requestRetryCount: 1000
-  })
 
   if (config.bot.staffCommands.webhook) {
     GalaxyInfo.staffCommandsWebhook = new WebhookClient({ url: config.bot.staffCommands.webhook })

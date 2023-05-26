@@ -16,7 +16,7 @@
   "dependencies": {
     "@discordjs/builders": "^0.16.0",
     "@discordjs/rest": "^0.5.0",
-    "@prisma/client": "^3.15.2",
+    "@prisma/client": "^4.14.1",
     "@sapphire/type": "^2.2.4",
     "@sapphire/utilities": "^3.9.1",
     "cors": "^2.8.5",
@@ -33,7 +33,8 @@
     "node-fetch": "^2.6.6",
     "nodemw": "^0.17.0",
     "pg-format": "^1.0.4",
-    "thenby": "^1.3.4"
+    "thenby": "^1.3.4",
+    "bloxlink-sdk": "^3.0.3"
   },
   "devDependencies": {
     "@sapphire/ts-config": "^3.3.4",
@@ -50,7 +51,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
     "nodemon": "^2.0.14",
-    "prisma": "^4.6.1",
+    "prisma": "^4.14.1",
     "typescript": "^4.7.3"
   },
   "_moduleAliases": {
