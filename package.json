@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@dynabloxjs/opencloud": "^0.2.2",
-    "bloxlink-sdk": "^3.0.3"
-  }
-}

@@ -37,13 +37,6 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
       gameConstants: string
     }
   },
-  openCloud: {
-    galaxyMain: {
-      key: string,
-      universeId: number,
-      datastoreScope: string
-    }
-  },
   bloxlink: {
     apiKey: string
   }
@@ -154,11 +147,6 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   await option('db.kvKeys.serializedTestShips', 'may', 'ships_dump_test')
   await option('db.kvKeys.serializedTurrets', 'may', 'turrets_dump')
   await option('db.kvKeys.gameConstants', 'may', 'game_constants_dump')
-
-  // Open Cloud
-  await option('openCloud.galaxyMain.key', 'must')
-  await option('openCloud.galaxyMain.universeId', 'must', undefined, async universeId => Number(universeId))
-  await option('openCloud.galaxyMain.datastoreScope', 'may', 'Galaxy')
 
   // Bloxlink
   await option('bloxlink.apiKey', 'must')
