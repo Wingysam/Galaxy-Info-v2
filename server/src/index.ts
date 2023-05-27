@@ -139,6 +139,9 @@ function log (...args: any) {
         )
         log('Uploaded', body.length, 'slash commands globally')
       } else {
+        for (const command of body) {
+          command.setName(`dev-${command.name}`)
+        }
         for (const guild of [ config.guilds.bot, config.guilds.galaxyDevelopment, config.guilds.galaxy, config.guilds.galaxySupport ]) {
           if (!guild) continue
           await rest.put(
