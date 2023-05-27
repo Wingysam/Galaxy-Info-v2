@@ -41,19 +41,12 @@
           See Recent Kills
         </v-btn>
         <v-btn
-          to="/kills/lb"
-          color="secondary"
-          class="mx-3 my-2"
-        >
-          Check Leaderboards
-        </v-btn>
-        <v-btn
           href="https://discord.gg/cx2dXax"
           target="_blank"
           color="blurple"
           class="mx-3 my-2"
         >
-          Get Help&nbsp;&nbsp;<v-icon>mdi-discord</v-icon>
+          Get Help&nbsp;&nbsp;<v-icon>mdi-chat</v-icon>
         </v-btn>
       </v-col>
     </v-row>

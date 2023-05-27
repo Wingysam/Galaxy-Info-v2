@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+  server:
+    image: galaxy-info
+    environment:
+      bot_token: ODk4MDU4NDY5MjYzOTQ1Nzc4.YWesIA.3gBg6HBpYGIQ8VvSG7mz1oTqS_c
+      bot_clientSecret: zL5NwAMOfXxaXPgl_-JCRmYP0gVd4jyy
+      bot_staffCommands_webhook: https://ptb.discord.com/api/webhooks/1039976063004057652/lO3I5ravdhvgZVY1aG6w8OEffVe4rd8kks8UlzQ6X6D8LJhignZYIjujK1Qzjc0g-Dy_
+      ingest_token: ODg4OTA3OTIwMjYyMTkzMTUy.YUZiAw.lLqyoWFn43eBYVlqR2sqi5o0rbY
+      ingest_quests_npcHooks: https://discord.com/api/webhooks/952760032846544916/fFnDDnT8vb_onLyFkt-VUB-nELDrs6pLqS7LKmAo1qzB8OYAGnJ3bXQDCRmQkZbWRF5Q,https://ptb.discord.com/api/webhooks/1038185597870817301/6wnE519vgp1Ijjez3o7q1SXWmxHblrVWUzf6w2IFiYAe_-ppIOMXNP7MQfMAj_9vgTpn
+      galaxy_guild: '204965774618656769'
+      guilds_galaxy: '204965774618656769'
+      guilds_galaxyDevelopment: '976862296880083014'
+      guilds_galaxySupport: '942529192061452300'
+      guilds_bot: '746115030604578868'
+      web_port: '3000'
+      web_frontendBase: https://galaxy.wingysam.xyz
+      web_clientId: '745790085789909033'
+      remodel_auth: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_AC47F3155E7238351AEE523EF5BC20333EEABB138DB0DA32B235C985FC2C0E43A835442A712E058C71F3478AC0160D2DCD97F8B20BB2076B81EB9141CD6FA48270BF6164B742F155783F9414E6E71D1E407DE759242B2A8B00A9A9591B29552723532AD4AE50ADA1DA28F55185580BBB66065317339394F9F14B22F03CFD30EFB85D3E3A714BD2964226D0ED3C3DE258CA12492745712422F3E793E55340F251D16C91C4DE9BCB82D704EB950DB3E3C958CE1888842493298CDAFC2170AE912158FABF62D35237C5316136395C866FBD5B4C15806E38F057B9A0B6CEF8DFBFF056C39D2334994685B07E02960F90CCE1D2167ED7BF7CC74FC678C9A7FF827A4B93263FB5A6F2758ACB1A01021282B1F5EA34D3B364FFA86B5254FFFB4BF912B9FE0D99EE6711BBF14D8242A09973507770A689A1B078962CEF6A50AEB1AA882D672B3CC4
+      openCloud_galaxyMain_key: CBchdvxLQE6aVu82j+HLybSud8r62SWX/0Nk7/Q0P8eouiT0
+      openCloud_galaxyMain_universeId: '92605824'
+      bloxlink_apiKey: 103f4abd-7d83-4ac0-9d22-f5138f838d6d
+      prisma_db: postgresql://galaxyinfo:galaxyinfo@db:20321/galaxyinfo
+    ports:
+      - 3031:3000
+    restart: always
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: galaxyinfo
+      POSTGRES_PASSWORD: galaxyinfo
+      POSTGRES_DB: galaxyinfo
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data
+    restart: always
+  admin:
+    image: adminer
+    ports:
+      - 20322:8080
+    restart: always
+
+
+
+

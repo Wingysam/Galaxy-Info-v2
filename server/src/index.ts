@@ -131,13 +131,22 @@ function log (...args: any) {
       
       const body = Array.from(client.commands.values()).map(command => command.builder)
       
-      for (const guild of [ config.guilds.bot, config.guilds.galaxyDevelopment, config.guilds.galaxy, config.guilds.galaxySupport ]) {
-        if (!guild) continue
+      const MAIN_BOT = '745790085789909033'
+      if (client.user.id === MAIN_BOT) {
         await rest.put(
-          Routes.applicationGuildCommands(client.user.id, guild),
+          Routes.applicationCommands(client.user.id),
           { body }
         )
-        log('Uploaded', body.length, 'slash commands to', guild)
+        log('Uploaded', body.length, 'slash commands globally')
+      } else {
+        for (const guild of [ config.guilds.bot, config.guilds.galaxyDevelopment, config.guilds.galaxy, config.guilds.galaxySupport ]) {
+          if (!guild) continue
+          await rest.put(
+            Routes.applicationGuildCommands(client.user.id, guild),
+            { body }
+          )
+          log('Uploaded', body.length, 'slash commands to', guild)
+        }
       }
       
     } catch (error) {

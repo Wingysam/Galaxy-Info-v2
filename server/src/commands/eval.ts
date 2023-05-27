@@ -30,12 +30,12 @@ export default class extends GalaxyInfoCommand {
       depth: interaction.options.getInteger('depth') ?? 10
     }, code)
 
-    if (!success) return interaction.editReply(`**Ouput**:${codeBlock('', result)}\n**Type**:${codeBlock('ts', type?.toString())}\n${time}`)
+    if (!success) return interaction.editReply(`**Ouput**:${codeBlock('', `${result}`)}\n**Type**:${codeBlock('ts', type?.toString())}\n${time}`)
 
     const footer = codeBlock('ts', type?.toString())
 
     try {
-      await interaction.editReply(`**Output**:\n${codeBlock(language, result)}\n**Type**:${footer}\n${time}`)
+      await interaction.editReply(`**Output**:\n${codeBlock(language, `${result}`)}\n**Type**:${footer}\n${time}`)
     } catch (error) {
       return interaction.editReply(`${error}`)
     }
