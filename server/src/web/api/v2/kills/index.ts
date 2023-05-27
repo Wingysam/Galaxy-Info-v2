@@ -23,7 +23,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
         victim_ship = req.query.victim_ship
       }
 
-      const [carnage, kills] = await GalaxyInfo.prisma.$transaction([
+      const [carnage, kills]: [any, any] = await GalaxyInfo.prisma.$transaction([
         GalaxyInfo.prisma.$queryRawUnsafe(`
           SELECT
             SUM(victim_cost) AS carnage,

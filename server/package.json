@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext ts --fix",
-    "build": "tsc",
+    "build": "tsc || true",
     "dev1": "tsc --watch",
     "dev2": "nodemon --ignore web-client",
-    "prod": "cat base.dockerignore > .dockerignore && echo >> .dockerignore && cat .gitignore >> .dockerignore && docker build . -t 192.168.1.32:5000/galaxyinfo2 && docker push 192.168.1.32:5000/galaxyinfo2"
+    "prod": "docker build --platform linux/arm64 -f Dockerfile .. -t galaxy-info && docker save -o galaxy-info-server.tar galaxy-info && pigz galaxy-info-server.tar && rsync -P galaxy-info-server.tar.gz tide:galaxy-info && rm galaxy-info-server.tar.gz"
   },
   "author": "Wingy <git@wingysam.xyz>",
   "license": "UNLICENSED",

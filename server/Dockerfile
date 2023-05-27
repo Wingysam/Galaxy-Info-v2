@@ -1,18 +1,11 @@
-FROM node:16-alpine
+FROM node:20
 
-ENV NODE_ENV production
 WORKDIR /app
+COPY ./shared/ ./shared/
+COPY ./server/ ./server/
 
-RUN apk add --no-cache sqlite
+WORKDIR /app/server
 
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production=false --silent
+RUN npm install && npx prisma generate && npm run build
 
-COPY ["prisma", "./"]
-RUN npx prisma generate
-
-COPY . .
-
-RUN npm run build
-
-CMD cd dist && node index.js
+CMD node dist/index.js

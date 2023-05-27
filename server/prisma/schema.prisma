@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgres"
-  url      = env("prisma.db")
+  url      = env("prisma_db")
 }
 
 enum GalaxyShipClass {

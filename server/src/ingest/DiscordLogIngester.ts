@@ -148,7 +148,7 @@ class IngestionChannel {
 
   private static async findChannelInGuild (guild: Guild, channelName: string): Promise<Channel | undefined> {
     const channels = await guild.channels.fetch()
-    const channel = channels.find(channel => channel.name === channelName)
+    const channel = channels.find(channel => channel && channel.name === channelName)
     return channel
   }
 }

@@ -1,0 +1,5 @@
+README.md
+logo
+server/data
+server/.env
+**/node_modules

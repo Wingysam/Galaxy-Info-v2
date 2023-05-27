@@ -61,7 +61,7 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
     handle?: (arg: string) => Promise<any>
   ) {
     let cfgSection: any = cfg
-    const nameSplit = name.split('.')
+    const nameSplit = name.split('_')
     const key = nameSplit[nameSplit.length - 1]
     for (const part of nameSplit.splice(0, nameSplit.length - 1)) {
       if (!cfgSection[part]) cfgSection[part] = {}
@@ -118,38 +118,38 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   }
 
   // Primary operations configuration
-  await option('bot.token', 'must')
-  await option('bot.clientSecret', 'must')
-  await option('bot.staffCommands.webhook', 'should')
+  await option('bot_token', 'must')
+  await option('bot_clientSecret', 'must')
+  await option('bot_staffCommands_webhook', 'should')
 
   // Ingest service
-  await option('ingest.token', 'should')
-  await option('ingest.verbose', 'may', false, async opt => opt === 'true')
-  await option('ingest.quests.npcHooks', 'should', undefined, async hooks => hooks.split(','))
+  await option('ingest_token', 'should')
+  await option('ingest_verbose', 'may', false, async opt => opt === 'true')
+  await option('ingest_quests_npcHooks', 'should', undefined, async hooks => hooks.split(','))
 
   // Galaxy Server
-  await option('galaxy.guild', 'should')
+  await option('galaxy_guild', 'should')
 
   // Guilds
-  await option('guilds.galaxy', 'should')
-  await option('guilds.galaxyDevelopment', 'should')
-  await option('guilds.galaxySupport', 'should')
-  await option('guilds.bot', 'should')
+  await option('guilds_galaxy', 'should')
+  await option('guilds_galaxyDevelopment', 'should')
+  await option('guilds_galaxySupport', 'should')
+  await option('guilds_bot', 'should')
 
   // Web
-  await option('web.port', 'should', 3000, async port => Number(port))
-  await option('web.frontendBase', 'must')
-  await option('web.clientId', 'must')
+  await option('web_port', 'should', 3000, async port => Number(port))
+  await option('web_frontendBase', 'must')
+  await option('web_clientId', 'must')
 
   // DB
-  await option('db.queryLog', 'may', false, async opt => opt === 'true')
-  await option('db.kvKeys.serializedShips', 'may', 'ships_dump')
-  await option('db.kvKeys.serializedTestShips', 'may', 'ships_dump_test')
-  await option('db.kvKeys.serializedTurrets', 'may', 'turrets_dump')
-  await option('db.kvKeys.gameConstants', 'may', 'game_constants_dump')
+  await option('db_queryLog', 'may', false, async opt => opt === 'true')
+  await option('db_kvKeys_serializedShips', 'may', 'ships_dump')
+  await option('db_kvKeys_serializedTestShips', 'may', 'ships_dump_test')
+  await option('db_kvKeys_serializedTurrets', 'may', 'turrets_dump')
+  await option('db_kvKeys_gameConstants', 'may', 'game_constants_dump')
 
   // Bloxlink
-  await option('bloxlink.apiKey', 'must')
+  await option('bloxlink_apiKey', 'must')
 
   return cfg
 }
