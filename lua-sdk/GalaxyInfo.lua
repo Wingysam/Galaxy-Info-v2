@@ -1,4 +1,4 @@
-local GalaxyInfo = { version = '0.1.0' }
+local GalaxyInfo = { version = '0.1.1' }
 
 local API = 'https://info.galaxy.casa/api/v2'
 
