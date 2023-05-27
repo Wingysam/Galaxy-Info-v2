@@ -1,6 +1,6 @@
 local GalaxyInfo = { version = '0.1.0' }
 
-local API = 'https://galaxy.wingysam.xyz/api/v2'
+local API = 'https://info.galaxy.casa/api/v2'
 
 local function getProperty(instance, property)
   if remodel then
