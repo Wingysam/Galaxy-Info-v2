@@ -43,7 +43,7 @@ export class ShipKillsExport {
           const IDS = {
             Miner: '621337546051289088',
             Freighter: '621337546126917662',
-            Frigate: '621337545506160650',
+            Frigate: '1096102884002766978',
             Destroyer: '621337545568944138',
             Cruiser: '621337545661349888',
             Battlecruiser: '621337545694773279',
