@@ -15,7 +15,7 @@ export default class GalaxyStaffIngest extends IngestService {
     super(arg)
     try { this.developers = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxyDevelopment, 'Dev', arg.client, this.log) } catch {}
     try { this.devAdvisors = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxyDevelopment, 'Dev Advisor', arg.client, this.log) } catch {}
-    try { this.admins = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxy, 'Admins', arg.client, this.log) } catch {}
+    try { this.admins = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxy, 'Admin', arg.client, this.log) } catch {}
     try { this.mods = new GalaxyStaffIngestRole(this.GalaxyInfo.config.guilds.galaxy, 'Moderator', arg.client, this.log) } catch {}
 
     try { this.testShipAccess = new GalaxyStaffIngestAlias(this.developers, this.devAdvisors) } catch {}
