@@ -177,7 +177,7 @@ export class ShipCommand extends GalaxyInfoCommand {
       text: `Damage at ${Math.round(loyalty * 100)}% loyalty${info.secret ? '; Secret ship. This information is only available to Galaxy developers.' : ''}`
     })
 
-    embed.addField('Health', `🛡️ ${info.health.shield} / 🛠️ ${info.health.hull}\n🗯️ Resistance: ${Math.round(RESISTANCE[info.class] * 100)}%`, true)
+    embed.addField('Health', `🛡️ ${info.health.shield} / 🛠️ ${info.health.hull}`, true)
     embed.addField('Speed', `Top Speed: ${Math.floor(info.speed.top)}\nTurn Speed: ${info.speed.turn.toFixed(2)}\nAcceleration: ${Math.floor(info.speed.acceleration)}`, true)
     embed.addField('Storage', `${botHasEmojiPermissions ? EMOJIS.classIcons.freighter + ' ' : ''}Cargo Hold: ${info.cargoHold}\n${botHasEmojiPermissions ? EMOJIS.classIcons.miner + ' ' : ''}Ore Hold: ${info.oreHold}`, true)
     
