@@ -1,4 +1,4 @@
-import { LOYALTY_REQUIREMENTS, BASE_REQUIREMENTS, RESISTANCE, Ship, TurretClass, TurretSize } from '@galaxyinfo/ships'
+import { RESISTANCE, Ship, TurretClass, TurretSize } from '@galaxyinfo/ships'
 import { Router } from 'express'
 import { firstBy } from 'thenby'
 import { scope } from '../../../middleware/scope'
@@ -89,7 +89,6 @@ function formatShip(ship: Ship) {
     permit: ship.permit || undefined,
     description: ship.description,
     vip_required: ship.vip ? 'Yes' : 'No',
-    loyalty_required: `${Math.round(LOYALTY_REQUIREMENTS[ship.class] * 100)}% + Level ${BASE_REQUIREMENTS[ship.class]} Starbase`,
     explosion_radius: ship.explosionSize.toLocaleString()
   }
 

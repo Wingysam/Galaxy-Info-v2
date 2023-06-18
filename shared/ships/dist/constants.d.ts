@@ -191,22 +191,6 @@ declare const RESISTANCE: {
     readonly Alien: 0.3;
     readonly Admin: 0.9;
 };
-declare const LOYALTY_REQUIREMENTS: {
-    readonly Fighter: 0;
-    readonly Frigate: 0;
-    readonly Destroyer: 0;
-    readonly Cruiser: 0;
-    readonly Battlecruiser: 0.03;
-    readonly Battleship: 0.05;
-    readonly Dreadnought: 0.07;
-    readonly Carrier: 0.09;
-    readonly 'Super Capital': 0.11;
-    readonly Titan: 0;
-    readonly Miner: 0;
-    readonly Freighter: 0;
-    readonly Alien: 0;
-    readonly Admin: 0;
-};
 declare const BASE_REQUIREMENTS: {
     readonly Fighter: 1;
     readonly Frigate: 1;
@@ -230,4 +214,4 @@ declare const CLAMPS: {
     readonly acceleration: readonly [5, 50];
 };
 declare const NON_LIMITED_QUEST_SHIPS: string[];
-export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, LOYALTY_REQUIREMENTS, BASE_REQUIREMENTS, BUILD_MENU_CLASSES, CLAMPS, NON_LIMITED_QUEST_SHIPS };
+export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, BASE_REQUIREMENTS, BUILD_MENU_CLASSES, CLAMPS, NON_LIMITED_QUEST_SHIPS };
