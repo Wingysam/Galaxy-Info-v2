@@ -7,7 +7,7 @@ import { EMOJIS } from '../emoji'
 import { Ship, ShipFighters, ShipNotFoundError, ShipSpinal, ShipTurrets } from '@galaxyinfo/ships'
 import type { Turret } from '@galaxyinfo/ships'
 import { firstBy } from 'thenby'
-import { BUILD_MENU_CLASSES, LOYALTY_REQUIREMENTS } from '@galaxyinfo/ships'
+import { BUILD_MENU_CLASSES } from '@galaxyinfo/ships'
 import type { Galaxypedia } from '../Galaxypedia'
 import type GalaxyStaffIngest from '../ingest/services/GalaxyStaff'
 import type { Channel } from '@prisma/client'
@@ -44,11 +44,7 @@ export class ShipCommand extends GalaxyInfoCommand {
     const range = interaction.options.getInteger('range')
     let loyalty = interaction.options.getInteger('loyalty')
     if (loyalty === null) {
-      if (info.class === 'Alien') {
-        loyalty = 0
-      } else {
-        loyalty = Math.max(LOYALTY_REQUIREMENTS[info.class], .03)
-      }
+      loyalty = 0
     } else {
       loyalty = loyalty / 100
     }

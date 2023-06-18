@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { ClientShips, ClientTurrets, LOYALTY_REQUIREMENTS } from "@galaxyinfo/ships";
+import { ClientShips, ClientTurrets } from "@galaxyinfo/ships";
 import Weapons from "@/components/Weapons.vue";
 import RecentKills from "@/components/RecentKills.vue";
 import DataCard from '@/components/DataCard.vue'
@@ -179,7 +179,7 @@ export default {
         const ships = new ClientShips(turrets);
         await ships.init(serializedShips);
         this.ship = ships.get(this.$route.params.ship);
-        this.loyalty = Math.round(LOYALTY_REQUIREMENTS[this.ship.class] * 100)
+        this.loyalty = 0
       } catch (error) {
         this.error = error.message;
       }
