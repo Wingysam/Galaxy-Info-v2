@@ -3,3 +3,4 @@ logo
 server/data
 server/.env
 **/node_modules
+server/dist

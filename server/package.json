@@ -9,14 +9,15 @@
     "build": "tsc || true",
     "dev1": "tsc --watch",
     "dev2": "nodemon --ignore web-client",
-    "prod": "docker build --platform linux/arm64 -f Dockerfile .. -t galaxy-info && docker save -o galaxy-info-server.tar galaxy-info && pigz galaxy-info-server.tar && rsync -P galaxy-info-server.tar.gz tide:galaxy-info && rm galaxy-info-server.tar.gz"
+    "build-image": "docker build --platform linux/arm64 -f Dockerfile .. -t registry.wg.wingysam.xyz/galaxy-info",
+    "prod": "npm run build-image && docker push registry.wg.wingysam.xyz/galaxy-info"
   },
   "author": "Wingy <git@wingysam.xyz>",
   "license": "UNLICENSED",
   "dependencies": {
     "@discordjs/builders": "^0.16.0",
     "@discordjs/rest": "^0.5.0",
-    "@prisma/client": "^4.14.1",
+    "@prisma/client": "^4.15.0",
     "@sapphire/type": "^2.2.4",
     "@sapphire/utilities": "^3.9.1",
     "cors": "^2.8.5",
@@ -51,7 +52,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
     "nodemon": "^2.0.14",
-    "prisma": "^4.14.1",
+    "prisma": "^4.15.0",
     "typescript": "^4.7.3"
   },
   "_moduleAliases": {
