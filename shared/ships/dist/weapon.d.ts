@@ -9,6 +9,7 @@ export declare class Alpha {
     constructor(shield?: number, hull?: number, max?: number);
     add(...alphas: Alpha[]): this;
     multiply(multiplier: number): this;
+    toString(): string;
 }
 export declare class Dps {
     shield: number;
@@ -17,4 +18,5 @@ export declare class Dps {
     add(...dpses: Dps[]): this;
     multiply(count: number): this;
     get average(): number;
+    toString(): string;
 }

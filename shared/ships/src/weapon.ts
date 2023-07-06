@@ -31,6 +31,10 @@ export class Alpha {
 
     return this
   }
+
+  toString () {
+    return `${this.shield}/${this.hull}/${this.max}`
+  }
 }
 
 export class Dps {
@@ -60,5 +64,9 @@ export class Dps {
 
   get average() {
     return (this.shield + this.hull) / 2
+  }
+
+  toString () {
+    return `${this.shield}/${this.hull}/${this.average}`
   }
 }
