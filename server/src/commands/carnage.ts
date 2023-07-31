@@ -86,8 +86,13 @@ export class CarnageCommand extends GalaxyInfoCommand {
             : ''
           }
           ${
-            limited
+            limited === true
             ? 'AND victim_limited'
+            : ''
+          }
+          ${
+            limited === false
+            ? 'AND NOT victim_limited'
             : ''
           }
           ${
@@ -232,8 +237,13 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
             : ''
           }
           ${
-            limited
+            limited === true
             ? 'AND victim_limited'
+            : ''
+          }
+          ${
+            limited === false
+            ? 'AND NOT victim_limited'
             : ''
           }
           ${
