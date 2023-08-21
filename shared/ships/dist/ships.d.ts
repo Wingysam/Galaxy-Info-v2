@@ -36,7 +36,7 @@ export declare type SerializedShip = {
     acceleration: number;
     turnSpeed: number;
     weapons: SerializedShipWeapons;
-    fighters: string[];
+    fighters: string[] | {};
     extraMaterials: ExtraMaterials;
 };
 export declare type ExtraMaterials = {
@@ -45,7 +45,7 @@ export declare type ExtraMaterials = {
 export declare type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' | 'Class E';
 export declare type SerializedShipWeapons = {
     spinals: SerializedSpinals;
-    turrets: TurretResolvable[];
+    turrets: TurretResolvable[] | {};
 };
 export declare type SerializedSpinals = {
     f?: SerializedSpinal;
@@ -56,7 +56,7 @@ export declare type SerializedSpinal = {
     weaponSize: SpinalWeaponSize;
     interval: number;
     reloadOverride?: number;
-    guns: SerializedSpinalGun[];
+    guns: SerializedSpinalGun[] | {};
 };
 export declare type SerializedSpinalGun = {
     barrels: number;

@@ -40,7 +40,7 @@ export type SerializedShip = {
   acceleration: number
   turnSpeed: number
   weapons: SerializedShipWeapons,
-  fighters: string[]
+  fighters: string[] | {}
   extraMaterials: ExtraMaterials
 }
 
@@ -50,7 +50,7 @@ export type Permit = 'SC Build' | 'Class A' | 'Class B' | 'Class C' | 'Class D' 
 
 export type SerializedShipWeapons = {
   spinals: SerializedSpinals
-  turrets: TurretResolvable[]
+  turrets: TurretResolvable[] | {}
 }
 
 export type SerializedSpinals = {
@@ -62,7 +62,7 @@ export type SerializedSpinal = {
   weaponSize: SpinalWeaponSize
   interval: number
   reloadOverride?: number
-  guns: SerializedSpinalGun[]
+  guns: SerializedSpinalGun[] | {}
 }
 export type SerializedSpinalGun = {
   barrels: number
@@ -108,7 +108,9 @@ export class Ships {
         if (fighters && serializedShip.class !== 'Fighter') continue
         const ship = new Ship(this.ships, turrets, serializedShip)
         this.ships[ship.name] = ship
-      } catch {} // missing turret or something
+      } catch (error) {
+        console.log(`Failed to load ship ${serializedShip.name}: ${error}`)
+      }
     }
   }
 
@@ -201,7 +203,7 @@ export class Ship {
     }
 
     this.weapons = new ShipWeapons(turrets, serializedShip.weapons)
-    this.fighters = new ShipFighters(ships, serializedShip.fighters)
+    this.fighters = new ShipFighters(ships, serializedShip.fighters instanceof Array ? serializedShip.fighters : [])
 
     this.extraMaterials = serializedShip.extraMaterials
 
@@ -227,7 +229,7 @@ export class ShipWeapons extends Weapon {
   spinals: ShipSpinals
   constructor(turrets: Turrets, serializedShipWeapons: SerializedShipWeapons) {
     super()
-    this.turrets = new ShipTurrets(turrets, serializedShipWeapons.turrets)
+    this.turrets = new ShipTurrets(turrets, serializedShipWeapons.turrets instanceof Array ? serializedShipWeapons.turrets : [])
     this.spinals = new ShipSpinals(serializedShipWeapons.spinals)
   }
 
@@ -317,7 +319,7 @@ export class ShipSpinal extends Weapon {
     super()
     this.range = SPINALS[serializedSpinal.weaponType][serializedSpinal.weaponSize].range
     this.guns = []
-    for (const gun of serializedSpinal.guns) this.guns.push(new ShipSpinalGun(serializedSpinal, gun))
+    for (const gun of (serializedSpinal.guns instanceof Array ? serializedSpinal.guns : [])) this.guns.push(new ShipSpinalGun(serializedSpinal, gun))
 
     if (this.guns.length === 0) throw new Error('Spinal has no guns')
     this.interval = this.guns[0].interval
