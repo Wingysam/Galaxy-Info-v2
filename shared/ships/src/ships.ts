@@ -206,12 +206,6 @@ export class Ship {
     this.fighters = new ShipFighters(ships, serializedShip.fighters instanceof Array ? serializedShip.fighters : [])
 
     this.extraMaterials = serializedShip.extraMaterials
-
-    this.speed.turn = clamp(this.speed.turn, ...CLAMPS.turnSpeed)
-    if (!this.secret) {
-      this.speed.top = clamp(this.speed.top, ...CLAMPS.topSpeed)
-      this.speed.acceleration = clamp(this.speed.acceleration, ...CLAMPS.acceleration)
-    }
   }
 
   private calculatePermit() {
@@ -238,7 +232,7 @@ export class ShipWeapons extends Weapon {
     const spinals = this.spinals.alpha(range)
     return turrets.add(spinals)
   }
-  
+
   dps(range?: number, loyalty = 0) {
     const turrets = this.turrets.dps(range, loyalty)
     const spinals = this.spinals.dps(range)
@@ -269,7 +263,7 @@ export class ShipTurrets extends Weapon {
     }
     return alpha
   }
-  
+
   dps(range?: number, loyalty = 0) {
     const dps = new Dps()
     for (const [turret, count] of this.turrets) {
@@ -416,7 +410,7 @@ export class ShipFighters extends Weapon {
     }
     return alpha
   }
-  
+
   dps(range?: number, loyalty = 0) {
     const dps = new Dps()
     for (const [fighter, count] of this.fighters) {
