@@ -118,9 +118,9 @@ const BUILD_MENU_CLASSES = [
 ] as const
 
 const CLAMPS = {
-  turnSpeed: [.1, .9],
-  topSpeed: [45, 380],
-  acceleration: [5, 50]
+  turnSpeed: [0, 1],
+  topSpeed: [0, 1000],
+  acceleration: [0, 500]
 } as const
 
 const NON_LIMITED_QUEST_SHIPS = [
