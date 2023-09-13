@@ -4,7 +4,7 @@ import fuzzyfind from 'fuzzyfind'
 
 import { CLASSES, PERMITS, SPINALS, SPINAL_RELOAD_EXPONENT } from './constants'
 import { Weapon, Dps, Alpha } from './weapon'
-import { CLAMPS, RESISTANCE } from '.'
+import { RESISTANCE } from '.'
 
 export class ShipsNotInitializedError extends Error {}
 export class ShipsNotDumpedError extends Error {}
