@@ -208,10 +208,5 @@ declare const BASE_REQUIREMENTS: {
     readonly Admin: 1;
 };
 declare const BUILD_MENU_CLASSES: readonly ["Miner", "Freighter", "Frigate", "Destroyer", "Cruiser", "Battlecruiser", "Battleship", "Dreadnought", "Carrier", "Super Capital"];
-declare const CLAMPS: {
-    readonly turnSpeed: readonly [0.1, 0.9];
-    readonly topSpeed: readonly [45, 380];
-    readonly acceleration: readonly [5, 50];
-};
 declare const NON_LIMITED_QUEST_SHIPS: string[];
-export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, BASE_REQUIREMENTS, BUILD_MENU_CLASSES, CLAMPS, NON_LIMITED_QUEST_SHIPS };
+export { CLASSES, DAMAGE_TYPE_DISTRIBUTIONS, TURRET_CLASS_DAMAGE_DISTRIBUTIONS, SPINALS, SPINAL_RELOAD_EXPONENT, PERMITS, RESISTANCE, BASE_REQUIREMENTS, BUILD_MENU_CLASSES, NON_LIMITED_QUEST_SHIPS };
