@@ -47,7 +47,7 @@
         :to="`/login?next=${encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)}`"
         color="blurple"
       >
-        <span class="mr-2">Log In</span>
+        <span>Log In</span>
       </v-btn>
     </v-app-bar>
 
