@@ -48,7 +48,6 @@
         color="blurple"
       >
         <span class="mr-2">Log In</span>
-        <v-icon>mdi-discord</v-icon>
       </v-btn>
     </v-app-bar>
 
