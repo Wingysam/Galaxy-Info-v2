@@ -157,7 +157,7 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   await option('bloxlink_apiKey', 'must')
 
   // Export
-  await option('export_shipKills_allowKillLogForAll', 'may', true)
+  await option('export_shipKills_allowKillLogForAll', 'may', true, async opt => opt === 'true')
 
   return cfg
 }
