@@ -28,7 +28,10 @@ export class ShipKillsExport {
           kill_log_enabled
       `
       for (const channelRow of channels) {
-        const isAll = channelRow.kill_log_include_all
+  
+
+        let isAll = channelRow.kill_log_include_all
+        if (!this.GalaxyInfo.config.export.shipKills.allowKillLogForAll) isAll = false
 
         const killerIsMember = (channelRow.kill_log_members ?? this.GalaxyInfo.guildConfigs.defaults.channel.kill_log_members) && channelRow.members?.includes(kill.killer_id)
         const killerIsCustom = channelRow.kill_log_custom_users?.includes(kill.killer_id)
