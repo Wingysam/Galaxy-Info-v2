@@ -116,7 +116,7 @@ export default {
             'Some creative users have set their members to people they want to kill, then configured the bot to alert them when their target gets a kill.'
           ]
         ]
-      ]
+      ],
       disableKills: process.env.VUE_APP_DISABLE_KILLS
     }
   }

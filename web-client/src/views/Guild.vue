@@ -262,7 +262,7 @@ export default {
       selectedChannel: {
         config: {}
       },
-      disableKills: process.env.VUE_APP_DISABLE_KILLS
+      disableKills: process.env.VUE_APP_DISABLE_KILLS,
       shipClasses: [
         'Miner',
         'Freighter',
