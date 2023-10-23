@@ -113,7 +113,6 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
 
     try {
       const handled = await handle(fromEnv)
-      if (!handled) throw new Error('failed to parse')
 
       cfgSection[key] = handled
       log('Loaded option', name)
