@@ -136,7 +136,7 @@
                   class="mt-0"
                   label="Include all of your members in this kill log"
                 />
-                <v-switch
+                <v-switch v-if="process.env.VUE_APP_DISABLE_KILLS !== 'true'"
                   v-model="selectedChannel.config.kill_log_include_all"
                   class="mt-0"
                   label="Include everyone in this kill log"

@@ -33,7 +33,7 @@
         >
           See all Ships
         </v-btn>
-        <v-btn
+        <v-btn v-if="process.env.VUE_APP_DISABLE_KILLS !== 'true'"
           to="/kills"
           color="secondary"
           class="mx-3 my-2"

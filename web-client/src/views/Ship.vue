@@ -103,7 +103,7 @@
         class="mb-8"
       />
     </div>
-    <v-row v-if="!error">
+    <v-row v-if="!error && process.env.VUE_APP_DISABLE_KILLS !== 'true'">
       <v-col>
         <v-card class="pa-4">
           <h3>Recent Kills</h3>
