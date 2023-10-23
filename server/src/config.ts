@@ -40,6 +40,11 @@ export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
   bloxlink: {
     apiKey: string
   }
+  export: {
+    shipKills: {
+      allowKillLogForAll: boolean
+    }
+  }
 }
 
 export async function parseConfig (): Promise<GalaxyInfoConfig> {
@@ -150,6 +155,9 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
 
   // Bloxlink
   await option('bloxlink_apiKey', 'must')
+
+  // Export
+  await option('allowKillLogForAll', 'may', true)
 
   return cfg
 }

@@ -103,7 +103,7 @@
         class="mb-8"
       />
     </div>
-    <v-row v-if="!error">
+    <v-row v-if="!error && disableKills !== 'true'">
       <v-col>
         <v-card class="pa-4">
           <h3>Recent Kills</h3>
@@ -152,6 +152,7 @@ export default {
       range: 0,
       loyalty: 0,
       stats: {},
+      disableKills: process.env.VUE_APP_DISABLE_KILLS
     };
   },
   watch: {

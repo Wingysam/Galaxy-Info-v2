@@ -33,7 +33,7 @@
         >
           See all Ships
         </v-btn>
-        <v-btn
+        <v-btn v-if="disableKills !== 'true'"
           to="/kills"
           color="secondary"
           class="mx-3 my-2"
@@ -116,7 +116,8 @@ export default {
             'Some creative users have set their members to people they want to kill, then configured the bot to alert them when their target gets a kill.'
           ]
         ]
-      ]
+      ],
+      disableKills: process.env.VUE_APP_DISABLE_KILLS
     }
   }
 }
