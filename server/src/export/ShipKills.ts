@@ -28,8 +28,6 @@ export class ShipKillsExport {
           kill_log_enabled
       `
       for (const channelRow of channels) {
-  
-
         let isAll = channelRow.kill_log_include_all
         if (!this.GalaxyInfo.config.export.shipKills.allowKillLogForAll) isAll = false
 
