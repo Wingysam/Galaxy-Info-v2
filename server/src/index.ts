@@ -70,6 +70,51 @@ function log (...args: any) {
   GalaxyInfo.config = config
 
   GalaxyInfo.prisma = prisma
+  await GalaxyInfo.prisma.$executeRawUnsafe('DROP VIEW IF EXISTS "Kill_clean";')
+  await GalaxyInfo.prisma.$executeRawUnsafe(`
+    CREATE VIEW "Kill_clean" AS
+    SELECT
+      "Kill".id,
+      "Kill".killer_id,
+      "Kill".killer_name,
+      "Kill".killer_ship,
+      "Kill".killer_class,
+      "Kill".victim_id,
+      "Kill".victim_name,
+      "Kill".victim_ship,
+      "Kill".victim_class,
+      "Kill".victim_cost,
+      ("Kill".victim_limited AND (NOT ("Kill".victim_ship = ANY (ARRAY['Nightmare'::text, 'Atheon'::text, 'Zhen'::text, 'Helios'::text, 'Imperator'::text, 'Osiris'::text, 'Slipstream'::text])))) AS victim_limited,
+      "Kill".refunded,
+      "Kill".nuke,
+      "Kill".date
+    FROM "Kill"
+    WHERE (("Kill".victim_class <> 'Admin'::text) AND (NOT "Kill".refunded) AND ("Kill".victim_name <> 'rcouret'::text));
+  `)
+  await GalaxyInfo.prisma.$executeRawUnsafe('DROP VIEW IF EXISTS "Kill_usermap";')
+  await GalaxyInfo.prisma.$executeRawUnsafe(`
+    CREATE VIEW "Kill_usermap" AS
+    SELECT DISTINCT
+      subq.killer_id AS id,
+      subq.killer_name AS name
+    FROM (
+      SELECT
+        "Kill".date,
+        "Kill".killer_id,
+        "Kill".killer_name,
+        row_number() OVER (PARTITION BY "Kill".killer_id ORDER BY "Kill".id DESC) AS rn
+      FROM "Kill"
+      UNION
+      SELECT
+        "Kill".date,
+        "Kill".victim_id,
+        "Kill".victim_name,
+        row_number() OVER (PARTITION BY "Kill".victim_id ORDER BY "Kill".id DESC) AS rn
+      FROM "Kill"
+    ) subq
+    WHERE (subq.rn = 1);
+  `)
+  console.log('Initialized db views')
 
   GalaxyInfo.roblox = roblox
   GalaxyInfo.ingest = new IngestServices({ GalaxyInfo })
