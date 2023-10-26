@@ -9,7 +9,7 @@
     "build+debug": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.js"
   },
   "author": "Wingy <git@wingysam.xyz>",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0",
   "types": "./dist/index.d.ts",
   "devDependencies": {
     "esbuild": "^0.13.15",
