@@ -33,7 +33,8 @@
         >
           See all Ships
         </v-btn>
-        <v-btn v-if="disableKills !== 'true'"
+        <v-btn
+          v-if="disableKills !== 'true'"
           to="/kills"
           color="secondary"
           class="mx-3 my-2"
@@ -41,12 +42,12 @@
           See Recent Kills
         </v-btn>
         <v-btn
-          href="https://discord.gg/cx2dXax"
+          href="https://discord.gg/5JvZCW3h3N"
           target="_blank"
           color="blurple"
           class="mx-3 my-2"
         >
-          Get Help&nbsp;&nbsp;<v-icon>mdi-chat</v-icon>
+          Try the Bot&nbsp;&nbsp;<v-icon>mdi-chat</v-icon>
         </v-btn>
       </v-col>
     </v-row>
