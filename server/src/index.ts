@@ -64,7 +64,7 @@ function log (...args: any) {
   const GalaxyInfo: any = {}
   GalaxyInfo.devs = [ // We hard code this because the devs of the app should always be the same
   '235804673578237952', // Wingy
-  '993019299025399898' // yname
+  '993019299025399898', // yname
 ]
 
   GalaxyInfo.config = config

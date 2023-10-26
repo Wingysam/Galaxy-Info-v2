@@ -64,6 +64,8 @@ export class CarnageCommand extends GalaxyInfoCommand {
 
     assertShipClassesValid(shipClasses)
 
+
+
     const [, topTen, totals, mostCommon]: any = await GalaxyInfo.prisma.$transaction([
       GalaxyInfo.prisma.$executeRawUnsafe(`
         CREATE TEMPORARY VIEW "Kill_temp" AS
@@ -188,13 +190,15 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
     const ships = interaction.options.getBoolean('ships')
     const shipClasses = (interaction.options.getString('class') ?? '').split(',').filter(str => str)
     const reverse = !!interaction.options.getBoolean('reverse')
-    const limited = !!interaction.options.getBoolean('limited')
+    const limited = interaction.options.getBoolean('limited') ?? null
     const count = !!interaction.options.getBoolean('count')
 
     if (Number.isNaN(page)) throw new Error('Page should be a number. If you meant to use a -flag or -option, make sure to remember the `-`.')
     if (!Number.isSafeInteger(page) || page <= 0) throw new Error('Page must be a positive integer.')
     if (page > 10) throw new Error('For performance reasons, page must be at most 10.')
     const afterPos = (page - 1) * 10
+
+    console.log(afterPos)
 
     assertShipClassesValid(shipClasses)
 
@@ -237,12 +241,12 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
             : ''
           }
           ${
-            limited === true
+            limited === true && limited !== null
             ? 'AND victim_limited'
             : ''
           }
           ${
-            limited === false
+            limited === false && limited !== null
             ? 'AND NOT victim_limited'
             : ''
           }
