@@ -5,7 +5,6 @@ import { config as dotenv } from 'dotenv'
 import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-import * as Bloxlink from 'bloxlink-sdk'
 
 import { GalaxyInfoConfig, parseConfig } from './config'
 import prisma from './prismaClient'
@@ -34,7 +33,6 @@ declare global {
     galaxypedia: Galaxypedia,
     devs: string[],
     staffCommandsWebhook?: WebhookClient,
-    bloxlink: any,
     gameConstants: GameConstants
   }
 }
@@ -98,9 +96,6 @@ function log (...args: any) {
     })
   }
 
-
-  Bloxlink.initialise(config.bloxlink.apiKey)
-  GalaxyInfo.bloxlink = Bloxlink
 
   if (config.bot.staffCommands.webhook) {
     GalaxyInfo.staffCommandsWebhook = new WebhookClient({ url: config.bot.staffCommands.webhook })
