@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && esbuild src/index.ts --outfile=index.js --format=cjs --minify"
   },
-  "author": "",
-  "license": "UNLICENSED",
+  "author": "Wingy <git@wingysam.xyz>",
+  "license": "AGPL-3.0",
   "types": "./src/index.d.ts",
   "devDependencies": {
     "esbuild": "^0.13.12",
