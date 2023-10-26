@@ -1,5 +1,4 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { Type } from '@sapphire/type'
 import { codeBlock } from '@sapphire/utilities'
 import type { CommandInteraction } from 'discord.js'
 import { inspect } from 'util'
@@ -47,7 +46,7 @@ export default class extends GalaxyInfoCommand {
     let syncTime: string | undefined
     let asyncTime: string | undefined
     let result: unknown | undefined
-    let type: Type | undefined
+    let type: undefined
     try {
       if (args.async) code = `(async () => {\n${code}\n})();`
 
@@ -62,12 +61,10 @@ export default class extends GalaxyInfoCommand {
         result = await result
         asyncTime = (Date.now() - time).toString()
       }
-      type = new Type(result)
       success = true
     } catch (error) {
       if (!syncTime) syncTime = (Date.now() - time).toString()
       if (args.async && !asyncTime) asyncTime = (Date.now() - time).toString()
-      if (!type!) type = new Type(error)
       result = error
       success = false
     }
