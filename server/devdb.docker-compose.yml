@@ -7,12 +7,12 @@ services:
       POSTGRES_PASSWORD: galaxyinfo
       POSTGRES_DB: galaxyinfo
     ports:
-      - 20321:5432
+      - 127.0.0.1:20321:5432
     volumes:
       - ./data/pg:/var/lib/postgresql/data
     restart: always
   admin:
     image: adminer
     ports:
-      - 20322:8080
+      - 127.0.0.1:20322:8080
     restart: always
