@@ -38,7 +38,7 @@ export abstract class GalaxyInfoCommand {
   }
 
   async _interactionCreate(interaction: CommandInteraction) {
-    if (interaction.commandName !== this.name) return
+    if (interaction.commandName !== this.name && interaction.commandName !== 'dev-' + this.name) return
     const start = performance.now()
 
     const channelConfig = (interaction.guild
