@@ -198,8 +198,6 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
     if (page > 10) throw new Error('For performance reasons, page must be at most 10.')
     const afterPos = (page - 1) * 10
 
-    console.log(afterPos)
-
     assertShipClassesValid(shipClasses)
 
     let players: any[] = []
