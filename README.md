@@ -5,17 +5,27 @@
 
 ## Development
 ### Getting Started
-First, you'll need to get the database running:
+First, install dependencies with npm:
+```
+(cd server && npm install) && (cd web-client && npm install --force)
+```
+
+Now, copy `server/.env.example` to `server/.env` and replace the empty values with valid values from Discord.
+
+You'll need to get the database running:
 ```
 cd server && docker-compose -f devdb.docker-compose.yml up
+```
+
+If your DB hasn't been initialized yet, you'll need to do that:
+```
+cd server && npx prisma db push
 ```
 
 Then, in another terminal, start the TypeScript compiler for the server:
 ```
 cd server && npm run dev1
 ```
-
-Now, copy `server/.env.example` to `server/.env` and replace the empty values with valid values from Discord.
 
 In a third terminal, start the server:
 ```
