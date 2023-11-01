@@ -20,7 +20,7 @@ export type SerializedTurret = {
   SpeedDenominator: number,
   TurretSize: TurretSize
 }
-export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL'
+export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL' | 'Beam'
 export type TurretSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
 export type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien' | 'Test' | 'Modelers'
 

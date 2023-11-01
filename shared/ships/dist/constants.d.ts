@@ -52,6 +52,11 @@ declare const TURRET_CLASS_DAMAGE_DISTRIBUTIONS: {
         readonly hull: 0.3;
         readonly ideal: "shield";
     };
+    readonly Beam: {
+        readonly shield: 0.4;
+        readonly hull: 1;
+        readonly ideal: "hull";
+    };
 };
 declare const SPINALS: {
     readonly Phaser: {
