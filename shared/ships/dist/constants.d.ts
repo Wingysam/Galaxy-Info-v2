@@ -11,14 +11,19 @@ declare const DAMAGE_TYPE_DISTRIBUTIONS: {
         readonly ideal: "hull";
     };
     readonly Plasma: {
-        readonly shield: 1;
-        readonly hull: 0.7;
+        readonly shield: 0.9;
+        readonly hull: 0.9;
         readonly ideal: "shield";
     };
     readonly Missile: {
         readonly shield: 0.7;
         readonly hull: 1;
         readonly ideal: "hull";
+    };
+    readonly Quantum: {
+        readonly shield: 1;
+        readonly hull: 1;
+        readonly ideal: "shield";
     };
 };
 declare const TURRET_CLASS_DAMAGE_DISTRIBUTIONS: {

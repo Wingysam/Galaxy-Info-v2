@@ -15,11 +15,12 @@ const CLASSES = [
   'Admin'
 ] as const
 
-const DAMAGE_TYPE_DISTRIBUTIONS = { // verified in StructureHealth 2022-03-19
+const DAMAGE_TYPE_DISTRIBUTIONS = { // verified in StructureHealth 2023-11-01
   Laser: { shield: 1, hull: 0.3, ideal: 'shield' },
   Kinetic: { shield: 0.4, hull: 1, ideal: 'hull' },
-  Plasma: { shield: 1, hull: 0.7, ideal: 'shield' },
-  Missile: { shield: 0.7, hull: 1, ideal: 'hull' }
+  Plasma: { shield: 0.9, hull: 0.9, ideal: 'shield' },
+  Missile: { shield: 0.7, hull: 1, ideal: 'hull' },
+  Quantum: { shield: 1, hull: 1, ideal: 'shield' }
 } as const
 
 const TURRET_CLASS_DAMAGE_DISTRIBUTIONS = { // verified in turret scripts 2023-11-01
