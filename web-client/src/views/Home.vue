@@ -102,7 +102,7 @@ export default {
           require('@/assets/marketing/ships.png'),
           [
             'Galaxy Info can display information on any ship in the game.',
-            'All information is up-to-date and accurate, with information pulled directly from the game assets.',
+            'All information is up-to-date and accurate, with information pushed directly from the game.',
             'Integrated with ship kills to provide stats such as average kill/death ratio with a given ship.',
             'Detailed DPS breakdowns: Galaxy Info calculates the damage across shield and hull of every weapon of every ship. It is the most powerful ship information solution ever created.'
           ]
@@ -111,10 +111,16 @@ export default {
           'Kills',
           require('@/assets/marketing/kills.png'),
           [
-            'Ingests logs from #ship-kills in the official Galaxy Discord server.',
-            'Automatically handles refunds when they are accepted.',
-            'When your faction member gets a kill, it logs the kill in your own server.',
-            'Some creative users have set their members to people they want to kill, then configured the bot to alert them when their target gets a kill.'
+            'Galaxy Info processes kills as they happen.',
+            'Custom kill logs: create a Discord channel with a live feed of your kills and/or losses as a group'
+          ]
+        ],
+        [
+          'Carnage',
+          require('@/assets/marketing/carnage.png'),
+          [
+            'Galaxy Info has a database of every ship killed since 2020.',
+            'It exposes powerful commands to query this database to compare the performance of players'
           ]
         ]
       ],
