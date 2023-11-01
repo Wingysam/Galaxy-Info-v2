@@ -79,6 +79,8 @@ class Turret extends Weapon {
         ? DAMAGE_TYPE_DISTRIBUTIONS.Plasma
         : TURRET_CLASS_DAMAGE_DISTRIBUTIONS[serializedTurret.Class]
 
+    if (!damageDistribution) throw new Error(`Unknown turret class ${serializedTurret.Class}`)
+
     this._alpha = new Alpha(
       serializedTurret.Damage * damageDistribution.shield,
       serializedTurret.Damage * damageDistribution.hull,
