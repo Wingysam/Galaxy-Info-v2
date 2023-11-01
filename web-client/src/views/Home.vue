@@ -112,7 +112,7 @@ export default {
           require('@/assets/marketing/kills.png'),
           [
             'Galaxy Info processes kills as they happen.',
-            'Custom kill logs: create a Discord channel with a live feed of your kills and/or losses as a group'
+            'Custom kill logs: create a Discord channel with a live feed of your kills and/or losses as a group.'
           ]
         ],
         [
@@ -120,7 +120,7 @@ export default {
           require('@/assets/marketing/carnage.png'),
           [
             'Galaxy Info has a database of every ship killed since 2020.',
-            'It exposes powerful commands to query this database to compare the performance of players'
+            'It exposes powerful commands to query this database to compare the performance of players.'
           ]
         ]
       ],
