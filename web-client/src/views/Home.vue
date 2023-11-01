@@ -20,6 +20,14 @@
         </p>
 
         <v-btn
+          href="https://discord.gg/5JvZCW3h3N"
+          target="_blank"
+          color="blurple"
+          class="mx-3 my-2"
+        >
+          Try the Bot&nbsp;&nbsp;<v-icon>mdi-chat</v-icon>
+        </v-btn>
+        <v-btn
           to="/guilds"
           color="blurple"
           class="mx-3 my-2"
@@ -42,12 +50,11 @@
           See Recent Kills
         </v-btn>
         <v-btn
-          href="https://discord.gg/5JvZCW3h3N"
-          target="_blank"
-          color="blurple"
+          to="https://github.com/Wingysam/Galaxy-Info-v2"
+          color="secondary"
           class="mx-3 my-2"
         >
-          Try the Bot&nbsp;&nbsp;<v-icon>mdi-chat</v-icon>
+          Source Code&nbsp;&nbsp;<v-icon>mdi-source-branch</v-icon>
         </v-btn>
       </v-col>
     </v-row>
