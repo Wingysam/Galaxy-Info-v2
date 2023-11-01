@@ -50,7 +50,7 @@
           See Recent Kills
         </v-btn>
         <v-btn
-          to="https://github.com/Wingysam/Galaxy-Info-v2"
+          href="https://github.com/Wingysam/Galaxy-Info-v2"
           color="secondary"
           class="mx-3 my-2"
         >
