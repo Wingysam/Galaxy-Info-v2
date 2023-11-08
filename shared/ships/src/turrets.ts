@@ -147,7 +147,7 @@ export class ServerTurrets extends Turrets {
       }) as any
       await this.load(cache.value)
     } catch (e) {
-      console.log('Turrets database reset.')
+      console.log('Turrets database reset.', e)
     }
   }
 
