@@ -287,7 +287,8 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
             : `AND NOT killer_name IN (
                 'Alien',
                 'Pirate',
-                'NPC'
+                'NPC',
+                'Kneall'
               )`
           }
         GROUP BY ${ships ? `${reverse ? 'victim' : 'killer'}_ship` : `${reverse ? 'victim' : 'killer'}_id`}

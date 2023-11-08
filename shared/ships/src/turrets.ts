@@ -20,7 +20,7 @@ export type SerializedTurret = {
   SpeedDenominator: number,
   TurretSize: TurretSize
 }
-export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL'
+export type TurretClass = 'Mining' | 'Laser' | 'Railgun' | 'Flak' | 'Cannon' | 'PDL' | 'Beam'
 export type TurretSize = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge'
 export type TurretGroup = 'Tiny' | 'Small' | 'Medium' | 'Large' | 'Huge' | 'Alien' | 'Test' | 'Modelers'
 
@@ -78,6 +78,8 @@ class Turret extends Weapon {
       serializedTurret.Group === 'Alien'
         ? DAMAGE_TYPE_DISTRIBUTIONS.Plasma
         : TURRET_CLASS_DAMAGE_DISTRIBUTIONS[serializedTurret.Class]
+
+    if (!damageDistribution) throw new Error(`Unknown turret class ${serializedTurret.Class}`)
 
     this._alpha = new Alpha(
       serializedTurret.Damage * damageDistribution.shield,

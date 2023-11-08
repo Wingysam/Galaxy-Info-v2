@@ -95,7 +95,7 @@ export class ShipCommand extends GalaxyInfoCommand {
         WHERE
           ${format('LOWER(victim_ship) = LOWER(%L)', info.name)}
           AND killer_id != -1
-          AND NOT killer_name IN ('Alien', 'Pirate')
+          AND NOT killer_name IN ('Alien', 'Pirate', 'Kneall')
           AND date > NOW() - INTERVAL '30 days'
       `),
       GalaxyInfo.prisma.$queryRawUnsafe(`
@@ -107,7 +107,7 @@ export class ShipCommand extends GalaxyInfoCommand {
           ${format('LOWER(victim_ship) = LOWER(%L)', info.name)}
           AND (
             killer_id != -1
-            OR killer_name IN ('Alien', 'Pirate')
+            OR killer_name IN ('Alien', 'Pirate', 'Kneall')
           )
           AND date > NOW() - INTERVAL '30 days'
       `),
