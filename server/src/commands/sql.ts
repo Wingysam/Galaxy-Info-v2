@@ -40,7 +40,7 @@ export class SqlCommand extends GalaxyInfoCommand {
     } catch (error) {
       interaction.editReply(`${error}`)
       return
-    }
+    } 
   }
 
   private async eval (code: string) {
