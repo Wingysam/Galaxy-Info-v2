@@ -17,6 +17,7 @@ async function getServices(): Promise<(new(arg: IngestServiceArg) => IngestServi
   const servicesDir = path.join(__dirname, 'services')
   const serviceFilenames = (await readdir(servicesDir))
     .filter(filename => filename.endsWith('.js'))
+
   return Promise.all(serviceFilenames.map(filename => require(path.join(servicesDir, filename)).default))
 }
 
@@ -32,7 +33,10 @@ export class IngestServices {
   }
 
   async init () {
+    console.log("TESTIE1")
     if (!this.GalaxyInfo.config.ingest?.token) return
+
+    console.log("TESTIE")
 
     const client = new Client({
       intents: [
@@ -47,6 +51,7 @@ export class IngestServices {
       log(`Logged in as ${client.user.tag}!`)
 
       const services = await getServices()
+
       for (const serviceConstructor of services) {
         const service = new serviceConstructor({
           GalaxyInfo: this.GalaxyInfo,

@@ -23,7 +23,7 @@ export default class ShipKillsIngest extends IngestService {
         id: 'desc'
       }
     })
-
+ 
     const parser = new ShipKillsIngestParser()
 
     this.dli = new DiscordLogIngester({
