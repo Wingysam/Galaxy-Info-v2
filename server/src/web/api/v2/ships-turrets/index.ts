@@ -31,9 +31,7 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
     const serializedShips = { ...serializedShipsMain, ...serializedShipsTest }
 
     const allowedShips: SerializedShips = {}
-
-    console.log(GalaxyInfo.ingest.services)
-
+    
     const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
     if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
 

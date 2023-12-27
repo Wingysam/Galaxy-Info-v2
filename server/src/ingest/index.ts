@@ -33,10 +33,8 @@ export class IngestServices {
   }
 
   async init () {
-    console.log("TESTIE1")
     if (!this.GalaxyInfo.config.ingest?.token) return
 
-    console.log("TESTIE")
 
     const client = new Client({
       intents: [

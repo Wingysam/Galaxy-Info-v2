@@ -81,7 +81,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
     }
   })
 
-  router.get('/:id', scope('kills_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
+  router.get('/:id', scope('kill_view'), frontendLoggedIn({ optional: true }), async (req, res) => {
     const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
     const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
     const isAdmin = req.discordUser && staff.includes(req.discordUser.id)
