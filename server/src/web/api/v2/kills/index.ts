@@ -130,5 +130,44 @@ export async function kills ({ GalaxyInfo }: Arg) {
     res.send(serialize({ kill }))
   })
 
+  router.post('/:id/tokenrefund', scope('kills_write'), json(), async (req, res) => {
+    const data = deserialize(req.body)
+
+    if(!data.discordUserId) return res.send(serialize({ error: `no discordUserId provided`}))
+    const discordUserId = data.discordUserId
+
+    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+    const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
+
+    const isAdmin = staff.includes(discordUserId)
+    if (!isAdmin) return res.send(serialize({ error: `must be admin`}))
+
+    const refunded_override = true
+    const refunded = refunded_override && !!data.refunded
+
+    const id = BigInt(req.params.id)
+    const kill = await GalaxyInfo.prisma.kill.findFirst({
+      where: {
+        id
+      },
+      rejectOnNotFound: true
+    })
+    kill.refunded_override_history.push({
+      admin: discordUserId,
+      refunded,
+      refunded_override
+    })
+    kill.refunded = refunded
+    kill.refunded_override = refunded_override
+    await GalaxyInfo.prisma.kill.update({
+      where: {
+        id
+      },
+      data: kill
+    })
+    return res.send(serialize({ kill }))
+  })
+
   return router
 }
+

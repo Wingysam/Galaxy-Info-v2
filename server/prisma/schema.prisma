@@ -43,7 +43,7 @@ enum ApiTokenScope {
 
   kills_read
   kill_view
-
+  kills_write
   galaxypedia
 }
 
