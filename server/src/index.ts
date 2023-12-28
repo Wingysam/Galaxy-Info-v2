@@ -57,6 +57,7 @@ function log (...args: any) {
   }, 1)
 })()
 
+
 ;(async () => {
   dotenv()
   const config = await parseConfig()
