@@ -44,7 +44,7 @@
       </v-row>
       <redirect
         v-else
-        :href="`https://discord.com/api/oauth2/authorize?client_id=1167172912533483540&redirect_uri=${encodeURIComponent(`${window.location.protocol}//${window.location.host}/login`)}&response_type=token&scope=identify%20guilds`"
+        :href="`https://discord.com/api/oauth2/authorize?client_id=745790085789909033&redirect_uri=${encodeURIComponent(`${window.location.protocol}//${window.location.host}/login`)}&response_type=token&scope=identify%20guilds`"
       />
     </div>
   </v-container>
