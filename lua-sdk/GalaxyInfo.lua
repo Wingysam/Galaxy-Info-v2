@@ -1,13 +1,15 @@
-local GalaxyInfo = { version = '0.1.1' }
+local serde, net
+pcall(function()
+  serde = require("@lune/serde")
+  net = require('@lune/net')
+end)
 
-local API = 'https://info.galaxy.casa/api/v2'
+local GalaxyInfo = { version = '0.1.2' }
+
+local API = 'https://api.info.galaxy.casa/api/v2'
 
 local function getProperty(instance, property)
-  if remodel then
-    return remodel.getRawProperty(instance, property)
-  else
-    return instance[property]
-  end
+  return instance[property]
 end
 
 local function getValue(parent, valueName, default)
@@ -16,52 +18,31 @@ local function getValue(parent, valueName, default)
   return getProperty(value, 'Value')
 end
 
-local function randomString(length)
-  local str = ''
-	for _ = 1, length do
-		str = str .. string.char(math.random(97, 122))
-	end
-	return str
-end
-
 local function httpRequest(request)
-  if remodel then
-    local function escape(str)
-      return "'" .. string.gsub(str, "'", "''") .. "'"
-    end
-    local command = 'curl -s ' .. escape(request.Url)
-    if request.Method then command = command .. " -X " .. escape(request.Method) end
-    if request.Headers then
-      for k, v in pairs(request.Headers) do
-        command = command .. ' -H ' .. escape(k .. ': ' .. v)
-      end
-    end
-    local tmpfile
-    if request.Body then
-      tmpfile = '/tmp/' .. randomString(32)
-      remodel.writeFile(tmpfile, request.Body)
-      command = command .. ' -d ' .. escape('@' .. tmpfile)
-    end
-    local handle = io.popen(command)
-    local body = handle:read('*a')
-    if tmpfile then remodel.removeFile(tmpfile) end
-    return { Body = body }
+  if net then
+    local response = net.request({
+      url = request.Url,
+      method = request.Method,
+      headers = request.Headers,
+      body = request.Body
+    })
+    return { Body = response.body }
   else
     return game:GetService('HttpService'):RequestAsync(request)
   end
 end
 
 local function jsonEncode(data)
-  if remodel then
-    return json.toString(data)
+  if serde then
+    return serde.encode('json', data)
   else
     return game:GetService('HttpService'):JSONEncode(data)
   end
 end
 
 local function jsonDecode(str)
-  if remodel then
-    return json.fromString(str)
+  if serde then
+    return serde.decode('json', str)
   else
     return game:GetService('HttpService'):JSONDecode(str)
   end
