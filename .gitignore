@@ -4,3 +4,4 @@ server/.env
 server/tsconfig.tsbuildinfo
 server/data
 server/.dockerignore
+web-client/.env

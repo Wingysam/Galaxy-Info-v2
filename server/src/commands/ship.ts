@@ -4,7 +4,7 @@ import format from 'pg-format'
 
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { EMOJIS } from '../emoji'
-import { Ship, ShipFighters, ShipNotFoundError, ShipSpinal, ShipTurrets } from '@galaxyinfo/ships'
+import { Ship, ShipFighters, ShipNotFoundError, ShipSpinal, ShipSpinalGun, ShipTurrets } from '@galaxyinfo/ships'
 import type { Turret } from '@galaxyinfo/ships'
 import { firstBy } from 'thenby'
 import { BUILD_MENU_CLASSES } from '@galaxyinfo/ships'
@@ -138,15 +138,14 @@ export class ShipCommand extends GalaxyInfoCommand {
     }
     const turretText = generateTurretText(info.weapons.turrets)
 
-    function generateSpinalText(letter: 'f' | 'g', spinal?: ShipSpinal) {
-      if (!spinal) return
+    function generateSpinalText(spinal: ShipSpinal, spinalIndex: number) {
       const dps = spinal.dps(range ?? undefined)
-      const displayLetter = botHasEmojiPermissions ? EMOJIS.spinal[letter] : `[${letter.toUpperCase}]`
-      return `${displayLetter} ${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType} (${Math.floor(dps.average)}${NBSP}DPS)`
+      return `* Spinal ${spinalIndex + 1} (${Math.floor(dps.average)}${NBSP}DPS)\n${spinal.guns.map(generateGunText).join('\n')}`
     }
-    const spinalText = [
-      generateSpinalText('f', info.weapons.spinals.f), generateSpinalText('g', info.weapons.spinals.g)
-    ].join('\n')
+    function generateGunText(gun: ShipSpinalGun) {
+      return `  * ${gun.barrels} ${gun.weaponSize} ${gun.weaponType}`
+    }
+    const spinalText = info.weapons.spinals.spinals.map(generateSpinalText).join('\n')
 
     function processFighter(fighter: Ship, count: number) {
       return {
