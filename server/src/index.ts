@@ -1,4 +1,4 @@
-import { config as dotenv } from 'dotenv'
+import './init'
 
 import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
@@ -15,8 +15,6 @@ import { ServerShips, ServerTurrets } from '@galaxyinfo/ships'
 import { GalaxyInfoClient } from './GalaxyInfoClient'
 import { Galaxypedia } from './Galaxypedia'
 import { GameConstants } from './GameConstants'
-
-require('module-alias/register')
 
 declare global {
   interface GalaxyInfo { // eslint-disable-line no-unused-vars
@@ -58,7 +56,6 @@ function log (...args: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 ;(async () => {
-  dotenv()
   const config = await parseConfig()
 
   const GalaxyInfo: any = {}
