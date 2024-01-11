@@ -1,4 +1,4 @@
-import { config as dotenv } from 'dotenv'
+import './init'
 
 import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
@@ -58,7 +58,6 @@ function log (...args: any) {
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 ;(async () => {
-  dotenv()
   const config = await parseConfig()
 
   const GalaxyInfo: any = {}

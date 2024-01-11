@@ -47,18 +47,18 @@ export declare type SerializedShipWeapons = {
     spinals: SerializedSpinals;
     turrets: TurretResolvable[] | {};
 };
-export declare type SerializedSpinals = {
-    f?: SerializedSpinal;
-    g?: SerializedSpinal;
-};
-export declare type SerializedSpinal = {
-    weaponType: SpinalWeaponType;
-    weaponSize: SpinalWeaponSize;
-    interval: number;
-    reloadOverride?: number;
-    guns: SerializedSpinalGun[] | {};
-};
+export declare type SerializedSpinals = SerializedSpinal[];
+export declare type SerializedSpinal = SerializedSpinalGun[];
 export declare type SerializedSpinalGun = {
+    attributes: {
+        WeaponType: SpinalWeaponType;
+        ProjectileSize: SpinalWeaponSize;
+        BarrelInterval?: number;
+        ReloadTime?: number;
+        IsBroadside?: boolean;
+        Range?: number;
+        ProjectileVelocity?: number;
+    };
     barrels: number;
 };
 export declare type SpinalWeaponType = 'Phaser' | 'Cannon' | 'Torpedo';
@@ -131,33 +131,29 @@ export declare class ShipTurrets extends Weapon {
     dps(range?: number, loyalty?: number): Dps;
 }
 export declare class ShipSpinals extends Weapon {
-    private spinals;
-    f?: ShipSpinal;
-    g?: ShipSpinal;
+    spinals: ShipSpinal[];
     constructor(serializedSpinals: SerializedSpinals);
     alpha(range?: number): Alpha;
     dps(range?: number): Dps;
 }
 export declare class ShipSpinal extends Weapon {
+    reload: number;
+    guns: ShipSpinalGun[];
+    constructor(serializedSpinal: SerializedSpinal);
+    alpha(range?: number): Alpha;
+    dps(range?: number): Dps;
+}
+export declare class ShipSpinalGun extends Weapon {
     range: number;
     reload: number;
     barrels: number;
     interval: number;
     weaponSize: SpinalWeaponSize;
     weaponType: SpinalWeaponType;
-    private guns;
-    constructor(serializedSpinal: SerializedSpinal);
+    private _alpha;
+    constructor(serializedGun: SerializedSpinalGun);
     alpha(range?: number): Alpha;
     dps(range?: number): Dps;
-}
-export declare class ShipSpinalGun extends Weapon {
-    reload: number;
-    barrels: number;
-    interval: number;
-    private _alpha;
-    constructor(spinal: SerializedSpinal, gun: SerializedSpinalGun);
-    alpha(): Alpha;
-    dps(): Dps;
 }
 export declare class ShipFighters extends Weapon {
     fighters: Map<Ship, number>;

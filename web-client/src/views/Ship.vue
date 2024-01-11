@@ -229,11 +229,14 @@ export default {
       ];
 
       stats.weapons.spinals = [
-        ...[this.ship.weapons.spinals.f, this.ship.weapons.spinals.g]
-          .filter((spinal) => spinal)
+        ...this.ship.weapons.spinals.spinals
           .map((spinal) => {
+            let guns = []
+            for (const gun of spinal.guns) {
+              guns.push(`${gun.barrels}x ${gun.weaponSize} ${gun.weaponType}`)
+            }
             return {
-              name: `${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType}`,
+              name: `${guns.join('\n')}`,
               dps: floorDps(spinal.dps(this.range, this.loyalty / 100)),
               alpha: floorAlpha(spinal.alpha(this.range, this.loyalty / 100)),
               interval: spinal.guns[0]?.interval.toFixed(2),

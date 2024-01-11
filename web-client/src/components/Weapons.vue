@@ -7,9 +7,16 @@
       sort-by="dps.average"
       :sort-desc="true"
       hide-default-footer
+      class="weapons-table"
     />
   </v-container>
 </template>
+
+<style scoped>
+  .weapons-table {
+    white-space: pre;
+  }
+</style>
 
 <script>
 export default {

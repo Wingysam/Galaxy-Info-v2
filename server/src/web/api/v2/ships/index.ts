@@ -1,4 +1,4 @@
-import type { Alpha, Dps, ShipSpinal } from '@galaxyinfo/ships'
+import type { Alpha, Dps } from '@galaxyinfo/ships'
 import { Router, json } from 'express'
 import { scope } from '../../../middleware/scope'
 interface Arg {
@@ -68,14 +68,12 @@ export async function ships ({ GalaxyInfo }: Arg) {
       ]
 
       stats.weapons.spinals = [
-        ...([ship.weapons.spinals.f, ship.weapons.spinals.g]
-          .filter((spinal) => spinal) as ShipSpinal[])
-          .map((spinal) => {
+        ...(ship.weapons.spinals.spinals)
+          .map((spinal, index) => {
             return {
-              name: `${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType}`,
+              name: `Spinal${index + 1}`,
               dps: floorDps(spinal.dps(range)),
               alpha: floorAlpha(spinal.alpha(range)),
-              interval: spinal.interval.toFixed(2),
               reload: spinal.reload.toFixed(2)
             }
           }),
