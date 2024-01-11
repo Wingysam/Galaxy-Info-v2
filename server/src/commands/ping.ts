@@ -6,14 +6,14 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 
 export class PingCommand extends GalaxyInfoCommand {
-  constructor() {
+  constructor () {
     const builder = new SlashCommandBuilder()
       .setName('ping')
       .setDescription('Responds with bot latency')
     super({ builder, instant: true })
   }
 
-  public async interactionCreate(interaction: CommandInteraction, ephemeral: boolean) {
+  public async interactionCreate (interaction: CommandInteraction, ephemeral: boolean) {
     const start = performance.now()
     await interaction.reply({ ephemeral, content: 'Ping?' })
     const end = performance.now()

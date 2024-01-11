@@ -1,7 +1,7 @@
 import { serialize } from '@galaxyinfo/serialization'
 import { Router, json } from 'express'
 import { scope } from '../../../middleware/scope'
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -10,7 +10,7 @@ export async function turrets ({ GalaxyInfo }: Arg) {
 
   router.get('/', scope('turrets_read'), async (req, res) => {
     try {
-      if (typeof req.query.turret == 'string') {
+      if (typeof req.query.turret === 'string') {
         res.send(GalaxyInfo.turrets.get(req.query.turret))
         return
       }

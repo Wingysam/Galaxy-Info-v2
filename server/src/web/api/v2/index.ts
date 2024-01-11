@@ -11,7 +11,7 @@ import { galaxypedia } from './galaxypedia'
 import { kills } from './kills'
 import { logout } from './logout'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 

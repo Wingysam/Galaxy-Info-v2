@@ -1,6 +1,6 @@
 import { Router, json } from 'express'
 import { scope } from '../../../middleware/scope'
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 

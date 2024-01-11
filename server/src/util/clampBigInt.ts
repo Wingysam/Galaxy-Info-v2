@@ -7,5 +7,5 @@ export async function max (one: bigint, two: bigint) {
 }
 
 export async function clamp (value: bigint, minValue: bigint, maxValue: bigint) {
-  return min(await max(value, minValue), maxValue)
+  return await min(await max(value, minValue), maxValue)
 }

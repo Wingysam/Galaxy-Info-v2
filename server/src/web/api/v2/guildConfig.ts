@@ -6,7 +6,7 @@ import type { Channel, Prisma } from '.prisma/client'
 import { getBotGuild, getUserGuildOrThrowIfNoPerms } from '../../../util/getGuild'
 import { firstBy } from 'thenby'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -26,12 +26,11 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
     const guildConfig = await GalaxyInfo.guildConfigs.readGuild(guildId)
 
-    // @ts-expect-error
-    const djsChannels: TextChannel[] = Array.from(
+    const djsChannels = Array.from(
       botGuild.channels.cache
         .filter(channel => channel instanceof TextChannel)
         .values()
-    )
+    ) as TextChannel[]
 
     djsChannels.sort(firstBy((a: TextChannel, b: TextChannel) => (a.parent?.position ?? 0) - (b.parent?.position ?? 0)).thenBy('position'))
 
@@ -81,21 +80,23 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
       if (body.last_updated.getTime() !== oldGuildConfig.last_updated.getTime() && !body.force) return res.send(serialize({ requiresForce: true }))
 
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const last_updated = new Date()
 
-      const config = {
+      const config: Prisma.GuildCreateInput = {
         id: validatedGuildId,
         last_updated
-      } as Prisma.GuildCreateInput
+      }
 
       for (const key of Object.keys(body)) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         if (body[key] === '') delete body[key]
       }
 
       const GUILD_KEYS = [
         'members',
 
-        'command_ship_image_placement',
+        'command_ship_image_placement'
       ] as const
 
       for (const key of GUILD_KEYS) {
@@ -144,7 +145,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
         ] as const
 
         for (const key of CHANNEL_KEYS) {
-          // @ts-expect-error
+          // @ts-expect-error "Expression produces a union type that is too complex to represent."
           if (key in submittedChannel) channel[key] = submittedChannel[key]
         }
 

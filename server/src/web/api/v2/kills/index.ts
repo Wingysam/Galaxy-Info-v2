@@ -6,7 +6,7 @@ import { scope } from '../../../middleware/scope'
 import type GalaxyStaffIngest from 'ingest/services/GalaxyStaff'
 import frontendLoggedIn from '../../../middleware/frontendLoggedIn'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -15,11 +15,12 @@ export async function kills ({ GalaxyInfo }: Arg) {
 
   router.get('/', scope('kills_read'), async (req, res) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       let killer_ship, victim_ship
-      if (typeof req.query.killer_ship == 'string') {
+      if (typeof req.query.killer_ship === 'string') {
         killer_ship = req.query.killer_ship
       }
-      if (typeof req.query.victim_ship == 'string') {
+      if (typeof req.query.victim_ship === 'string') {
         victim_ship = req.query.victim_ship
       }
 
@@ -32,7 +33,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
           WHERE
             1=1
             ${
-              killer_ship
+              typeof killer_ship === 'string'
               ? format(
                 'AND killer_ship = %L',
                 killer_ship
@@ -40,7 +41,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
               : ''
             }
             ${
-              victim_ship
+              typeof victim_ship === 'string'
               ? format(
                 'AND victim_ship = %L',
                 victim_ship
@@ -54,7 +55,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
         WHERE
           1=1
           ${
-            killer_ship
+            typeof killer_ship === 'string'
             ? format(
               'AND killer_ship = %L',
               killer_ship
@@ -62,7 +63,7 @@ export async function kills ({ GalaxyInfo }: Arg) {
             : ''
           }
           ${
-            victim_ship
+            typeof victim_ship === 'string'
             ? format(
               'AND victim_ship = %L',
               victim_ship
@@ -74,17 +75,21 @@ export async function kills ({ GalaxyInfo }: Arg) {
       `)
       ])
 
-      res.send(serialize({ carnage: BigInt(carnage[0].carnage.truncated().toString()) , kills }))
+      res.send(serialize({ carnage: BigInt(carnage[0].carnage.truncated().toString()), kills }))
     } catch (error) {
       res.send(`${error}`)
       return
     }
   })
 
-  router.get('/:id', scope('kill_view'), frontendLoggedIn({ optional: true }), async (req, res) => {
+  router.get('/:id', frontendLoggedIn({ optional: true }), async (req, res) => {
     const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
     const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
     const isAdmin = req.discordUser && staff.includes(req.discordUser.id)
+
+    if (!isAdmin && !req.token.scopes.includes('kills_read')) {
+      throw new Error('must either have kills_read scope or be an admin to read kills')
+    }
 
     const id = BigInt(req.params.id)
     const kill = await GalaxyInfo.prisma.kill.findFirst({
@@ -92,57 +97,27 @@ export async function kills ({ GalaxyInfo }: Arg) {
         id
       }
     })
-    res.send(serialize({ kill, isAdmin }))
-  })
-
-  router.post('/:id/refund', frontendLoggedIn(), json(), async (req, res) => {
-    if (!req.discordUser) throw new Error('not logged in')
-    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
-    const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
-    const isAdmin = staff.includes(req.discordUser.id)
-    if (!isAdmin) throw new Error('must be admin')
-
-    const data = deserialize(req.body)
-
-    const refunded_override = !!data.refunded_override
-    const refunded = refunded_override && !!data.refunded
-
-    const id = BigInt(req.params.id)
-    const kill = await GalaxyInfo.prisma.kill.findFirst({
-      where: {
-        id
-      },
-      rejectOnNotFound: true
-    })
-    kill.refunded_override_history.push({
-      admin: req.discordUser.id,
-      refunded,
-      refunded_override
-    })
-    kill.refunded = refunded
-    kill.refunded_override = refunded_override
-    await GalaxyInfo.prisma.kill.update({
-      where: {
-        id
-      },
-      data: kill
-    })
     res.send(serialize({ kill }))
   })
 
-  router.post('/:id/tokenrefund', scope('kills_write'), json(), async (req, res) => {
-    const data = deserialize(req.body)
-
-    if(!data.discordUserId) return res.send(serialize({ error: `no discordUserId provided`}))
-    const discordUserId = data.discordUserId
-
+  router.post('/:id/refund', frontendLoggedIn({ optional: true }), json(), async (req, res) => {
     const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
     const staff = [...galaxyStaffIngest.developers.members, ...galaxyStaffIngest.admins.members]
+    const isAdmin = req.discordUser && staff.includes(req.discordUser.id)
 
-    const isAdmin = staff.includes(discordUserId)
-    if (!isAdmin) return res.send(serialize({ error: `must be admin`}))
+    if (!isAdmin && !req.token.scopes.includes('kills_write')) {
+      throw new Error('must either have kills_write scope or be an admin to update kills')
+    }
 
-    const refunded_override = true
+    const data = deserialize(req.body)
+
+    const discordUserId = req.discordUser?.id ?? data.discordUserId
+    if (!discordUserId) {
+      throw new Error('must provide discordUserId')
+    }
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const refunded_override = !!data.refunded_override
     const refunded = refunded_override && !!data.refunded
 
     const id = BigInt(req.params.id)
@@ -165,9 +140,8 @@ export async function kills ({ GalaxyInfo }: Arg) {
       },
       data: kill
     })
-    return res.send(serialize({ kill }))
+    res.send(serialize({ kill }))
   })
 
   return router
 }
-

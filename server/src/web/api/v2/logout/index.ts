@@ -4,7 +4,7 @@ import frontendLoggedIn from '../../../middleware/frontendLoggedIn'
 import fetch from 'node-fetch'
 import { serialize } from '@galaxyinfo/serialization'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
