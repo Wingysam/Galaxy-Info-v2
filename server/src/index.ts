@@ -16,6 +16,8 @@ import { GalaxyInfoClient } from './GalaxyInfoClient'
 import { Galaxypedia } from './Galaxypedia'
 import { GameConstants } from './GameConstants'
 
+require('module-alias/register')
+
 declare global {
   interface GalaxyInfo { // eslint-disable-line no-unused-vars
     guildConfigs: GuildConfigs
