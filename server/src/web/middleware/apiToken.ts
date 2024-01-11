@@ -3,7 +3,7 @@ import { serialize } from '@galaxyinfo/serialization'
 
 export async function apiToken (req: Request, res: Response, next: NextFunction) {
   try {
-    const providedToken = (typeof req.query.token === 'string' ? req.query.token : null) || req.header('x-token') || ''
+    const providedToken = (typeof req.query.token === 'string' ? req.query.token : null) ?? req.header('x-token') ?? ''
 
     const foundToken = await req.GalaxyInfo.prisma.apiToken.findUnique({
       where: {
@@ -14,7 +14,7 @@ export async function apiToken (req: Request, res: Response, next: NextFunction)
 
     req.token = foundToken
 
-    return next()
+    next(); return
   } catch (error) {
     return res.send(serialize({ error }))
   }

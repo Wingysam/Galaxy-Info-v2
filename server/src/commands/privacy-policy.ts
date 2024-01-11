@@ -15,9 +15,9 @@ If you have any concerns, please message yname#7161. You can ping me in the supp
 `
 
 export class PrivacyPolicyCommand extends GalaxyInfoCommand {
-  private pp: string
+  private readonly pp: string
 
-  constructor(GalaxyInfo: GalaxyInfo) {
+  constructor (GalaxyInfo: GalaxyInfo) {
     const builder = new SlashCommandBuilder()
       .setName('privacy-policy')
       .setDescription('See the privacy policy of Galaxy Info')
@@ -26,7 +26,7 @@ export class PrivacyPolicyCommand extends GalaxyInfoCommand {
     this.pp = PP(GalaxyInfo.config.web.frontendBase)
   }
 
-  public async interactionCreate(interaction: CommandInteraction, ephemeral: boolean) {
+  public async interactionCreate (interaction: CommandInteraction, ephemeral: boolean) {
     await interaction.reply({ ephemeral, content: this.pp })
   }
 }

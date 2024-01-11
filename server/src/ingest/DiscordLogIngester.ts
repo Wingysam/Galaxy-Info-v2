@@ -1,16 +1,16 @@
 import type { Channel, Client, Collection, Guild, Message, TextBasedChannel } from 'discord.js'
 import { clone } from 'lodash'
 
-export type DiscordLogIngestionConfiguration = {
-  client: Client,
-  channel: ChannelLocation,
-  startingMessageId?: Snowflake, // for performance reasons, we don't load every message ever sent every time
-  parser: Parser,
+export interface DiscordLogIngestionConfiguration {
+  client: Client
+  channel: ChannelLocation
+  startingMessageId?: Snowflake // for performance reasons, we don't load every message ever sent every time
+  parser: Parser
   callback: DiscordLogIngesterCallback
 }
 
-export type ChannelLocation = {
-  guildId: Snowflake,
+export interface ChannelLocation {
+  guildId: Snowflake
   channelName: string
 }
 
@@ -45,17 +45,17 @@ export class EmptyLogError extends Error {
 }
 
 type DiscordLogIngesterCallback = (parsed: any[]) => Promise<void>
-type Parser = {
+interface Parser {
   parse: (message: Message) => any
 }
 
 // DiscordLogIngester is responsible for obtaining then passing an IngestionChannel to a DiscordLogFetcher, then DiscordLogStreamer, then calling callback with logs.
 export class DiscordLogIngester {
-  private parser: Parser
-  private client: Client
-  private startingMessageId: Snowflake
-  private channelLocation: ChannelLocation
-  private callback: DiscordLogIngesterCallback
+  private readonly parser: Parser
+  private readonly client: Client
+  private readonly startingMessageId: Snowflake
+  private readonly channelLocation: ChannelLocation
+  private readonly callback: DiscordLogIngesterCallback
   private freshLogs: any[]
   private shouldFlushBuffer: boolean
 
@@ -68,7 +68,7 @@ export class DiscordLogIngester {
     this.freshLogs = []
     this.shouldFlushBuffer = false
 
-    this.init()
+    void this.init()
   }
 
   private async init () {
@@ -85,7 +85,7 @@ export class DiscordLogIngester {
   }
 
   private async setupCallbackWhenNewMessage (channel: TextBasedChannel) {
-    DiscordLogStreamer.create(channel, async (messages: Message[]) => {
+    await DiscordLogStreamer.create(channel, async (messages: Message[]) => {
       const parsed = await this.tryToParseMessages(messages)
       this.freshLogs = [...this.freshLogs, ...parsed]
       await this.flushIfShould()
@@ -102,14 +102,13 @@ export class DiscordLogIngester {
 
   private async tryToParseMessages (messages: Message[]) {
     const parsed = await Promise.allSettled(messages.map(this.parser.parse))
-    return this.throwAwayParseFailures(parsed)
+    return await this.throwAwayParseFailures(parsed)
   }
 
-  private async throwAwayParseFailures (parsed: PromiseSettledResult<any>[]) {
-    // Typedefs for promise.allSettled are bad. Any type errors from the following two lines are ignored.
-    // @ts-ignore
+  private async throwAwayParseFailures (parsed: Array<PromiseSettledResult<any>>) {
+    // @ts-expect-error Typedefs for promise.allSettled are bad.
     const rejecteds = parsed.filter(settled => settled.status === 'rejected').map(settled => settled.reason)
-    // @ts-ignore
+    // @ts-expect-error Typedefs for promise.allSettled are bad.
     const fulfilled = parsed.filter(settled => settled.status === 'fulfilled').map(settled => settled.value)
 
     for (const rejected of rejecteds) {
@@ -128,6 +127,7 @@ export class DiscordLogIngester {
 }
 
 // IngestionChannel is responsible for locating a discord.js Channel from a guild id and channel name
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class IngestionChannel {
   public static async findChannel (client: Client, channelLocation: ChannelLocation): Promise<TextBasedChannel> {
     const guild = await this.findGuild(client, channelLocation.guildId)
@@ -140,7 +140,7 @@ class IngestionChannel {
   private static async findGuild (client: Client, guildId: Snowflake) {
     const id = String(guildId) // discord.js requires it as a string and does not handle BigInts
 
-    const guild = await client.guilds.fetch(id)
+    const guild = await client.guilds.fetch(id) as Guild | undefined
     if (!guild) throw new GuildNotFoundError(id)
 
     return guild
@@ -148,16 +148,17 @@ class IngestionChannel {
 
   private static async findChannelInGuild (guild: Guild, channelName: string): Promise<Channel | undefined> {
     const channels = await guild.channels.fetch()
-    const channel = channels.find(channel => channel && channel.name === channelName)
-    return channel
+    const channel = channels.find(channel => !!channel && channel.name === channelName)
+    if (channel) return channel
+    return
   }
 }
 
 class DiscordLogFetcher {
   private fetchMessagesAfterId: bigint
-  private channel: TextBasedChannel
-  private channelNameOrId: string
-  private newestMessageId: bigint
+  private readonly channel: TextBasedChannel
+  private readonly channelNameOrId: string
+  private readonly newestMessageId: bigint
 
   constructor (channel: TextBasedChannel, startingMessageId?: Snowflake) {
     this.channel = channel
@@ -167,10 +168,11 @@ class DiscordLogFetcher {
   }
 
   public async fetch () {
-    return this._fetch()
+    return await this._fetch()
   }
 
   private async _fetch (cursor?: Snowflake, buffer?: Message[]): Promise<Message[]> {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const fetcher = this
 
     buffer = await bufferOrDefault(buffer)
@@ -180,22 +182,22 @@ class DiscordLogFetcher {
     buffer = await mergeMessagesIntoBuffer(messages, buffer)
 
     const newCursor = await getNewCursor(messages)
-    if (!newCursor) return finalize(buffer)
-    return this._fetch(newCursor, buffer)
+    if (typeof newCursor !== 'string') return await finalize(buffer)
+    return await this._fetch(newCursor, buffer)
 
     async function bufferOrDefault (buffer?: Message[]) {
       return buffer ?? []
     }
 
     async function cursorOrDefault (cursor?: Snowflake) {
-      if (cursor) return cursor
+      if (cursor !== undefined) return cursor
 
       const mostRecent = (await fetcher.channel.messages.fetch({ limit: 1 })).first()
       if (!mostRecent) throw new EmptyLogError(fetcher.channelNameOrId)
       return mostRecent.id
     }
 
-    async function fetchPage (cursor: Snowflake): Promise<Collection<String, Message>> {
+    async function fetchPage (cursor: Snowflake): Promise<Collection<string, Message>> {
       try {
         const cursorAsStringForDiscordJS = String(cursor) // discord.js does not support BigInts.
         const messages = await fetcher.channel.messages.fetch({
@@ -205,7 +207,7 @@ class DiscordLogFetcher {
         return messages
       } catch (error) {
         console.error(error)
-        return fetchPage(cursor)
+        return await fetchPage(cursor)
       }
     }
 
@@ -244,6 +246,7 @@ class DiscordLogFetcher {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class DiscordLogStreamer {
   public static async create (channel: TextBasedChannel, callback: (messages: Message[]) => Promise<void>) {
     let buffer: Message[] = []

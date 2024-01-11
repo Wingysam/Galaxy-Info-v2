@@ -6,7 +6,7 @@ import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { BotDevOnly } from '../preconditions/BotDevOnly'
 
 export default class extends GalaxyInfoCommand {
-  constructor() {
+  constructor () {
     const builder = new SlashCommandBuilder()
       .setName('eval')
       .addStringOption(option => option.setName('code').setDescription('The JavaScript to evaluate').setRequired(true))
@@ -15,7 +15,7 @@ export default class extends GalaxyInfoCommand {
       .addBooleanOption(option => option.setName('show-hidden').setDescription('Shows hidden JS properties'))
       .addIntegerOption(option => option.setName('depth').setDescription('How deep the display of the response object should be'))
       .setDescription('Evaluate arbitrary JavaScript')
-    super({ builder, preconditions: [ BotDevOnly ], ephemeral: true })
+    super({ builder, preconditions: [BotDevOnly], ephemeral: true })
   }
 
   public async interactionCreate (interaction: CommandInteraction): Promise<any> {
@@ -29,14 +29,14 @@ export default class extends GalaxyInfoCommand {
       depth: interaction.options.getInteger('depth') ?? 10
     }, code)
 
-    if (!success) return interaction.editReply(`**Ouput**:${codeBlock('', `${result}`)}\n**Type**:${codeBlock('ts', type?.toString())}\n${time}`)
+    if (!success) return await interaction.editReply(`**Ouput**:${codeBlock('', `${result}`)}\n**Type**:${codeBlock('ts', (type as any)?.toString())}\n${time}`)
 
-    const footer = codeBlock('ts', type?.toString())
+    const footer = codeBlock('ts', (type as any)?.toString())
 
     try {
       await interaction.editReply(`**Output**:\n${codeBlock(language, `${result}`)}\n**Type**:${footer}\n${time}`)
     } catch (error) {
-      return interaction.editReply(`${error}`)
+      return await interaction.editReply(`${error}`)
     }
   }
 
@@ -50,8 +50,8 @@ export default class extends GalaxyInfoCommand {
     try {
       if (args.async) code = `(async () => {\n${code}\n})();`
 
-      // @ts-expect-error
-      const { GalaxyInfo } = interaction.client
+      // @ts-expect-error we want the eval context to have this
+      const { GalaxyInfo } = interaction.client // eslint-disable-line
 
       // eslint-disable-next-line no-eval
       result = eval(code)
@@ -63,8 +63,8 @@ export default class extends GalaxyInfoCommand {
       }
       success = true
     } catch (error) {
-      if (!syncTime) syncTime = (Date.now() - time).toString()
-      if (args.async && !asyncTime) asyncTime = (Date.now() - time).toString()
+      if (syncTime === undefined) syncTime = (Date.now() - time).toString()
+      if (args.async && asyncTime === undefined) asyncTime = (Date.now() - time).toString()
       result = error
       success = false
     }

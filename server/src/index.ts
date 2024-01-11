@@ -1,38 +1,37 @@
-require('module-alias/register')
-
 import { config as dotenv } from 'dotenv'
 
 import { Intents, WebhookClient } from 'discord.js'
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 
-import { GalaxyInfoConfig, parseConfig } from './config'
+import { type GalaxyInfoConfig, parseConfig } from './config'
 import prisma from './prismaClient'
 import roblox from './util/roblox'
 import { IngestServices } from './ingest'
 import { GalaxyInfoWeb } from './web'
 import { GuildConfigs } from './util/guildConfigReadWrite'
 import { ExportService } from './export'
-import { ServerShips } from '@galaxyinfo/ships'
-import { ServerTurrets } from '@galaxyinfo/ships'
+import { ServerShips, ServerTurrets } from '@galaxyinfo/ships'
 import { GalaxyInfoClient } from './GalaxyInfoClient'
 import { Galaxypedia } from './Galaxypedia'
 import { GameConstants } from './GameConstants'
 
+require('module-alias/register')
+
 declare global {
-  type GalaxyInfo = { // eslint-disable-line no-unused-vars
-    guildConfigs: GuildConfigs,
-    config: GalaxyInfoConfig,
-    ingest: IngestServices,
-    prisma: typeof prisma,
-    roblox: typeof roblox,
-    client: GalaxyInfoClient,
-    web: GalaxyInfoWeb,
-    ships: ServerShips,
-    turrets: ServerTurrets,
-    galaxypedia: Galaxypedia,
-    devs: string[],
-    staffCommandsWebhook?: WebhookClient,
+  interface GalaxyInfo { // eslint-disable-line no-unused-vars
+    guildConfigs: GuildConfigs
+    config: GalaxyInfoConfig
+    ingest: IngestServices
+    prisma: typeof prisma
+    roblox: typeof roblox
+    client: GalaxyInfoClient
+    web: GalaxyInfoWeb
+    ships: ServerShips
+    turrets: ServerTurrets
+    galaxypedia: Galaxypedia
+    devs: string[]
+    staffCommandsWebhook?: WebhookClient
     gameConstants: GameConstants
   }
 }
@@ -57,15 +56,16 @@ function log (...args: any) {
   }, 1)
 })()
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 ;(async () => {
   dotenv()
   const config = await parseConfig()
 
   const GalaxyInfo: any = {}
   GalaxyInfo.devs = [ // We hard code this because the devs of the app should always be the same
-  '235804673578237952', // Wingy
-  '993019299025399898' // yname
-]
+    '235804673578237952', // Wingy
+    '993019299025399898' // yname
+  ]
 
   GalaxyInfo.config = config
 
@@ -141,8 +141,7 @@ function log (...args: any) {
     })
   }
 
-
-  if (config.bot.staffCommands.webhook) {
+  if (config.bot.staffCommands.webhook !== undefined) {
     GalaxyInfo.staffCommandsWebhook = new WebhookClient({ url: config.bot.staffCommands.webhook })
   }
 
@@ -157,7 +156,7 @@ function log (...args: any) {
 
   client.GalaxyInfo = GalaxyInfo
 
-  client.login(config.bot.token)
+  void client.login(config.bot.token)
 
   GalaxyInfo.client = client
   GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
@@ -166,11 +165,11 @@ function log (...args: any) {
   client.once('ready', async () => {
     try {
       if (!client.user) throw new Error('Client has no user')
-  
+
       const rest = new REST({ version: '9' }).setToken(config.bot.token)
-      
+
       const body = Array.from(client.commands.values()).map(command => command.builder)
-      
+
       const MAIN_BOT = '745790085789909033'
       if (client.user.id === MAIN_BOT) {
         await rest.put(
@@ -182,8 +181,8 @@ function log (...args: any) {
         for (const command of body) {
           command.setName(`dev-${command.name}`)
         }
-        for (const guild of [ config.guilds.bot, config.guilds.galaxyDevelopment, config.guilds.galaxy, config.guilds.galaxySupport ]) {
-          if (!guild) continue
+        for (const guild of [config.guilds.bot, config.guilds.galaxyDevelopment, config.guilds.galaxy, config.guilds.galaxySupport]) {
+          if (typeof guild !== 'string') continue
           await rest.put(
             Routes.applicationGuildCommands(client.user.id, guild),
             { body }
@@ -191,10 +190,8 @@ function log (...args: any) {
           log('Uploaded', body.length, 'slash commands to', guild)
         }
       }
-      
     } catch (error) {
       log(error)
     }
   })
-
 })()

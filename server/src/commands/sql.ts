@@ -6,20 +6,20 @@ import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { BotDevOnly } from '../preconditions/BotDevOnly'
 
 export class SqlCommand extends GalaxyInfoCommand {
-  private GalaxyInfo: GalaxyInfo
+  private readonly GalaxyInfo: GalaxyInfo
 
-  constructor(GalaxyInfo: GalaxyInfo) {
+  constructor (GalaxyInfo: GalaxyInfo) {
     const builder = new SlashCommandBuilder()
       .setName('sql')
       .addStringOption(option => option.setName('sql').setDescription('The SQL to evaluate').setRequired(true))
       .setDescription('Evaluate SQL')
-    super({ builder, preconditions: [ BotDevOnly ], ephemeral: true })
+    super({ builder, preconditions: [BotDevOnly], ephemeral: true })
     this.GalaxyInfo = GalaxyInfo
   }
 
-  public async interactionCreate(interaction: CommandInteraction) {
-    const code = await interaction.options.getString('sql')
-    if (!code) throw new Error('Code not found. You must provide some code to evaluate.')
+  public async interactionCreate (interaction: CommandInteraction) {
+    const code = interaction.options.getString('sql')
+    if (typeof code !== 'string') throw new Error('Code not found. You must provide some code to evaluate.')
     const { success, time, result }: any = await this.eval(code)
 
     if (!success) {
@@ -38,7 +38,7 @@ export class SqlCommand extends GalaxyInfoCommand {
         ]
       })
     } catch (error) {
-      interaction.editReply(`${error}`)
+      void interaction.editReply(`${error}`)
       return
     }
   }
@@ -57,8 +57,8 @@ export class SqlCommand extends GalaxyInfoCommand {
       asyncTime = (Date.now() - time).toString()
       success = true
     } catch (error: any) {
-      if (!syncTime) syncTime = (Date.now() - time).toString()
-      if (!asyncTime) asyncTime = (Date.now() - time).toString()
+      if (typeof syncTime !== 'string') syncTime = (Date.now() - time).toString()
+      if (typeof asyncTime !== 'string') asyncTime = (Date.now() - time).toString()
       result = error?.meta?.message || error
       success = false
     }

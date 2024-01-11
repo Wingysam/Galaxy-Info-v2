@@ -18,5 +18,6 @@ module.exports = {
         args[0].title = "Galaxy Info";
         return args;
       })
-  }
+  },
+
 }
