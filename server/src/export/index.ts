@@ -1,6 +1,6 @@
-import { ShipKillsExport } from "./ShipKills"
+import { ShipKillsExport } from './ShipKills'
 
-type ConstructorArg = {
+interface ConstructorArg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -9,11 +9,11 @@ function log (...message: any[]) {
 }
 
 export class ExportService {
-  private GalaxyInfo
+  private readonly GalaxyInfo
   shipKills!: ShipKillsExport
   constructor ({ GalaxyInfo }: ConstructorArg) {
     this.GalaxyInfo = GalaxyInfo
-    this.init()
+    void this.init()
   }
 
   async init () {
@@ -21,6 +21,6 @@ export class ExportService {
       GalaxyInfo: this.GalaxyInfo,
       log
     })
-    return [ this.GalaxyInfo, log ]
+    return [this.GalaxyInfo, log]
   }
 }

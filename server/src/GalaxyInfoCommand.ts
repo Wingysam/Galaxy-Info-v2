@@ -1,17 +1,17 @@
 import { performance } from 'perf_hooks'
 
-import type { SlashCommandBuilder } from "@discordjs/builders";
-import type { CommandInteraction, Interaction } from "discord.js";
-import type { Channel } from '@prisma/client';
+import type { SlashCommandBuilder } from '@discordjs/builders'
+import type { CommandInteraction, Interaction } from 'discord.js'
+import type { Channel } from '@prisma/client'
 
-type Precondition = {
+interface Precondition {
   run: (interaction: CommandInteraction) => Promise<void>
 }
 
-type GalaxyInfoCommandOptions = {
+interface GalaxyInfoCommandOptions {
   builder: SlashCommandBuilder
   ephemeral?: boolean
-  instant?: boolean,
+  instant?: boolean
   preconditions?: Precondition[]
 }
 
@@ -28,7 +28,7 @@ export abstract class GalaxyInfoCommand {
   instant: boolean
   preconditions: Precondition[]
 
-  constructor(opts: GalaxyInfoCommandOptions) {
+  constructor (opts: GalaxyInfoCommandOptions) {
     this.builder = opts.builder
     this.name = this.builder.name
     this.description = this.builder.description
@@ -37,13 +37,13 @@ export abstract class GalaxyInfoCommand {
     this.preconditions = opts.preconditions ?? []
   }
 
-  async _interactionCreate(interaction: CommandInteraction) {
+  async _interactionCreate (interaction: CommandInteraction) {
     if (interaction.commandName !== this.name && interaction.commandName !== 'dev-' + this.name) return
     const start = performance.now()
 
-    const channelConfig = (interaction.guild
-      && await interaction.client.GalaxyInfo.guildConfigs.readChannel(BigInt(interaction.guild.id), BigInt(interaction.channelId)))
-      ?? undefined
+    const channelConfig = (interaction.guild &&
+      await interaction.client.GalaxyInfo.guildConfigs.readChannel(BigInt(interaction.guild.id), BigInt(interaction.channelId))) ??
+      undefined
 
     const channelEphemeral = (channelConfig && !channelConfig.commands) ?? false
     const ephemeral = (this.ephemeral || (!this.instant && channelEphemeral)) ?? false
@@ -72,5 +72,5 @@ export abstract class GalaxyInfoCommand {
     log(`/${interaction.commandName}`, Math.ceil(end - start))
   }
 
-  abstract interactionCreate(interaction: Interaction, ephemeralConfig: boolean, channelConfig?: AllProps<Channel>): Promise<void>
+  abstract interactionCreate (interaction: Interaction, ephemeralConfig: boolean, channelConfig?: AllProps<Channel>): Promise<void>
 }

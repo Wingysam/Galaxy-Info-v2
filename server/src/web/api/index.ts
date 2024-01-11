@@ -3,7 +3,7 @@ import { Router } from 'express'
 import { ApiV1 } from './v1'
 import { ApiV2 } from './v2'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 

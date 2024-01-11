@@ -42,7 +42,6 @@ enum ApiTokenScope {
   quests_write
 
   kills_read
-  kill_view
   kills_write
   galaxypedia
 }

@@ -4,7 +4,7 @@ import 'express-async-errors'
 import GalaxyInfoWebApi from './api'
 import { apiToken } from './middleware/apiToken'
 
-type ConstructorArg = {
+interface ConstructorArg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -13,11 +13,11 @@ function log (...message: any[]) {
 }
 
 export class GalaxyInfoWeb {
-  private GalaxyInfo
+  private readonly GalaxyInfo
 
   constructor ({ GalaxyInfo }: ConstructorArg) {
     this.GalaxyInfo = GalaxyInfo
-    this.init()
+    void this.init()
   }
 
   async init () {
@@ -30,13 +30,13 @@ export class GalaxyInfoWeb {
       next()
     })
 
-    app.use(apiToken)
+    app.use(apiToken) // eslint-disable-line @typescript-eslint/no-misused-promises
 
     app.use('/api', await GalaxyInfoWebApi({ GalaxyInfo: this.GalaxyInfo }))
 
     app.get('/', (_, res) => res.send('should be frontend'))
 
-    app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    app.use((err: any, _req: express.Request, res: express.Response) => {
       console.error(err)
       res.status(500)
       res.end()

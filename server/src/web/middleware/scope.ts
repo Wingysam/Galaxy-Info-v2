@@ -13,7 +13,7 @@ export function scope (...scopes: ApiTokenScope[]) {
         }
       }
 
-      return next()
+      next(); return
     } catch (error) {
       return res.send(serialize({ error }))
     }

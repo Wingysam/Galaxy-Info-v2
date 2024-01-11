@@ -6,14 +6,14 @@ import { serialize } from '@galaxyinfo/serialization'
 import frontendLoggedIn from '../../../middleware/frontendLoggedIn'
 import type GalaxyStaffIngest from 'ingest/services/GalaxyStaff'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
 export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
   const router = Router()
 
-  async function getDumps(user?: string) {
+  async function getDumps (user?: string) {
     const serializedShipsMain = (await GalaxyInfo.prisma.keyValue.findUnique({
       where: {
         key: GalaxyInfo.config.db.kvKeys.serializedShips
@@ -31,11 +31,11 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
     const serializedShips = { ...serializedShipsMain, ...serializedShipsTest }
 
     const allowedShips: SerializedShips = {}
-    
-    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+
+    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest | undefined
     if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
 
-    const includeSecret = user && galaxyStaffIngest.testShipAccess.members.includes(user)
+    const includeSecret = typeof user === 'string' && galaxyStaffIngest.testShipAccess.members.includes(user)
 
     for (const ship of Object.keys(serializedShips)) {
       if (includeSecret || (!serializedShips[ship].secret && !serializedShips[ship].test)) allowedShips[ship] = serializedShips[ship]

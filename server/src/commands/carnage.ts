@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js'
+import { type CommandInteraction, MessageEmbed } from 'discord.js'
 import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import format from 'pg-format'
 import { SlashCommandBuilder } from '@discordjs/builders'
@@ -12,12 +12,12 @@ function assertShipClassesValid (shipClasses: string[]) {
   }
 }
 
-function findLongestNumber(numbers: string[]) {
+function findLongestNumber (numbers: string[]) {
   return numbers.sort((a: string, b: string) => b.length - a.length)[0].length
 }
 
 export class CarnageCommand extends GalaxyInfoCommand {
-  constructor() {
+  constructor () {
     const builder = new SlashCommandBuilder()
       .setName('carnage')
       .addStringOption(option => option.setName('player').setDescription('The player or players to view carnage for.'))
@@ -29,6 +29,7 @@ export class CarnageCommand extends GalaxyInfoCommand {
       .setDescription('View the carnage of one or more players')
     super({ builder })
   }
+
   public async interactionCreate (interaction: CommandInteraction): Promise<void> {
     const GalaxyInfo = interaction.client.GalaxyInfo
 
@@ -49,8 +50,8 @@ export class CarnageCommand extends GalaxyInfoCommand {
     if (playerNames.length === 1 && playerNames[0] === 'all') {
       allPlayers = true
     } else {
-      if (playerNames.length) {
-        players = await Promise.all(playerNames.map(name => GalaxyInfo.roblox.nameToId(name)))
+      if (playerNames.length > 0) {
+        players = await Promise.all(playerNames.map(async name => await GalaxyInfo.roblox.nameToId(name)))
       } else {
         if (!interaction.guild) throw new Error('Specify a player or try this in a guild.')
         const guild = await GalaxyInfo.guildConfigs.readGuild(BigInt(interaction.guild.id))
@@ -63,8 +64,6 @@ export class CarnageCommand extends GalaxyInfoCommand {
     if (players.find(player => !/^\d*$/.test(player))) throw new Error("Fetching players went wrong and returned something that isn't an id")
 
     assertShipClassesValid(shipClasses)
-
-
 
     const [, topTen, totals, mostCommon]: any = await GalaxyInfo.prisma.$transaction([
       GalaxyInfo.prisma.$executeRawUnsafe(`
@@ -83,7 +82,7 @@ export class CarnageCommand extends GalaxyInfoCommand {
             }`
           }
           ${
-            shipClasses.length
+            (shipClasses.length > 0)
             ? `AND victim_class IN (${shipClasses.map(shipClass => `'${shipClass}'`).join(',')})`
             : ''
           }
@@ -98,7 +97,7 @@ export class CarnageCommand extends GalaxyInfoCommand {
             : ''
           }
           ${
-            ship
+            typeof ship === 'string'
             ? format(
               reverse
               ? 'AND LOWER(victim_ship) = LOWER(%L)'
@@ -166,7 +165,7 @@ export class CarnageCommand extends GalaxyInfoCommand {
 }
 
 export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
-  constructor() {
+  constructor () {
     const builder = new SlashCommandBuilder()
       .setName('carnage-leaderboard')
       .addStringOption(option => option.setName('players').setDescription('Only show these players on the leaderboard'))
@@ -202,9 +201,9 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
 
     let players: any[] = []
     let allPlayers = false
-    if (playerNames.length) {
-      if (playerNames.length) {
-        players = await Promise.all(playerNames.map(name => GalaxyInfo.roblox.nameToId(name)))
+    if (playerNames.length > 0) {
+      if (playerNames.length > 0) {
+        players = await Promise.all(playerNames.map(async name => await GalaxyInfo.roblox.nameToId(name)))
       } else {
         if (!interaction.guild) throw new Error('Specify a player or try this in a guild.')
         const guild = await GalaxyInfo.guildConfigs.readGuild(BigInt(interaction.guild.id))
@@ -234,7 +233,7 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
             }`
           }
           ${
-            shipClasses.length
+            (shipClasses.length > 0)
             ? `AND victim_class IN (${shipClasses.map(shipClass => `'${shipClass}'`).join(',')})`
             : ''
           }
@@ -249,7 +248,7 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
             : ''
           }
           ${
-            ship
+            typeof ship === 'string'
             ? format(
               reverse
               ? 'AND LOWER(victim_ship) = LOWER(%L)'
@@ -262,7 +261,9 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
       GalaxyInfo.prisma.$queryRawUnsafe(`
         SELECT
         ROW_NUMBER() OVER (ORDER BY ${count ? 'killed' : 'carnage'} DESC) AS pos,
-        ${ships ? `${reverse ? 'victim' : 'killer'}_ship AS player` : `(
+        ${ships
+? `${reverse ? 'victim' : 'killer'}_ship AS player`
+: `(
           SELECT nameq.name
           FROM "Kill_usermap" AS nameq
           WHERE nameq.id = result.${reverse ? 'victim' : 'killer'}_id

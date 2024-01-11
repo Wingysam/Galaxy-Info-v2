@@ -1,16 +1,16 @@
-import { Collection } from "discord.js"
+import { Collection } from 'discord.js'
 
 export class AwaitableCollection<K, V> extends Collection<K, V> {
-  private waits: Map<K, ((value: V) => any)[]>
+  private readonly waits: Map<K, Array<(value: V) => any>>
   constructor (iterable?: Iterable<readonly [K, V]>) {
     super(iterable ?? [])
     this.waits = new Map()
   }
 
-  wait (key: K) {
-    return new Promise((resolve) => {
+  async wait (key: K) {
+    return await new Promise((resolve) => {
       const got = this.get(key)
-      if (got) return resolve(got)
+      if (got !== undefined) { resolve(got); return }
       const waitsInMap = this.waits.get(key)
       const wait = waitsInMap ?? []
       if (!waitsInMap) this.waits.set(key, wait)

@@ -1,11 +1,9 @@
-type SerializedConstants = {
-  logCodes: { [key: string]: string }
+interface SerializedConstants {
+  logCodes: Record<string, string>
   items: SerializedItems
 }
 
-type SerializedItems = {
-  [key: string]: SerializedItem
-}
+type SerializedItems = Record<string, SerializedItem>
 
 type SerializedItem = [
   string, // item name
@@ -13,12 +11,12 @@ type SerializedItem = [
 ]
 
 export class GameConstants {
-  private GalaxyInfo: GalaxyInfo
+  private readonly GalaxyInfo: GalaxyInfo
 
   logCodes!: Map<bigint, string>
   items!: Map<bigint, Item>
 
-  constructor(GalaxyInfo: GalaxyInfo) {
+  constructor (GalaxyInfo: GalaxyInfo) {
     this.GalaxyInfo = GalaxyInfo
   }
 
@@ -36,7 +34,7 @@ export class GameConstants {
     }
   }
 
-  load(constants: SerializedConstants) {
+  load (constants: SerializedConstants) {
     this.logCodes = new Map()
     for (const [id, logCode] of Object.entries(constants.logCodes)) {
       this.logCodes.set(BigInt(id), logCode)
@@ -53,7 +51,7 @@ class Item {
   name: string
   mass: number
 
-  constructor(serialized: SerializedItem) {
+  constructor (serialized: SerializedItem) {
     this.name = serialized[0]
     this.mass = serialized[1]
   }

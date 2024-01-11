@@ -1,10 +1,6 @@
 import { Router } from 'express'
 
-type Arg = {
-  GalaxyInfo: GalaxyInfo
-}
-
-export async function ApiV1 (_: Arg) {
+export async function ApiV1 () {
   const router = Router()
 
   router.get('/', (_, res) => res.end('API v1'))
