@@ -1,0 +1,15 @@
+{
+  "name": "galaxy-info-v2",
+  "version": "2.0.0",
+  "description": "Galaxy Info is the all-in-one solution to gathering and accessing information about Galaxy.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wingysam/Galaxy-Info-v2.git"
+  },
+  "author": "Wingy <git@wingysam.xyz>",
+  "license": "SEE LICENSE IN INDIVIDUAL SUBFOLDERS",
+  "bugs": {
+    "url": "https://github.com/Wingysam/Galaxy-Info-v2/issues"
+  },
+  "homepage": "https://github.com/Wingysam/Galaxy-Info-v2#readme"
+}
