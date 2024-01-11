@@ -1,42 +1,42 @@
-export type GalaxyInfoConfig = { // eslint-disable-line no-unused-vars
+export interface GalaxyInfoConfig { // eslint-disable-line no-unused-vars
   bot: {
-    token: string,
-    clientSecret: string,
+    token: string
+    clientSecret: string
     staffCommands: {
       webhook?: string
     }
-  },
+  }
   ingest: {
-    token?: string,
-    verbose: boolean,
+    token?: string
+    verbose: boolean
     quests: {
       npcHooks?: string[]
     }
-  },
+  }
   web: {
-    port: number,
-    frontendBase: string,
+    port: number
+    frontendBase: string
     clientId: string
-  },
+  }
   // TODO: remove galaxy config
   galaxy: {
     guild?: string
-  },
+  }
   guilds: {
-    galaxy?: string,
-    galaxyDevelopment?: string,
-    galaxySupport?: string,
+    galaxy?: string
+    galaxyDevelopment?: string
+    galaxySupport?: string
     bot?: string
-  },
+  }
   db: {
-    queryLog: boolean,
+    queryLog: boolean
     kvKeys: {
-      serializedShips: string,
-      serializedTestShips: string,
-      serializedTurrets: string,
+      serializedShips: string
+      serializedTestShips: string
+      serializedTurrets: string
       gameConstants: string
     }
-  },
+  }
   export: {
     shipKills: {
       allowKillLogForAll: boolean
@@ -85,9 +85,9 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
 
     const fromEnv = process.env[name]
     const hasProp = Object.prototype.hasOwnProperty.call(process.env, name)
-    if (!hasProp && fromEnv) fail(name, 'is a builtin')
+    if (!hasProp && fromEnv !== undefined) fail(name, 'is a builtin')
 
-    if (!fromEnv) {
+    if (fromEnv === undefined) {
       switch (requirementLevel) {
         case 'must':
           fail(`process.env['${name}'] must be set.`)

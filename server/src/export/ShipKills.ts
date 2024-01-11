@@ -1,18 +1,18 @@
-import { NON_LIMITED_QUEST_SHIPS } from "@galaxyinfo/ships/dist";
-import type { Kill } from "@prisma/client";
-import { Message, MessageEmbed } from "discord.js";
-import type { LogFunction } from "ingest/service";
-import type ShipKillsIngest from "ingest/services/ShipKills";
-import { substitute } from '../util/templating';
+import { NON_LIMITED_QUEST_SHIPS } from '@galaxyinfo/ships/dist'
+import type { Kill } from '@prisma/client'
+import { type Message, MessageEmbed } from 'discord.js'
+import type { LogFunction } from 'ingest/service'
+import type ShipKillsIngest from 'ingest/services/ShipKills'
+import { substitute } from '../util/templating'
 
 export class ShipKillsExport {
   GalaxyInfo: GalaxyInfo
   log: LogFunction
 
-  constructor(arg: { GalaxyInfo: GalaxyInfo, log: LogFunction }) {
+  constructor (arg: { GalaxyInfo: GalaxyInfo, log: LogFunction }) {
     this.GalaxyInfo = arg.GalaxyInfo
-    this.log = (...message) => arg.log('[ShipKillsExport]', ...message)
-    this.init()
+    this.log = (...message) => { arg.log('[ShipKillsExport]', ...message) }
+    void this.init()
   }
 
   async init () {

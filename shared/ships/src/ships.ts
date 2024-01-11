@@ -53,18 +53,20 @@ export type SerializedShipWeapons = {
   turrets: TurretResolvable[] | {}
 }
 
-export type SerializedSpinals = {
-  f?: SerializedSpinal
-  g?: SerializedSpinal
-}
-export type SerializedSpinal = {
-  weaponType: SpinalWeaponType
-  weaponSize: SpinalWeaponSize
-  interval: number
-  reloadOverride?: number
-  guns: SerializedSpinalGun[] | {}
-}
+export type SerializedSpinals = SerializedSpinal[]
+
+export type SerializedSpinal = SerializedSpinalGun[]
+
 export type SerializedSpinalGun = {
+  attributes: {
+    WeaponType: SpinalWeaponType
+    ProjectileSize: SpinalWeaponSize
+    BarrelInterval?: number
+    ReloadTime?: number
+    IsBroadside?: boolean
+    Range?: number
+    ProjectileVelocity?: number
+  }
   barrels: number
 }
 
@@ -274,21 +276,11 @@ export class ShipTurrets extends Weapon {
 }
 
 export class ShipSpinals extends Weapon {
-  private spinals: ShipSpinal[]
-  f?: ShipSpinal
-  g?: ShipSpinal
+  spinals: ShipSpinal[]
 
   constructor(serializedSpinals: SerializedSpinals) {
     super()
-    this.spinals = []
-    if (serializedSpinals.f) {
-      this.f = new ShipSpinal(serializedSpinals.f)
-      this.spinals.push(this.f)
-    }
-    if (serializedSpinals.g) {
-      this.g = new ShipSpinal(serializedSpinals.g)
-      this.spinals.push(this.g)
-    }
+    this.spinals = serializedSpinals.map(serializedSpinal => new ShipSpinal(serializedSpinal))
   }
 
   alpha(range?: number) {
@@ -301,43 +293,27 @@ export class ShipSpinals extends Weapon {
 }
 
 export class ShipSpinal extends Weapon {
-  range: number
   reload: number
-  barrels: number
-  interval: number
-  weaponSize: SpinalWeaponSize
-  weaponType: SpinalWeaponType
-  private guns: ShipSpinalGun[]
+
+  guns: ShipSpinalGun[]
 
   constructor(serializedSpinal: SerializedSpinal) {
     super()
-    this.range = SPINALS[serializedSpinal.weaponType][serializedSpinal.weaponSize].range
-    this.guns = []
-    for (const gun of (serializedSpinal.guns instanceof Array ? serializedSpinal.guns : [])) this.guns.push(new ShipSpinalGun(serializedSpinal, gun))
+    this.guns = serializedSpinal.map(serializedGun => new ShipSpinalGun(serializedGun))
+    if (this.guns.length === 0) { throw new Error('Spinal has no guns') }
 
-    if (this.guns.length === 0) throw new Error('Spinal has no guns')
-    this.interval = this.guns[0].interval
-
-    this.weaponSize = serializedSpinal.weaponSize
-    this.weaponType = serializedSpinal.weaponType
-
-    this.barrels = 0
-    let biggestGun = this.guns[0]
+    let slowestGun = this.guns[0]
     for (const gun of this.guns) {
-      this.barrels += gun.barrels
-      if (gun.barrels > biggestGun.barrels) biggestGun = gun
+      if (gun.reload > slowestGun.reload) {
+        slowestGun = gun
+      }
     }
 
-    if (typeof serializedSpinal.reloadOverride !== 'undefined') {
-      this.reload = Math.max(0.01, (serializedSpinal.interval * (biggestGun.barrels - 1)) + serializedSpinal.reloadOverride)
-    } else {
-      this.reload = biggestGun.reload
-    }
+    this.reload = slowestGun.reload
   }
 
   alpha(range?: number) {
-    if (range && range > this.range) return new Alpha()
-    return new Alpha().add(...this.guns.map(gun => gun.alpha()))
+    return new Alpha().add(...this.guns.map(spinal => spinal.alpha(range)))
   }
 
   dps(range?: number) {
@@ -347,34 +323,52 @@ export class ShipSpinal extends Weapon {
 }
 
 export class ShipSpinalGun extends Weapon {
+  range: number
   reload: number
   barrels: number
   interval: number
+  isBroadside: boolean
+  weaponSize: SpinalWeaponSize
+  weaponType: SpinalWeaponType
 
   private _alpha: Alpha
 
-  constructor(spinal: SerializedSpinal, gun: SerializedSpinalGun) {
+  constructor(serializedGun: SerializedSpinalGun) {
     super()
-    const spinalType = SPINALS[spinal.weaponType]
-    const spinalSize = spinalType[spinal.weaponSize]
+    this.weaponSize = serializedGun.attributes.ProjectileSize
+    this.weaponType = serializedGun.attributes.WeaponType
+
+    const spinalType = SPINALS[this.weaponType]
+    const spinalSize = spinalType[this.weaponSize]
+
+    this.range = serializedGun.attributes.Range ?? SPINALS[this.weaponType][this.weaponSize].range
+    this.interval = serializedGun.attributes.BarrelInterval ?? 0
+    this.barrels = serializedGun.barrels
+    this.isBroadside = serializedGun.attributes.IsBroadside ?? false
+
+    if (typeof serializedGun.attributes.ReloadTime !== 'undefined') {
+      this.reload = Math.max(0.01, (this.interval * (this.barrels - 1)) + serializedGun.attributes.ReloadTime)
+    } else {
+      this.reload = (this.interval * (this.barrels - 1)) + (spinalSize.reload * (Math.pow(SPINAL_RELOAD_EXPONENT, this.barrels - 1)))
+    }
 
     this._alpha = new Alpha(
-      gun.barrels * spinalSize.damage * spinalType.damageDistribution.shield,
-      gun.barrels * spinalSize.damage * spinalType.damageDistribution.hull,
-      gun.barrels * spinalSize.damage * spinalType.damageDistribution[spinalType.damageDistribution.ideal]
+      this.barrels * spinalSize.damage * spinalType.damageDistribution.shield,
+      this.barrels * spinalSize.damage * spinalType.damageDistribution.hull,
+      this.barrels * spinalSize.damage * spinalType.damageDistribution[spinalType.damageDistribution.ideal]
     )
 
-    this.interval = spinal.interval
-    this.reload = (this.interval * (gun.barrels - 1)) + (spinalSize.reload * (Math.pow(SPINAL_RELOAD_EXPONENT, gun.barrels - 1)))
-    this.barrels = gun.barrels
+    if (this.isBroadside) this._alpha.multiply(0.5)
   }
 
-  alpha() {
+  alpha(range?: number) {
+    if (range && range > this.range) return new Alpha()
     return new Alpha().add(this._alpha)
   }
 
-  dps() {
-    return new Dps(this._alpha.shield / this.reload, this._alpha.hull / this.reload)
+  dps(range?: number) {
+    const alphaAtRange = this.alpha(range)
+    return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload)
   }
 }
 

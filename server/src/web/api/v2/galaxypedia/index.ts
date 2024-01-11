@@ -1,12 +1,12 @@
-import { RESISTANCE, Ship, TurretClass, TurretSize } from '@galaxyinfo/ships'
+import { RESISTANCE, type Ship, type TurretClass, type TurretSize, type ShipSpinal, type ShipSpinalGun } from '@galaxyinfo/ships'
 import { Router } from 'express'
 import { firstBy } from 'thenby'
 import { scope } from '../../../middleware/scope'
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
-function formatShip(ship: Ship) {
+function formatShip (ship: Ship) {
   const dps = {
     turret: ship.weapons.turrets.dps().average,
     spinal: ship.weapons.spinals.dps().average,
@@ -27,8 +27,8 @@ function formatShip(ship: Ship) {
 
   const turretsSortedByRange = Array.from(ship.weapons.turrets.turrets.keys()).sort(firstBy('range', -1))
 
-  function formatNumberOrUndefined(num: number | undefined) {
-    if (!num) return
+  function formatNumberOrUndefined (num: number | undefined) {
+    if (typeof num !== 'number') return
     const floor = Math.floor(num)
     if (floor === 0) return
     return floor.toLocaleString()
@@ -46,8 +46,6 @@ function formatShip(ship: Ship) {
     med_turrets: turretList('Medium'),
     large_turrets: turretList('Large'),
     huge_turrets: turretList('Huge'),
-    '(f)_spinal': formatSpinal('f'),
-    '(g)_spinal': formatSpinal('g'),
     m_class_range: formatNumberOrUndefined(turretsSortedByRange[0]?.range),
     r_class_range: formatNumberOrUndefined(turretsSortedByRange[turretsSortedByRange.length - 1]?.range),
     mining_lasers: turretList('All', 'Mining'),
@@ -58,7 +56,7 @@ function formatShip(ship: Ship) {
     warp_drive: ship.canWarp ? 'Yes' : 'No',
     damage_res: `${Math.round(RESISTANCE[ship.class] * 100)}%`,
     stealth: ship.stealth ? 'Yes' : 'No',
-    cmax_drift: ship.customDrift ? `${Math.round(ship.customDrift * 100)}%` : undefined,
+    cmax_drift: typeof ship.customDrift === 'number' ? `${Math.round(ship.customDrift * 100)}%` : undefined,
     turret_dps: Math.floor(dps.turret) || undefined,
     spinal_dps: Math.floor(dps.spinal) || undefined,
     fighter_turret_dps: Math.floor(dps.fighters.turret) || undefined,
@@ -86,13 +84,13 @@ function formatShip(ship: Ship) {
     quantum_core: ship.extraMaterials['43'],
     kneall_core: ship.extraMaterials['45'],
     luci_core: ship.extraMaterials['61'],
-    permit: ship.permit || undefined,
+    permit: ship.permit ?? undefined,
     description: ship.description,
     vip_required: ship.vip ? 'Yes' : 'No',
     explosion_radius: ship.explosionSize.toLocaleString()
-  }
+  } as any
 
-  function turretList(size: TurretSize | 'All', turretClass?: TurretClass) {
+  function turretList (size: TurretSize | 'All', turretClass?: TurretClass) {
     const list = []
     for (const [turret, count] of ship.weapons.turrets.turrets.entries()) {
       if (size !== 'All' && turret.size !== size) continue
@@ -102,10 +100,15 @@ function formatShip(ship: Ship) {
     return list.join('\n\n') || undefined
   }
 
-  function formatSpinal(key: 'f' | 'g') {
-    const spinal = ship.weapons.spinals[key]
-    if (!spinal) return undefined
-    return `${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType}`
+  function formatSpinal (spinal: ShipSpinal) {
+    return spinal.guns.map(formatSpinalGun).join('\n')
+  }
+  function formatSpinalGun (gun: ShipSpinalGun) {
+    return `${gun.barrels} ${gun.weaponSize} ${gun.weaponType}`
+  }
+
+  for (const [i, spinal] of ship.weapons.spinals.spinals.entries()) {
+    result[`spinal_${i + 1}`] = formatSpinal(spinal)
   }
 
   return result

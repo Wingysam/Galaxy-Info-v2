@@ -1,4 +1,4 @@
-import { Client, Permissions } from 'discord.js'
+import { type Client, Permissions, type Guild } from 'discord.js'
 import fetch from 'node-fetch'
 import { sleep } from './sleep'
 
@@ -19,9 +19,9 @@ export async function getUserGuildOrThrowIfNoPerms (GalaxyInfo: GalaxyInfo, disc
 
   const guildPermissions = new Permissions(userGuild.permissions)
   if (
-    !GalaxyInfo.devs.includes(discordUserId)
-    && !guildPermissions.has('ADMINISTRATOR')
-    && !guildPermissions.has('MANAGE_GUILD')
+    !GalaxyInfo.devs.includes(discordUserId) &&
+    !guildPermissions.has('ADMINISTRATOR') &&
+    !guildPermissions.has('MANAGE_GUILD')
   ) throw new Error('not correct perms')
 
   return userGuild
@@ -29,7 +29,7 @@ export async function getUserGuildOrThrowIfNoPerms (GalaxyInfo: GalaxyInfo, disc
 
 export async function getBotGuild (user: string, token: string, guildid: string, client: Client) {
   const userGuild = await getUserGuildOrThrowIfNoPerms(client.GalaxyInfo, user, token, guildid)
-  const botGuild = await client.guilds.fetch(userGuild.id)
+  const botGuild = await client.guilds.fetch(userGuild.id) as Guild | undefined
   if (!botGuild) throw new Error('bot not in guild')
 
   return botGuild

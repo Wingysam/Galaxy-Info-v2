@@ -5,7 +5,7 @@ import path from 'path'
 import { AwaitableCollection } from '../util/AwaitableCollection'
 import type { IngestService, IngestServiceArg } from './service'
 
-type ConstructorArg = {
+interface ConstructorArg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -13,15 +13,17 @@ function log (...message: any[]) {
   console.log('[Ingest]', ...message)
 }
 
-async function getServices(): Promise<(new(arg: IngestServiceArg) => IngestService)[]> {
+async function getServices (): Promise<Array<new(arg: IngestServiceArg) => IngestService>> {
   const servicesDir = path.join(__dirname, 'services')
   const serviceFilenames = (await readdir(servicesDir))
     .filter(filename => filename.endsWith('.js'))
-  return Promise.all(serviceFilenames.map(filename => require(path.join(servicesDir, filename)).default))
+
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  return await Promise.all(serviceFilenames.map(filename => require(path.join(servicesDir, filename)).default))
 }
 
 export class IngestServices {
-  private GalaxyInfo
+  private readonly GalaxyInfo
   public services: AwaitableCollection<string, IngestService>
   client!: Client
 
@@ -29,10 +31,13 @@ export class IngestServices {
     this.GalaxyInfo = GalaxyInfo
     this.services = new AwaitableCollection()
     this.init()
+      .catch(err => {
+        log(`Failed to initialize: ${err}`)
+      })
   }
 
   async init () {
-    if (!this.GalaxyInfo.config.ingest?.token) return
+    if (typeof this.GalaxyInfo.config.ingest?.token !== 'string') return
 
     const client = new Client({
       intents: [
@@ -43,15 +48,17 @@ export class IngestServices {
     this.client = client
 
     client.once('ready', async () => {
-      if (!client.user) return log('Error: client.user is falsy')
+      if (!client.user) { log('Error: client.user is falsy'); return }
       log(`Logged in as ${client.user.tag}!`)
 
       const services = await getServices()
+
       for (const serviceConstructor of services) {
+        // eslint-disable-next-line new-cap
         const service = new serviceConstructor({
           GalaxyInfo: this.GalaxyInfo,
           client,
-          log: (...message) => log(`[${serviceConstructor.name}]`, ...message)
+          log: (...message) => { log(`[${serviceConstructor.name}]`, ...message) }
         })
         this.services.set(serviceConstructor.name, service)
       }
@@ -59,6 +66,6 @@ export class IngestServices {
       log('Instantiated all ingest subservices')
     })
 
-    client.login(this.GalaxyInfo.config.ingest.token)
+    void client.login(this.GalaxyInfo.config.ingest.token)
   }
 }

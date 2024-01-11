@@ -3,14 +3,14 @@ import { sleep } from './sleep'
 
 import prisma from '../prismaClient'
 
-type RobloxAPIGetByUsername = {
-    data: {
-        id: number
-        // and others that are not used
-    }[]
-  }
+interface RobloxAPIGetByUsername {
+  data: Array<{
+    id: number
+    // and others that are not used
+  }>
+}
 
-type RobloxAPIGetByUserId = {
+interface RobloxAPIGetByUserId {
   id: number
   name: string
   // has other properties that aren't used
@@ -21,11 +21,12 @@ function log (...message: any[]) {
 }
 
 class GalaxyInfoRobloxInterface {
-  private nameToIdQueue: {
+  private readonly nameToIdQueue: Array<{
     name: string
     resolve: (id: bigint) => unknown
     reject: (err: unknown) => unknown
-  }[] = []
+  }> = []
+
   private runningNameToIdQueue = false
 
   /**
@@ -33,12 +34,12 @@ class GalaxyInfoRobloxInterface {
    * @param name the name of the Roblox user
    * @returns the ID of the Roblox user
    */
-  nameToId (name: string): Promise<bigint> {
+  async nameToId (name: string): Promise<bigint> {
     const promise = new Promise((resolve, reject) => {
       this.nameToIdQueue.push({ name, resolve, reject })
-    }) as Promise<bigint>
-    this.checkNameToIdQueue()
-    return promise
+    })
+    void this.checkNameToIdQueue()
+    return await promise as bigint
   }
 
   private async checkNameToIdQueue () {
@@ -47,7 +48,7 @@ class GalaxyInfoRobloxInterface {
 
     log('starting name to id queue')
 
-    while (this.nameToIdQueue.length) {
+    while (this.nameToIdQueue.length > 0) {
       const queueItem = this.nameToIdQueue.shift()
       if (!queueItem) break
       const { name, resolve, reject } = queueItem
@@ -63,7 +64,7 @@ class GalaxyInfoRobloxInterface {
   }
 
   private async runNameToId (name: string, backoff?: number): Promise<bigint> {
-    if (backoff) {
+    if (typeof backoff === 'number') {
       await sleep(backoff)
     }
 
@@ -73,27 +74,27 @@ class GalaxyInfoRobloxInterface {
         name
       }
     })
-    if (existing?.id) return existing.id
+    if (typeof existing?.id === 'bigint') return existing.id
 
     let fromRoblox: RobloxAPIGetByUsername
     let text
     try {
-      text = await (await fetch(`https://users.roblox.com/v1/usernames/users`, {
-        method: "POST",
-        headers: { "Content-type": "application/json"},
-        body: JSON.stringify({usernames: [name]})
+      text = await (await fetch('https://users.roblox.com/v1/usernames/users', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({ usernames: [name] })
       })).text()
       fromRoblox = (JSON.parse(text) as RobloxAPIGetByUsername)
     } catch {
-      backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
+      backoff = Math.min(10000, typeof backoff === 'number' ? backoff * 2 : 1000)
       log(name, backoff, 'Roblox API returned an invalid response', text)
-      return this.runNameToId(name, backoff)
+      return await this.runNameToId(name, backoff)
     }
 
     if (fromRoblox.data.length === 0) {
-        log('Failed to fetch', name, fromRoblox)
-        return 0n
-      }
+      log('Failed to fetch', name, fromRoblox)
+      return 0n
+    }
 
     try {
       await prisma.user.upsert({
@@ -122,13 +123,13 @@ class GalaxyInfoRobloxInterface {
    * @returns the name of the Roblox user
    */
   async idToName (id: bigint, backoff?: number): Promise<string> {
-    if (backoff) {
+    if (typeof backoff === 'number') {
       await sleep(backoff)
     }
 
     const existing = await prisma.user.findFirst({
       where: {
-        id: id
+        id
       }
     })
     if (existing) return existing.name
@@ -139,9 +140,9 @@ class GalaxyInfoRobloxInterface {
       text = await (await fetch(`https://users.roblox.com/v1/users/${encodeURIComponent(id.toString())}`)).text()
       fromRoblox = (JSON.parse(text) as RobloxAPIGetByUserId)
     } catch {
-      backoff = Math.min(10000, backoff ? backoff * 2 : 1000)
+      backoff = Math.min(10000, typeof backoff === 'number' ? backoff * 2 : 1000)
       log(id, backoff, 'Roblox API returned an invalid response', text)
-      return this.idToName(id, backoff)
+      return await this.idToName(id, backoff)
     }
 
     try {

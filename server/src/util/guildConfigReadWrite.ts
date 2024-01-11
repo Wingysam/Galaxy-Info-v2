@@ -1,12 +1,12 @@
 import type { Channel, Guild, Prisma } from '.prisma/client'
 
-type ConstructorArg = {
+interface ConstructorArg {
   GalaxyInfo: GalaxyInfo
 }
 
 // The purpose of this class is to allow reading/writing guild/channel configurations with defaults
 export class GuildConfigs {
-  private GalaxyInfo: GalaxyInfo
+  private readonly GalaxyInfo: GalaxyInfo
   defaults
   constructor ({ GalaxyInfo }: ConstructorArg) {
     this.GalaxyInfo = GalaxyInfo
@@ -14,7 +14,7 @@ export class GuildConfigs {
       guild: {
         members: [],
 
-        command_ship_image_placement: 'upload',
+        command_ship_image_placement: 'upload'
       },
       channel: {
         commands: true,
@@ -141,18 +141,18 @@ export class GuildConfigs {
         skipDuplicates: true
       })
 
-      const dbEntry = await this.GalaxyInfo.prisma.channel.findFirst({
+      const dbEntry = (await this.GalaxyInfo.prisma.channel.findFirst({
         where: {
           id: channel
         }
-      }) as Channel
+      }))!
 
       return defaults(dbEntry) as AllProps<Channel>
     }
   }
 
   async writeChannel (channel: Prisma.ChannelCreateInput): Promise<AllProps<Channel>>
-  async writeChannel (channel: Prisma.ChannelCreateInput[]): Promise<AllProps<Channel>[]>
+  async writeChannel (channel: Prisma.ChannelCreateInput[]): Promise<Array<AllProps<Channel>>>
   async writeChannel (channel: Prisma.ChannelCreateInput | Prisma.ChannelCreateInput[]) {
     const defaults = this.withDefaults(this.defaults.channel)
     if (channel instanceof Array) {

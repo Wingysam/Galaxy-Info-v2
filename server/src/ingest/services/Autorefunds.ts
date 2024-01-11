@@ -1,18 +1,14 @@
 import type { Message } from 'discord.js'
 import { performance } from 'perf_hooks'
-import { IngestService, IngestServiceArg } from '../service'
+import { IngestService } from '../service'
 import { DiscordLogIngester, DiscordLogIngesterParser } from '../DiscordLogIngester'
 
 import type { Autorefund } from '.prisma/client'
 
 // The Autorefunds ingest is responsible for logging duplicate refunds.
 export default class AutorefundsIngest extends IngestService {
-  constructor (arg: IngestServiceArg) {
-    super(arg)
-  }
-
   async init () {
-    if (!this.GalaxyInfo.config.guilds.galaxyDevelopment) throw new Error('Galaxy Development guild is unconfigured')
+    if (typeof this.GalaxyInfo.config.guilds.galaxyDevelopment !== 'string') throw new Error('Galaxy Development guild is unconfigured')
     const mostRecentRefund = await this.GalaxyInfo.prisma.autorefund.findFirst({
       orderBy: {
         refund_id: 'desc'
@@ -28,7 +24,7 @@ export default class AutorefundsIngest extends IngestService {
         channelName: 'auto-refunds'
       },
       startingMessageId: mostRecentRefund?.refund_id,
-      parser: parser,
+      parser,
       callback: this.handleAutorefunds.bind(this)
     })
   }
@@ -80,7 +76,7 @@ export class AutorefundsIngestParser extends DiscordLogIngesterParser {
     async function parseUsername (username: string) {
       const matches = username.match(/^Auto Refunds \[(Galaxy|Arcade|Dev)\]/)
       if (!matches || matches.length !== 2) throw new Error(`Autorefunds name invalid: ${username}`)
-      return assertStringIsOneOfAcceptable(matches[1], 'Galaxy', 'Arcade', 'Dev')
+      return await assertStringIsOneOfAcceptable(matches[1], 'Galaxy', 'Arcade', 'Dev')
     }
 
     async function assertStringIsOneOfAcceptable<T extends string> (string: string, ...acceptable: T[]): Promise<T> {

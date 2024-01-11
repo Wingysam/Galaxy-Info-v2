@@ -1,25 +1,24 @@
-import { Message, MessageEmbed } from 'discord.js'
-import { WebhookClient } from 'discord.js'
+import { type Message, MessageEmbed, WebhookClient } from 'discord.js'
 import { performance } from 'perf_hooks'
-import { IngestService, IngestServiceArg } from '../service'
+import { IngestService, type IngestServiceArg } from '../service'
 import { DiscordLogIngester, DiscordLogIngesterParser } from '../DiscordLogIngester'
 
 type QuestCompletionEnvironment = 'Galaxy' | 'Arcade' | 'Dev'
 type QuestCompletionServerType = 'Public' | 'Private'
-export type QuestCompletion = {
-  completionId: bigint,
-  environment: QuestCompletionEnvironment,
-  serverType: QuestCompletionServerType,
-  username: string,
-  questId: string,
-  title: string,
-  reward: string,
+export interface QuestCompletion {
+  completionId: bigint
+  environment: QuestCompletionEnvironment
+  serverType: QuestCompletionServerType
+  username: string
+  questId: string
+  title: string
+  reward: string
   date: Date
 }
 
 // The Quests ingest is responsible for emitting `QuestCompletion`s, uploading them to database, and logging admin spawns.
 export default class QuestsIngest extends IngestService {
-  private npcHooks?: WebhookClient[]
+  private readonly npcHooks?: WebhookClient[]
 
   constructor (arg: IngestServiceArg) {
     super(arg)
@@ -28,7 +27,7 @@ export default class QuestsIngest extends IngestService {
   }
 
   async init () {
-    if (!this.GalaxyInfo.config.guilds.galaxyDevelopment) throw new Error('Galaxy Development guild is unconfigured')
+    if (typeof this.GalaxyInfo.config.guilds.galaxyDevelopment !== 'string') throw new Error('Galaxy Development guild is unconfigured')
     const mostRecentCompletion = await this.GalaxyInfo.prisma.questCompletion.findFirst({
       orderBy: {
         completion_id: 'desc'
@@ -44,7 +43,7 @@ export default class QuestsIngest extends IngestService {
         channelName: 'quest-completions'
       },
       startingMessageId: mostRecentCompletion?.completion_id,
-      parser: parser,
+      parser,
       callback: this.handleQuestCompletions.bind(this)
     })
   }
@@ -56,7 +55,7 @@ export default class QuestsIngest extends IngestService {
   }
 
   private async logAdminSpawns (questCompletions: QuestCompletion[]) {
-    const QUESTS: { [key: string]: string } = {
+    const QUESTS: Record<string, string> = {
       '-694201': 'Kneall Miner Fleet',
       20211209: 'Grim Reaper',
       '-102': 'Pirate Fleet',
@@ -75,7 +74,7 @@ export default class QuestsIngest extends IngestService {
       const embed = new MessageEmbed()
       embed.setDescription(`**${completion.username}** spawned a *${quest}*.`)
       embed.setTimestamp(completion.date)
-      this.npcHooks.forEach(hook => hook.send({ embeds: [ embed ] }))
+      this.npcHooks.forEach(async hook => await hook.send({ embeds: [embed] }))
     }
   }
 
@@ -141,7 +140,7 @@ export class QuestsIngestParser extends DiscordLogIngesterParser {
     async function parseUsername (username: string) {
       const matches = username.match(/^Quest Completions \[(Galaxy|Arcade|Dev)\]/)
       if (!matches || matches.length !== 2) throw new Error(`quest completions name invalid: ${username}`)
-      return assertStringIsOneOfAcceptable(matches[1], 'Galaxy', 'Arcade', 'Dev')
+      return await assertStringIsOneOfAcceptable(matches[1], 'Galaxy', 'Arcade', 'Dev')
     }
 
     async function assertStringIsOneOfAcceptable<T extends string> (string: string, ...acceptable: T[]): Promise<T> {

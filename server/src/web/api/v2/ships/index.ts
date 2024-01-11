@@ -1,7 +1,7 @@
-import type { Alpha, Dps, ShipSpinal } from '@galaxyinfo/ships'
+import type { Alpha, Dps } from '@galaxyinfo/ships'
 import { Router, json } from 'express'
 import { scope } from '../../../middleware/scope'
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -33,12 +33,12 @@ export async function ships ({ GalaxyInfo }: Arg) {
 
       stats.weapons.total = [
         {
-          name: "Total",
+          name: 'Total',
           dps: floorDps(ship.weapons.dps(range, loyalty / 100)),
           alpha: floorAlpha(
             ship.weapons.alpha(range, loyalty / 100)
-          ),
-        },
+          )
+        }
       ]
 
       stats.weapons.turrets = [
@@ -52,41 +52,39 @@ export async function ships ({ GalaxyInfo }: Arg) {
               alpha: floorAlpha(
                 turret.alpha(range, loyalty / 100).multiply(count)
               ),
-              reload: turret.reload.toFixed(2),
+              reload: turret.reload.toFixed(2)
             }
           }
         ),
         {
-          name: "Total Turrets",
+          name: 'Total Turrets',
           dps: floorDps(
             ship.weapons.turrets.dps(range, loyalty / 100)
           ),
           alpha: floorAlpha(
             ship.weapons.turrets.alpha(range, loyalty / 100)
-          ),
-        },
+          )
+        }
       ]
 
       stats.weapons.spinals = [
-        ...([ship.weapons.spinals.f, ship.weapons.spinals.g]
-          .filter((spinal) => spinal) as ShipSpinal[])
-          .map((spinal) => {
+        ...(ship.weapons.spinals.spinals)
+          .map((spinal, index) => {
             return {
-              name: `${spinal.barrels} ${spinal.weaponSize} ${spinal.weaponType}`,
+              name: `Spinal${index + 1}`,
               dps: floorDps(spinal.dps(range)),
               alpha: floorAlpha(spinal.alpha(range)),
-              interval: spinal.interval.toFixed(2),
-              reload: spinal.reload.toFixed(2),
+              reload: spinal.reload.toFixed(2)
             }
           }),
         {
-          name: "Total Spinals",
+          name: 'Total Spinals',
           dps: floorDps(
             ship.weapons.spinals.dps(range)
           ),
           alpha: floorAlpha(
             ship.weapons.spinals.alpha(range)
-          ),
+          )
         }
       ]
 
@@ -96,15 +94,15 @@ export async function ships ({ GalaxyInfo }: Arg) {
       return
     }
 
-    function floorDps(dps: Dps) {
+    function floorDps (dps: Dps) {
       return {
         shield: Math.floor(dps.shield),
         hull: Math.floor(dps.hull),
         average: Math.floor(dps.average)
       }
     }
-    
-    function floorAlpha(alpha: Alpha) {
+
+    function floorAlpha (alpha: Alpha) {
       return {
         shield: Math.floor(alpha.shield),
         hull: Math.floor(alpha.hull),

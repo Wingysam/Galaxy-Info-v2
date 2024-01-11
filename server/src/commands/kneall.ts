@@ -6,7 +6,7 @@ import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { EMOJIS } from '../emoji'
 
 export class KneallTranslatorCommand extends GalaxyInfoCommand {
-  constructor(_GalaxyInfo: GalaxyInfo) {
+  constructor () {
     const builder = new SlashCommandBuilder()
       .setName('kneall')
       .addStringOption(option => option
@@ -22,7 +22,7 @@ export class KneallTranslatorCommand extends GalaxyInfoCommand {
     super({ builder, preconditions: [KneallTranslationPrecondition], instant: true })
   }
 
-  public async interactionCreate(interaction: CommandInteraction, ephemeral: boolean) {
+  public async interactionCreate (interaction: CommandInteraction, ephemeral: boolean) {
     const text = interaction.options.getString('text', true)
     const reverse = interaction.options.getBoolean('reverse') ?? false
 
@@ -35,16 +35,17 @@ export class KneallTranslatorCommand extends GalaxyInfoCommand {
       return
     }
 
-    const translated = text.toLowerCase().split('').map(letter => (EMOJIS.kneall as {[key: string]: string})[letter] ?? letter).join('')
+    const translated = text.toLowerCase().split('').map(letter => (EMOJIS.kneall as Record<string, string>)[letter] ?? letter).join('')
     await interaction.reply({ ephemeral, content: translated })
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class KneallTranslationPrecondition {
   public static async run (interaction: CommandInteraction) {
-    const galaxyStaffIngest = interaction.client.GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest
+    const galaxyStaffIngest = interaction.client.GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest | undefined
     if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
-    
+
     if (!galaxyStaffIngest.kneallTranslation.members.includes(interaction.user.id)) throw new Error('Only certain Galaxy staff members may run this command.')
   }
 }

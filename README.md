@@ -34,5 +34,5 @@ cd server && npm run dev2
 
 In a fourth terminal, start the web frontend:
 ```
-cd web-client && VUE_APP_API=http://localhost:3000/api npm run serve
+cd web-client && NODE_OPTIONS=--openssl-legacy-provider VUE_APP_API=http://localhost:3000/api npm run serve
 ```

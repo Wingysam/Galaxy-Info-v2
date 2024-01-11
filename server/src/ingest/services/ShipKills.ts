@@ -5,19 +5,15 @@ import type { Message } from 'discord.js'
 
 import { DiscordLogIngester, DiscordLogIngesterParser } from '../DiscordLogIngester'
 import roblox from '../../util/roblox'
-import { IngestService, IngestServiceArg } from '../service'
+import { IngestService } from '../service'
 import { min } from '../../util/clampBigInt'
 
 // The Ship Kills ingest is responsible for uploading `Kill`s to the database and emitting them.
 export default class ShipKillsIngest extends IngestService {
   dli?: DiscordLogIngester
 
-  constructor (arg: IngestServiceArg) {
-    super(arg)
-  }
-
   async init () {
-    if (!this.GalaxyInfo.config.galaxy.guild) throw new Error('Galaxy guild is unconfigured')
+    if (typeof this.GalaxyInfo.config.galaxy.guild !== 'string') throw new Error('Galaxy guild is unconfigured')
     const mostRecentKill = await this.GalaxyInfo.prisma.kill.findFirst({
       orderBy: {
         id: 'desc'
@@ -33,7 +29,7 @@ export default class ShipKillsIngest extends IngestService {
         channelName: 'ship-kills'
       },
       startingMessageId: mostRecentKill?.id,
-      parser: parser,
+      parser,
       callback: this.handleKills.bind(this)
     })
   }
@@ -63,13 +59,13 @@ export class ShipKillsIngestParser extends DiscordLogIngesterParser {
   }
 
   public async _parse (message: Message): Promise<Kill> {
-    if (!message.embeds.length) throw new Error(`No embed, id: ${message.id} content: ${message.content}`)
+    if (message.embeds.length === 0) throw new Error(`No embed, id: ${message.id} content: ${message.content}`)
     const embed = message.embeds[0]
 
     const description = embed.description
     const title = embed.title
 
-    if (!description) throw new Error(`Invalid embed, id: ${message.id}`)
+    if (typeof description !== 'string') throw new Error(`Invalid embed, id: ${message.id}`)
 
     let nuke = false
     let matches = description.match(/^\*\*(.*?)'s (.*?)\*\* \((.*)\) destroyed \*\*([A-z0-9_]{3,20})'s (.*?)\*\* \((.*?) Value: (.*?)\)/)
@@ -81,10 +77,10 @@ export class ShipKillsIngestParser extends DiscordLogIngesterParser {
       throw new Error(`No Matches: ${matches} ${embed.description}`)
     }
 
-    const killer_name = matches[1]
-    const victim_name = matches[4]
+    const killer_name = matches[1] // eslint-disable-line @typescript-eslint/naming-convention
+    const victim_name = matches[4] // eslint-disable-line @typescript-eslint/naming-convention
 
-    let killer_id
+    let killer_id // eslint-disable-line @typescript-eslint/naming-convention
     try {
       if (matches[3] === 'Base') killer_id = -1n
       else killer_id = await roblox.nameToId(killer_name)
@@ -92,7 +88,7 @@ export class ShipKillsIngestParser extends DiscordLogIngesterParser {
       throw new Error(`${killer_name} does not exist ${error}`)
     }
 
-    let victim_id
+    let victim_id // eslint-disable-line @typescript-eslint/naming-convention
     try {
       victim_id = await roblox.nameToId(victim_name)
     } catch (error) {
@@ -110,7 +106,7 @@ export class ShipKillsIngestParser extends DiscordLogIngesterParser {
       victim_ship: matches[5],
       victim_class: matches[6],
       victim_cost: await min(BigInt(Number(matches[7].replaceAll(',', ''))), BigInt(Math.pow(2, 31))),
-      victim_limited: ['[EVENT SHIP KILL]', '[PRIZE SHIP KILL]'].includes(title || ''),
+      victim_limited: ['[EVENT SHIP KILL]', '[PRIZE SHIP KILL]'].includes(title ?? ''),
       refunded: false,
       refunded_override: false,
       refunded_override_history: [],

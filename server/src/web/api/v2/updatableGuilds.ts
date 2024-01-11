@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import fetch from 'node-fetch'
 import frontendLoggedIn from '../../middleware/frontendLoggedIn'
-import { Permissions } from 'discord.js'
+import { type Guild, Permissions } from 'discord.js'
 import { serialize } from '@galaxyinfo/serialization'
 import { sleep } from '../../../util/sleep'
 
-type Arg = {
+interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
@@ -24,7 +24,7 @@ export async function updatableGuilds ({ GalaxyInfo }: Arg) {
         await sleep(userGuilds.retry_after / 1000)
         continue
       }
-      if (userGuilds.message) return res.send(serialize({ error: userGuilds }))
+      if (userGuilds.message) { res.send(serialize({ error: userGuilds })); return }
 
       userGuilds = userGuilds.filter((guild: any) => {
         const guildPermissions = new Permissions(guild.permissions)
@@ -32,7 +32,7 @@ export async function updatableGuilds ({ GalaxyInfo }: Arg) {
       })
 
       const botGuilds: any[] = ((await Promise.all(userGuilds.map(async (userGuild: any): Promise<any> => {
-        const botGuild = GalaxyInfo.client.guilds.resolve(userGuild.id)
+        const botGuild = GalaxyInfo.client.guilds.resolve(userGuild.id) as Guild | undefined
         if (!botGuild) return
         return {
           id: botGuild.id,
@@ -47,7 +47,7 @@ export async function updatableGuilds ({ GalaxyInfo }: Arg) {
       botGuilds.sort(sortByProperty('name'))
       userGuilds.sort(sortByProperty('name'))
 
-      return res.send(serialize({ botGuilds, userGuilds }))
+      res.send(serialize({ botGuilds, userGuilds }))
     }
   })
 
