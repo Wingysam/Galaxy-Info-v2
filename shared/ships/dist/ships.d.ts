@@ -47,8 +47,8 @@ export declare type SerializedShipWeapons = {
     spinals: SerializedSpinals;
     turrets: TurretResolvable[] | {};
 };
-export declare type SerializedSpinals = SerializedSpinal[];
-export declare type SerializedSpinal = SerializedSpinalGun[];
+export declare type SerializedSpinals = SerializedSpinal[] | {};
+export declare type SerializedSpinal = SerializedSpinalGun[] | {};
 export declare type SerializedSpinalGun = {
     attributes: {
         WeaponType: SpinalWeaponType;

@@ -53,9 +53,9 @@ export type SerializedShipWeapons = {
   turrets: TurretResolvable[] | {}
 }
 
-export type SerializedSpinals = SerializedSpinal[]
+export type SerializedSpinals = SerializedSpinal[] | {}
 
-export type SerializedSpinal = SerializedSpinalGun[]
+export type SerializedSpinal = SerializedSpinalGun[] | {}
 
 export type SerializedSpinalGun = {
   attributes: {
@@ -280,6 +280,8 @@ export class ShipSpinals extends Weapon {
 
   constructor(serializedSpinals: SerializedSpinals) {
     super()
+    serializedSpinals = serializedSpinals instanceof Array ? serializedSpinals : []
+    if (!(serializedSpinals instanceof Array)) throw new Error()
     this.spinals = serializedSpinals.map(serializedSpinal => new ShipSpinal(serializedSpinal))
   }
 
@@ -299,6 +301,8 @@ export class ShipSpinal extends Weapon {
 
   constructor(serializedSpinal: SerializedSpinal) {
     super()
+    serializedSpinal = serializedSpinal instanceof Array ? serializedSpinal : []
+    if (!(serializedSpinal instanceof Array)) throw new Error()
     this.guns = serializedSpinal.map(serializedGun => new ShipSpinalGun(serializedGun))
     if (this.guns.length === 0) { throw new Error('Spinal has no guns') }
 
