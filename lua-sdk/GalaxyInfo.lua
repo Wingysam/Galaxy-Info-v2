@@ -4,7 +4,7 @@ pcall(function()
 	net = require('@lune/net')
 end)
 
-local GalaxyInfo = { version = '0.1.2' }
+local GalaxyInfo = { version = '0.1.3' }
 
 local API = 'https://api.info.galaxy.casa/api/v2'
 
@@ -53,16 +53,6 @@ function GalaxyInfo.new(token)
 
 	function galaxyInfo.serializeShip(ship, test)
 		local function spinals()
-			local function gun(gunModel)
-				local barrels = 0
-				for _, barrel in ipairs(gunModel:GetChildren()) do
-					if barrel.Name == 'Barrel' then
-						barrels = barrels + 1
-					end
-				end
-				return { barrels = barrels }
-			end
-
 			local function spinal(spinalModel)
 				local data = {}
 				
@@ -82,7 +72,6 @@ function GalaxyInfo.new(token)
 			
 			for _, shipPart in ipairs(ship:GetChildren()) do
 				if string.match(shipPart.Name, "Spinal") then
-				print(shipPart)
 					table.insert(data, spinal(shipPart))
 				end
 			end
