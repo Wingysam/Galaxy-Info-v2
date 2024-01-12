@@ -148,6 +148,7 @@ export declare class ShipSpinalGun extends Weapon {
     reload: number;
     barrels: number;
     interval: number;
+    isBroadside: boolean;
     weaponSize: SpinalWeaponSize;
     weaponType: SpinalWeaponType;
     private _alpha;
