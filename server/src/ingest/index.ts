@@ -1,4 +1,4 @@
-import { Client } from 'discord.js'
+import { Client, Intents } from 'discord.js'
 
 import { readdir } from 'fs/promises'
 import path from 'path'
@@ -40,10 +40,9 @@ export class IngestServices {
     if (typeof this.GalaxyInfo.config.ingest?.token !== 'string') return
 
     const client = new Client({
-      intents: [
-        'GUILD_MESSAGES',
-        'GUILD_MEMBERS'
-      ]
+      // sometimes eval is used on the ingest client for one-off things
+      // for example, in Easter 2024 it was used to prevent people from reacting with eggs.
+      intents: Object.values(Intents.FLAGS)
     })
     this.client = client
 
