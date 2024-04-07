@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.js --minify",
-    "build+debug": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.js"
+    "build": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.js",
+    "build+minify": "tsc --declaration && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.js --minify"
   },
   "author": "Wingy <git@wingysam.xyz>",
   "license": "AGPL-3.0",
