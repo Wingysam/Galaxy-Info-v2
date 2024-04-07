@@ -1,1 +1,791 @@
-var J=Object.create;var g=Object.defineProperty;var V=Object.getOwnPropertyDescriptor;var ee=Object.getOwnPropertyNames;var te=Object.getPrototypeOf,re=Object.prototype.hasOwnProperty;var _=s=>g(s,"__esModule",{value:!0});var w=(s,e)=>()=>(e||s((e={exports:{}}).exports,e),e.exports),se=(s,e)=>{_(s);for(var t in e)g(s,t,{get:e[t],enumerable:!0})},ae=(s,e,t)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of ee(e))!re.call(s,r)&&r!=="default"&&g(s,r,{get:()=>e[r],enumerable:!(t=V(e,r))||t.enumerable});return s},ie=s=>ae(_(g(s!=null?J(te(s)):{},"default",s&&s.__esModule&&"default"in s?{get:()=>s.default,enumerable:!0}:{value:s,enumerable:!0})),s);var K=w((de,N)=>{N.exports=function(e){e=e.toLowerCase();var t={for:function(r){var a=0,i={found:!0};r=r.toLowerCase();for(var c=r.length,d=0;d<c;d++){if(a=e.indexOf(r[d],a),a===-1)return{found:!1};d==0&&(i.start=a)}return i.end=a+1,i}};return t}});var U=w((me,H)=>{H.exports=function(e,t){for(var r=e.length,a=Math.ceil(r*t)||1,i=[],c=r;c>=a;){for(var d=r-c,n=0;n<=d;n++){var o=e.substr(n,c);i.indexOf(o)===-1&&i.push(o)}c--}return i}});var j=w((ge,W)=>{var ne=K(),oe=U();W.exports=function(e,t,r){if(typeof e!="string"||e==="")return t;r=r||{};var a=r.accessor||function(n){return n},i=r.precision===void 0?1:r.precision,c=[],d=oe(e,i);return t.forEach(function(n){var o=a(n);d.find(function(O){var m=ne(o).for(O);return m.found&&c.push({gram:O,length:m.end-m.start,start:m.start,searchableItem:o,item:n}),m.found})}),c.sort(function(n,o){return n.gram.length!==o.gram.length?o.gram.length-n.gram.length:n.length!==o.length?n.length-o.length:n.start!==o.start?n.start-o.start:n.searchableItem>o.searchableItem?1:n.searchableItem<o.searchableItem?-1:0}).map(function(n){return n.item})}});se(exports,{Alpha:()=>l,BASE_REQUIREMENTS:()=>he,BUILD_MENU_CLASSES:()=>ue,CLASSES:()=>le,ClientShips:()=>q,ClientTurrets:()=>Y,DAMAGE_TYPE_DISTRIBUTIONS:()=>h,Dps:()=>p,NON_LIMITED_QUEST_SHIPS:()=>pe,PERMITS:()=>y,RESISTANCE:()=>A,SPINALS:()=>f,SPINAL_RELOAD_EXPONENT:()=>I,ServerShips:()=>Q,ServerTurrets:()=>Z,Ship:()=>x,ShipFighters:()=>z,ShipNotFoundError:()=>b,ShipSpinal:()=>L,ShipSpinalGun:()=>G,ShipSpinals:()=>k,ShipTurrets:()=>M,ShipWeapons:()=>R,Ships:()=>S,ShipsNotDumpedError:()=>E,ShipsNotInitializedError:()=>C,TURRET_CLASS_DAMAGE_DISTRIBUTIONS:()=>T,TurretNotFoundError:()=>F,Turrets:()=>v,TurretsNotDumpedError:()=>P,TurretsNotInitializedError:()=>B,Weapon:()=>u});var $=ie(j());var le=["Miner","Freighter","Frigate","Destroyer","Cruiser","Battlecruiser","Battleship","Dreadnought","Carrier","Super Capital","Fighter","Titan","Alien","Admin"],h={Laser:{shield:1,hull:.3,ideal:"shield"},Kinetic:{shield:.4,hull:1,ideal:"hull"},Plasma:{shield:.9,hull:.9,ideal:"shield"},Missile:{shield:.7,hull:1,ideal:"hull"},Quantum:{shield:1,hull:1,ideal:"shield"}},T={Mining:h.Laser,Laser:h.Laser,Railgun:h.Kinetic,Flak:h.Kinetic,Cannon:h.Kinetic,PDL:h.Laser,Beam:h.Kinetic},f={Phaser:{damageDistribution:h.Laser,Tiny:{damage:28,reload:.8,range:3e3,velocity:5e3},Small:{damage:40,reload:1,range:4e3,velocity:4500},Medium:{damage:72,reload:1.6,range:5e3,velocity:4e3},Large:{damage:120,reload:2.4,range:6e3,velocity:3500},Huge:{damage:198,reload:3.6,range:6500,velocity:3e3}},Cannon:{damageDistribution:h.Kinetic,Tiny:{damage:40,reload:1.6,range:3e3,velocity:3e3},Small:{damage:60,reload:2,range:4e3,velocity:2800},Medium:{damage:112,reload:3.2,range:5e3,velocity:2600},Large:{damage:160,reload:4,range:6e3,velocity:2400},Huge:{damage:270,reload:6,range:6500,velocity:2200}},Torpedo:{damageDistribution:h.Missile,Tiny:{damage:200,reload:5,range:5e3,velocity:700},Small:{damage:330,reload:6,range:6e3,velocity:600},Medium:{damage:490,reload:7,range:7e3,velocity:500},Large:{damage:680,reload:8,range:9e3,velocity:400},Huge:{damage:900,reload:9,range:1e4,velocity:300}}},I=1.1,y={"37":"SC Build","38":"Class A","39":"Class B","40":"Class C","41":"Class D","42":"Class E"},A={Fighter:0,Frigate:.2,Destroyer:.25,Cruiser:.3,Battlecruiser:.4,Battleship:.45,Dreadnought:.5,Carrier:.55,"Super Capital":.65,Titan:.7,Miner:.3,Freighter:.1,Alien:.3,Admin:.9},he={Fighter:1,Frigate:1,Destroyer:1,Cruiser:1,Battlecruiser:1,Battleship:1,Dreadnought:2,Carrier:2,"Super Capital":3,Titan:1,Miner:1,Freighter:1,Alien:1,Admin:1},ue=["Miner","Freighter","Frigate","Destroyer","Cruiser","Battlecruiser","Battleship","Dreadnought","Carrier","Super Capital"],pe=["Nightmare","Atheon","Zhen","Helios","Imperator","Osiris","Slipstream"];var u=class{},l=class{constructor(e,t,r){this.shield=e??0,this.hull=t??0,this.max=r??0}add(...e){for(let t of e)this.shield+=t.shield,this.hull+=t.hull,this.max+=t.max;return this}multiply(e){return this.shield*=e,this.hull*=e,this.max*=e,this}toString(){return`${this.shield}/${this.hull}/${this.max}`}},p=class{constructor(e,t){this.shield=e??0,this.hull=t??0}add(...e){for(let t of e)this.shield+=t.shield,this.hull+=t.hull;return this}multiply(e){return this.shield*=e,this.hull*=e,this}get average(){return(this.shield+this.hull)/2}toString(){return`${this.shield}/${this.hull}/${this.average}`}};var C=class extends Error{},E=class extends Error{},b=class extends Error{constructor(){super("Could not find a ship with that name.")}};function D(...s){console.log("[Ships]",...s)}var S=class{constructor(e){this.ships={},this.turrets=e,this.initialized=!1}assertReady(){if(!this.initialized)throw new C("Ships instance has not been initialized; do `await <Ships>.init()` before using it.");if(Object.keys(this.ships).length===0)throw new E("Ships have not been exported from the game.")}async load(e){this.ships={},await this.loadShips(e,this.turrets,!0),await this.loadShips(e,this.turrets,!1),this.initialized=!0}async loadShips(e,t,r){for(let a of Object.values(e))try{if(!r&&a.class==="Fighter"||r&&a.class!=="Fighter")continue;let i=new x(this.ships,t,a);this.ships[i.name]=i}catch(i){console.log(`Failed to load ship ${a.name}: ${i}`)}}find(e){if(this.assertReady(),this.ships.hasOwnProperty(e))return this.ships[e];let t=(0,$.default)(e,Object.keys(this.ships))[0];if(!t)throw new b;return this.ships[t]}all(e){this.assertReady(),e||(e={});let t={};for(let r in this.ships)e.secret===!1&&(this.ships[r].secret||this.ships[r].test)||(t[r]=this.ships[r]);return t}get(e){if(this.assertReady(),!this.ships.hasOwnProperty(e))throw new b;return this.ships[e]}fromSerializedShip(e){return this.assertReady(),new x(this.ships,this.turrets,e)}},x=class{constructor(e,t,r){this.serializedShip=r,this.name=r.name,this.test=r.test,this.class=r.class,this.resistance=A[this.class],this.description=r.description??"(no description)",this.eventId=r.eventId,this.permit=this.calculatePermit(),this.explosionSize=r.explosionSize,this.notForSale=r.notForSale,this.cargoHold=r.cargoHold,this.oreHold=r.oreHold,this.secret=r.secret,this.nonPlayer=r.nonPlayer||["Alien","Titan"].includes(this.class),this.canWarp=r.canWarp,this.stealth=r.stealth,r.customDrift&&(this.customDrift=r.customDrift,this.vip=r.vip),this.health=r.health,this.speed={top:r.topSpeed,acceleration:r.acceleration,turn:r.turnSpeed},this.weapons=new R(t,r.weapons),this.fighters=new z(e,r.fighters instanceof Array?r.fighters:[]),this.extraMaterials=r.extraMaterials}calculatePermit(){if(!this.eventId||!this.serializedShip.permitOverride)return null;let e=this.serializedShip.permitOverride.toString();if(!(e in y))throw new Error(`Unknown permit override: ${e}`);return y[e]}},R=class extends u{constructor(e,t){super();this.turrets=new M(e,t.turrets instanceof Array?t.turrets:[]),this.spinals=new k(t.spinals)}alpha(e,t=0){let r=this.turrets.alpha(e,t),a=this.spinals.alpha(e);return r.add(a)}dps(e,t=0){let r=this.turrets.dps(e,t),a=this.spinals.dps(e);return r.add(a)}},M=class extends u{constructor(e,t){super();this.turrets=new Map;for(let r of t){let a=e.get(r);this.incrementTurret(a)}}incrementTurret(e){let t=this.turrets.get(e)??0;this.turrets.set(e,t+1)}alpha(e,t=0){let r=new l;for(let[a,i]of this.turrets)r.add(a.alpha(e).multiply(i).multiply(1+t));return r}dps(e,t=0){let r=new p;for(let[a,i]of this.turrets)r.add(a.dps(e).multiply(i).multiply(1+t));return r}},k=class extends u{constructor(e){super();if(e=e instanceof Array?e:[],!(e instanceof Array))throw new Error;this.spinals=e.map(t=>new L(t))}alpha(e){return new l().add(...this.spinals.map(t=>t.alpha(e)))}dps(e){return new p().add(...this.spinals.map(t=>t.dps(e)))}},L=class extends u{constructor(e){super();if(e=e instanceof Array?e:[],!(e instanceof Array))throw new Error;if(this.guns=e.map(r=>new G(r)),this.guns.length===0)throw new Error("Spinal has no guns");let t=this.guns[0];for(let r of this.guns)r.reload>t.reload&&(t=r);this.reload=t.reload}alpha(e){return new l().add(...this.guns.map(t=>t.alpha(e)))}dps(e){let t=this.alpha(e);return new p(t.shield/this.reload,t.hull/this.reload)}},G=class extends u{constructor(e){super();this.weaponSize=e.attributes.ProjectileSize,this.weaponType=e.attributes.WeaponType;let t=f[this.weaponType],r=t[this.weaponSize];this.range=e.attributes.Range??f[this.weaponType][this.weaponSize].range,this.interval=e.attributes.BarrelInterval??0,this.barrels=e.barrels,this.isBroadside=e.attributes.IsBroadside??!1,typeof e.attributes.ReloadTime!="undefined"?this.reload=Math.max(.01,this.interval*(this.barrels-1)+e.attributes.ReloadTime):this.reload=this.interval*(this.barrels-1)+r.reload*Math.pow(I,this.barrels-1),this._alpha=new l(this.barrels*r.damage*t.damageDistribution.shield,this.barrels*r.damage*t.damageDistribution.hull,this.barrels*r.damage*t.damageDistribution[t.damageDistribution.ideal]),this.isBroadside&&this._alpha.multiply(.5)}alpha(e){return e&&e>this.range?new l:new l().add(this._alpha)}dps(e){let t=this.alpha(e);return new p(t.shield/this.reload,t.hull/this.reload)}},z=class extends u{constructor(e,t){super();this.hasFighters=!1,this.fighters=new Map;for(let r of t)try{let a=e[r];if(!a)continue;this.incrementFighter(a),this.hasFighters=!0}catch(a){D(a)}}incrementFighter(e){let t=this.fighters.get(e)??0;this.fighters.set(e,t+1)}alpha(e,t=0){let r=new l;for(let[a,i]of this.fighters)r.add(a.weapons.alpha(e,t).multiply(i));return r}dps(e,t=0){let r=new p;for(let[a,i]of this.fighters)r.add(a.weapons.dps(e,t).multiply(i));return r}},q=class extends S{constructor(e){super(e)}async init(e){await super.load(e)}},Q=class extends S{constructor(e){super(e.turrets);this.GalaxyInfo=e}async init(){try{let e=await this.GalaxyInfo.prisma.keyValue.findUnique({where:{key:this.GalaxyInfo.config.db.kvKeys.serializedShips},rejectOnNotFound:!0}),t=await this.GalaxyInfo.prisma.keyValue.findUnique({where:{key:this.GalaxyInfo.config.db.kvKeys.serializedTestShips},rejectOnNotFound:!0});await super.load({...e.value,...t.value})}catch(e){D("Ships database reset.",e)}D("Initialized")}async save(e,t){await this.GalaxyInfo.prisma.keyValue.upsert({create:{key:t?this.GalaxyInfo.config.db.kvKeys.serializedTestShips:this.GalaxyInfo.config.db.kvKeys.serializedShips,value:e},update:{value:e},where:{key:t?this.GalaxyInfo.config.db.kvKeys.serializedTestShips:this.GalaxyInfo.config.db.kvKeys.serializedShips}});let r=(await this.GalaxyInfo.prisma.keyValue.findUnique({where:{key:t?this.GalaxyInfo.config.db.kvKeys.serializedShips:this.GalaxyInfo.config.db.kvKeys.serializedTestShips},rejectOnNotFound:!0})).value;await super.load({...e,...r})}};var B=class extends Error{},P=class extends Error{},F=class extends Error{},v=class{constructor(){this.turrets={},this.initialized=!1}assertReady(){if(!this.initialized)throw new B("Turrets instance has not been initialized; do `await <Turrets>.init()` before using it.");if(Object.keys(this.turrets).length===0)throw new P("Turrets have not been exported from the game.")}async load(e){for(let t of Object.values(e)){let r=new X(t);this.turrets[r.name]=r}this.initialized=!0}get(e){if(this.assertReady(),!this.turrets.hasOwnProperty(e))throw new F(`Could not find turret called ${e}.`);return this.turrets[e]}all(){return this.assertReady(),this.turrets}},X=class extends u{constructor(e){super();let t=e.Group==="Alien"?h.Plasma:T[e.Class];if(!t)throw new Error(`Unknown turret class ${e.Class}`);this._alpha=new l(e.Damage*t.shield,e.Damage*t.hull,e.Damage*t[t.ideal]),this.name=e.Name,this.range=e.Range,this.reload=e.Reload,this.group=e.Group,this.size=e.TurretSize,this.turretClass=e.Class,this.baseAccuracy=e.BaseAccuracy,this.trackingAccuracy=e.SpeedDenominator,this.test=["Test","Modelers"].includes(this.group),this.affectedByLoyalty=!["Mining"].includes(e.Class)}alpha(e,t=0){return this.affectedByLoyalty||(t=0),e&&e>this.range?new l:new l().add(this._alpha).multiply(1+t)}dps(e,t=0){let r=this.alpha(e,t);return new p(r.shield/this.reload,r.hull/this.reload)}accuracyDeviation(e){return this.size==="Large"&&e>80&&(e*=1+(e-80)*.003),this.size==="Medium"&&e>120&&(e*=1+(e-120)*.003),this.size==="Small"&&e>170&&(e*=1+(e-170)*.003),this.baseAccuracy+e/this.trackingAccuracy}},Y=class extends v{constructor(){super()}async init(e){await super.load(e)}},Z=class extends v{constructor(e){super();this.GalaxyInfo=e}async init(){try{let e=await this.GalaxyInfo.prisma.keyValue.findUnique({where:{key:this.GalaxyInfo.config.db.kvKeys.serializedTurrets},rejectOnNotFound:!0});await this.load(e.value)}catch(e){console.log("Turrets database reset.",e)}}async save(e){await this.GalaxyInfo.prisma.keyValue.upsert({create:{key:this.GalaxyInfo.config.db.kvKeys.serializedTurrets,value:e},update:{value:e},where:{key:this.GalaxyInfo.config.db.kvKeys.serializedTurrets}}),await this.load(e)}};
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __export = (target, all) => {
+  __markAsModule(target);
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __reExport = (target, module2, desc) => {
+  if (module2 && typeof module2 === "object" || typeof module2 === "function") {
+    for (let key of __getOwnPropNames(module2))
+      if (!__hasOwnProp.call(target, key) && key !== "default")
+        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  }
+  return target;
+};
+var __toModule = (module2) => {
+  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", module2 && module2.__esModule && "default" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
+};
+
+// node_modules/fuzzyfind/search.js
+var require_search = __commonJS({
+  "node_modules/fuzzyfind/search.js"(exports, module2) {
+    module2.exports = function search(haystack) {
+      haystack = haystack.toLowerCase();
+      var self = {
+        for: function(needle) {
+          var foundIndex = 0;
+          var result = { found: true };
+          needle = needle.toLowerCase();
+          var needleLength = needle.length;
+          for (var i = 0; i < needleLength; i++) {
+            foundIndex = haystack.indexOf(needle[i], foundIndex);
+            if (foundIndex === -1) {
+              return { found: false };
+            }
+            if (i == 0)
+              result.start = foundIndex;
+          }
+          result.end = foundIndex + 1;
+          return result;
+        }
+      };
+      return self;
+    };
+  }
+});
+
+// node_modules/fuzzyfind/generateGrams.js
+var require_generateGrams = __commonJS({
+  "node_modules/fuzzyfind/generateGrams.js"(exports, module2) {
+    module2.exports = function generateGrams(word, precision) {
+      var wordLength = word.length;
+      var smallestGram = Math.ceil(wordLength * precision) || 1;
+      var grams = [];
+      var gramLength = wordLength;
+      while (gramLength >= smallestGram) {
+        var end = wordLength - gramLength;
+        for (var start = 0; start <= end; start++) {
+          var gram = word.substr(start, gramLength);
+          if (grams.indexOf(gram) === -1)
+            grams.push(gram);
+        }
+        gramLength--;
+      }
+      return grams;
+    };
+  }
+});
+
+// node_modules/fuzzyfind/index.js
+var require_fuzzyfind = __commonJS({
+  "node_modules/fuzzyfind/index.js"(exports, module2) {
+    var search = require_search();
+    var generateGrams = require_generateGrams();
+    module2.exports = function fuzzyfind2(input, collection, options) {
+      if (typeof input !== "string" || input === "") {
+        return collection;
+      }
+      options = options || {};
+      var accessor = options.accessor || function(item) {
+        return item;
+      };
+      var precision = options.precision === void 0 ? 1 : options.precision;
+      var suggestions = [];
+      var grams = generateGrams(input, precision);
+      collection.forEach(function(item) {
+        var searchableItem = accessor(item);
+        grams.find(function(gram) {
+          var match = search(searchableItem).for(gram);
+          if (match.found) {
+            suggestions.push({
+              gram,
+              length: match.end - match.start,
+              start: match.start,
+              searchableItem,
+              item
+            });
+          }
+          return match.found;
+        });
+      });
+      return suggestions.sort(function(a, b) {
+        if (a.gram.length !== b.gram.length) {
+          return b.gram.length - a.gram.length;
+        }
+        if (a.length !== b.length) {
+          return a.length - b.length;
+        }
+        if (a.start !== b.start) {
+          return a.start - b.start;
+        }
+        if (a.searchableItem > b.searchableItem) {
+          return 1;
+        }
+        if (a.searchableItem < b.searchableItem) {
+          return -1;
+        }
+        return 0;
+      }).map(function(item) {
+        return item.item;
+      });
+    };
+  }
+});
+
+// src/index.ts
+__export(exports, {
+  Alpha: () => Alpha,
+  BASE_REQUIREMENTS: () => BASE_REQUIREMENTS,
+  BUILD_MENU_CLASSES: () => BUILD_MENU_CLASSES,
+  CLASSES: () => CLASSES,
+  ClientShips: () => ClientShips,
+  ClientTurrets: () => ClientTurrets,
+  DAMAGE_TYPE_DISTRIBUTIONS: () => DAMAGE_TYPE_DISTRIBUTIONS,
+  Dps: () => Dps,
+  NON_LIMITED_QUEST_SHIPS: () => NON_LIMITED_QUEST_SHIPS,
+  PERMITS: () => PERMITS,
+  RESISTANCE: () => RESISTANCE,
+  SPINALS: () => SPINALS,
+  SPINAL_RELOAD_EXPONENT: () => SPINAL_RELOAD_EXPONENT,
+  ServerShips: () => ServerShips,
+  ServerTurrets: () => ServerTurrets,
+  Ship: () => Ship,
+  ShipFighters: () => ShipFighters,
+  ShipNotFoundError: () => ShipNotFoundError,
+  ShipSpinal: () => ShipSpinal,
+  ShipSpinalGun: () => ShipSpinalGun,
+  ShipSpinals: () => ShipSpinals,
+  ShipTurrets: () => ShipTurrets,
+  ShipWeapons: () => ShipWeapons,
+  Ships: () => Ships,
+  ShipsNotDumpedError: () => ShipsNotDumpedError,
+  ShipsNotInitializedError: () => ShipsNotInitializedError,
+  TURRET_CLASS_DAMAGE_DISTRIBUTIONS: () => TURRET_CLASS_DAMAGE_DISTRIBUTIONS,
+  TurretNotFoundError: () => TurretNotFoundError,
+  Turrets: () => Turrets,
+  TurretsNotDumpedError: () => TurretsNotDumpedError,
+  TurretsNotInitializedError: () => TurretsNotInitializedError,
+  Weapon: () => Weapon
+});
+
+// src/ships.ts
+var import_fuzzyfind = __toModule(require_fuzzyfind());
+
+// src/constants.ts
+var CLASSES = [
+  "Miner",
+  "Freighter",
+  "Frigate",
+  "Destroyer",
+  "Cruiser",
+  "Battlecruiser",
+  "Battleship",
+  "Dreadnought",
+  "Carrier",
+  "Super Capital",
+  "Fighter",
+  "Titan",
+  "Alien",
+  "Admin"
+];
+var DAMAGE_TYPE_DISTRIBUTIONS = {
+  Laser: { shield: 1, hull: 0.3, ideal: "shield" },
+  Kinetic: { shield: 0.4, hull: 1, ideal: "hull" },
+  Plasma: { shield: 0.9, hull: 0.9, ideal: "shield" },
+  Missile: { shield: 0.7, hull: 1, ideal: "hull" },
+  Quantum: { shield: 1, hull: 1, ideal: "shield" }
+};
+var TURRET_CLASS_DAMAGE_DISTRIBUTIONS = {
+  Mining: DAMAGE_TYPE_DISTRIBUTIONS.Laser,
+  Laser: DAMAGE_TYPE_DISTRIBUTIONS.Laser,
+  Railgun: DAMAGE_TYPE_DISTRIBUTIONS.Kinetic,
+  Flak: DAMAGE_TYPE_DISTRIBUTIONS.Kinetic,
+  Cannon: DAMAGE_TYPE_DISTRIBUTIONS.Kinetic,
+  PDL: DAMAGE_TYPE_DISTRIBUTIONS.Laser,
+  Beam: DAMAGE_TYPE_DISTRIBUTIONS.Kinetic
+};
+var SPINALS = {
+  Phaser: {
+    damageDistribution: DAMAGE_TYPE_DISTRIBUTIONS.Laser,
+    Tiny: { damage: 28, reload: 0.8, range: 3e3, velocity: 5e3 },
+    Small: { damage: 40, reload: 1, range: 4e3, velocity: 4500 },
+    Medium: { damage: 72, reload: 1.6, range: 5e3, velocity: 4e3 },
+    Large: { damage: 120, reload: 2.4, range: 6e3, velocity: 3500 },
+    Huge: { damage: 198, reload: 3.6, range: 6500, velocity: 3e3 }
+  },
+  Cannon: {
+    damageDistribution: DAMAGE_TYPE_DISTRIBUTIONS.Kinetic,
+    Tiny: { damage: 40, reload: 1.6, range: 3e3, velocity: 3e3 },
+    Small: { damage: 60, reload: 2, range: 4e3, velocity: 2800 },
+    Medium: { damage: 112, reload: 3.2, range: 5e3, velocity: 2600 },
+    Large: { damage: 160, reload: 4, range: 6e3, velocity: 2400 },
+    Huge: { damage: 270, reload: 6, range: 6500, velocity: 2200 }
+  },
+  Torpedo: {
+    damageDistribution: DAMAGE_TYPE_DISTRIBUTIONS.Missile,
+    Tiny: { damage: 200, reload: 5, range: 5e3, velocity: 700 },
+    Small: { damage: 330, reload: 6, range: 6e3, velocity: 600 },
+    Medium: { damage: 490, reload: 7, range: 7e3, velocity: 500 },
+    Large: { damage: 680, reload: 8, range: 9e3, velocity: 400 },
+    Huge: { damage: 900, reload: 9, range: 1e4, velocity: 300 }
+  }
+};
+var SPINAL_RELOAD_EXPONENT = 1.1;
+var PERMITS = {
+  "37": "SC Build",
+  "38": "Class A",
+  "39": "Class B",
+  "40": "Class C",
+  "41": "Class D",
+  "42": "Class E"
+};
+var RESISTANCE = {
+  Fighter: 0,
+  Frigate: 0.2,
+  Destroyer: 0.25,
+  Cruiser: 0.3,
+  Battlecruiser: 0.4,
+  Battleship: 0.45,
+  Dreadnought: 0.5,
+  Carrier: 0.55,
+  "Super Capital": 0.65,
+  Titan: 0.7,
+  Miner: 0.3,
+  Freighter: 0.1,
+  Alien: 0.3,
+  Admin: 0.9
+};
+var BASE_REQUIREMENTS = {
+  Fighter: 1,
+  Frigate: 1,
+  Destroyer: 1,
+  Cruiser: 1,
+  Battlecruiser: 1,
+  Battleship: 1,
+  Dreadnought: 2,
+  Carrier: 2,
+  "Super Capital": 3,
+  Titan: 1,
+  Miner: 1,
+  Freighter: 1,
+  Alien: 1,
+  Admin: 1
+};
+var BUILD_MENU_CLASSES = [
+  "Miner",
+  "Freighter",
+  "Frigate",
+  "Destroyer",
+  "Cruiser",
+  "Battlecruiser",
+  "Battleship",
+  "Dreadnought",
+  "Carrier",
+  "Super Capital"
+];
+var NON_LIMITED_QUEST_SHIPS = [
+  "Nightmare",
+  "Atheon",
+  "Zhen",
+  "Helios",
+  "Imperator",
+  "Osiris",
+  "Slipstream"
+];
+
+// src/weapon.ts
+var Weapon = class {
+};
+var Alpha = class {
+  constructor(shield, hull, max) {
+    this.shield = shield ?? 0;
+    this.hull = hull ?? 0;
+    this.max = max ?? 0;
+  }
+  add(...alphas) {
+    for (const alpha of alphas) {
+      this.shield += alpha.shield;
+      this.hull += alpha.hull;
+      this.max += alpha.max;
+    }
+    return this;
+  }
+  multiply(multiplier) {
+    this.shield *= multiplier;
+    this.hull *= multiplier;
+    this.max *= multiplier;
+    return this;
+  }
+  toString() {
+    return `${this.shield}/${this.hull}/${this.max}`;
+  }
+};
+var Dps = class {
+  constructor(shield, hull) {
+    this.shield = shield ?? 0;
+    this.hull = hull ?? 0;
+  }
+  add(...dpses) {
+    for (const dps of dpses) {
+      this.shield += dps.shield;
+      this.hull += dps.hull;
+    }
+    return this;
+  }
+  multiply(count) {
+    this.shield *= count;
+    this.hull *= count;
+    return this;
+  }
+  get average() {
+    return (this.shield + this.hull) / 2;
+  }
+  toString() {
+    return `${this.shield}/${this.hull}/${this.average}`;
+  }
+};
+
+// src/ships.ts
+var ShipsNotInitializedError = class extends Error {
+};
+var ShipsNotDumpedError = class extends Error {
+};
+var ShipNotFoundError = class extends Error {
+  constructor() {
+    super("Could not find a ship with that name.");
+  }
+};
+function log(...args) {
+  console.log("[Ships]", ...args);
+}
+var Ships = class {
+  constructor(turrets) {
+    this.ships = {};
+    this.turrets = turrets;
+    this.initialized = false;
+  }
+  assertReady() {
+    if (!this.initialized)
+      throw new ShipsNotInitializedError("Ships instance has not been initialized; do `await <Ships>.init()` before using it.");
+    if (Object.keys(this.ships).length === 0)
+      throw new ShipsNotDumpedError("Ships have not been exported from the game.");
+  }
+  async load(ships) {
+    this.ships = {};
+    await this.loadShips(ships, this.turrets, true);
+    await this.loadShips(ships, this.turrets, false);
+    this.initialized = true;
+  }
+  async loadShips(ships, turrets, fighters) {
+    for (const serializedShip of Object.values(ships)) {
+      try {
+        if (!fighters && serializedShip.class === "Fighter")
+          continue;
+        if (fighters && serializedShip.class !== "Fighter")
+          continue;
+        const ship = new Ship(this.ships, turrets, serializedShip);
+        this.ships[ship.name] = ship;
+      } catch (error) {
+        console.log(`Failed to load ship ${serializedShip.name}: ${error}`);
+      }
+    }
+  }
+  find(name) {
+    this.assertReady();
+    if (this.ships.hasOwnProperty(name))
+      return this.ships[name];
+    const fuzzyfound = (0, import_fuzzyfind.default)(name, Object.keys(this.ships))[0];
+    if (!fuzzyfound)
+      throw new ShipNotFoundError();
+    return this.ships[fuzzyfound];
+  }
+  all(options) {
+    this.assertReady();
+    if (!options)
+      options = {};
+    const ships = {};
+    for (const key in this.ships) {
+      if (options.secret === false && (this.ships[key].secret || this.ships[key].test))
+        continue;
+      ships[key] = this.ships[key];
+    }
+    return ships;
+  }
+  get(name) {
+    this.assertReady();
+    if (!this.ships.hasOwnProperty(name))
+      throw new ShipNotFoundError();
+    return this.ships[name];
+  }
+  fromSerializedShip(serializedShip) {
+    this.assertReady();
+    const ship = new Ship(this.ships, this.turrets, serializedShip);
+    return ship;
+  }
+};
+var Ship = class {
+  constructor(ships, turrets, serializedShip) {
+    this.serializedShip = serializedShip;
+    this.name = serializedShip.name;
+    this.test = serializedShip.test;
+    this.class = serializedShip.class;
+    this.resistance = RESISTANCE[this.class];
+    this.description = serializedShip.description ?? "(no description)";
+    this.eventId = serializedShip.eventId;
+    this.permit = this.calculatePermit();
+    this.explosionSize = serializedShip.explosionSize;
+    this.notForSale = serializedShip.notForSale;
+    this.cargoHold = serializedShip.cargoHold;
+    this.oreHold = serializedShip.oreHold;
+    this.secret = serializedShip.secret;
+    this.nonPlayer = serializedShip.nonPlayer || ["Alien", "Titan"].includes(this.class);
+    this.canWarp = serializedShip.canWarp;
+    this.stealth = serializedShip.stealth;
+    if (serializedShip.customDrift)
+      this.customDrift = serializedShip.customDrift, this.vip = serializedShip.vip;
+    this.health = serializedShip.health;
+    this.speed = {
+      top: serializedShip.topSpeed,
+      acceleration: serializedShip.acceleration,
+      turn: serializedShip.turnSpeed
+    };
+    this.weapons = new ShipWeapons(turrets, serializedShip.weapons);
+    this.fighters = new ShipFighters(ships, serializedShip.fighters instanceof Array ? serializedShip.fighters : []);
+    this.extraMaterials = serializedShip.extraMaterials;
+  }
+  calculatePermit() {
+    if (!this.eventId)
+      return null;
+    if (!this.serializedShip.permitOverride)
+      return null;
+    const id = this.serializedShip.permitOverride.toString();
+    if (!(id in PERMITS))
+      throw new Error(`Unknown permit override: ${id}`);
+    const permit = PERMITS[id];
+    return permit;
+  }
+};
+var ShipWeapons = class extends Weapon {
+  constructor(turrets, serializedShipWeapons) {
+    super();
+    this.turrets = new ShipTurrets(turrets, serializedShipWeapons.turrets instanceof Array ? serializedShipWeapons.turrets : []);
+    this.spinals = new ShipSpinals(serializedShipWeapons.spinals);
+  }
+  alpha(range, loyalty = 0) {
+    const turrets = this.turrets.alpha(range, loyalty);
+    const spinals = this.spinals.alpha(range);
+    return turrets.add(spinals);
+  }
+  dps(range, loyalty = 0) {
+    const turrets = this.turrets.dps(range, loyalty);
+    const spinals = this.spinals.dps(range);
+    return turrets.add(spinals);
+  }
+};
+var ShipTurrets = class extends Weapon {
+  constructor(turrets, turretResolvables) {
+    super();
+    this.turrets = new Map();
+    for (const turretResolvable of turretResolvables) {
+      const turret = turrets.get(turretResolvable);
+      this.incrementTurret(turret);
+    }
+  }
+  incrementTurret(turret) {
+    const previous = this.turrets.get(turret) ?? 0;
+    this.turrets.set(turret, previous + 1);
+  }
+  alpha(range, loyalty = 0) {
+    const alpha = new Alpha();
+    for (const [turret, count] of this.turrets) {
+      alpha.add(turret.alpha(range).multiply(count).multiply(1 + loyalty));
+    }
+    return alpha;
+  }
+  dps(range, loyalty = 0) {
+    const dps = new Dps();
+    for (const [turret, count] of this.turrets) {
+      dps.add(turret.dps(range).multiply(count).multiply(1 + loyalty));
+    }
+    return dps;
+  }
+};
+var ShipSpinals = class extends Weapon {
+  constructor(serializedSpinals) {
+    super();
+    serializedSpinals = serializedSpinals instanceof Array ? serializedSpinals : [];
+    if (!(serializedSpinals instanceof Array))
+      throw new Error();
+    this.spinals = serializedSpinals.map((serializedSpinal) => new ShipSpinal(serializedSpinal));
+  }
+  alpha(range) {
+    return new Alpha().add(...this.spinals.map((spinal) => spinal.alpha(range)));
+  }
+  dps(range) {
+    return new Dps().add(...this.spinals.map((spinal) => spinal.dps(range)));
+  }
+};
+var ShipSpinal = class extends Weapon {
+  constructor(serializedSpinal) {
+    super();
+    serializedSpinal = serializedSpinal instanceof Array ? serializedSpinal : [];
+    if (!(serializedSpinal instanceof Array))
+      throw new Error();
+    this.guns = serializedSpinal.map((serializedGun) => new ShipSpinalGun(serializedGun));
+    if (this.guns.length === 0) {
+      throw new Error("Spinal has no guns");
+    }
+    let slowestGun = this.guns[0];
+    for (const gun of this.guns) {
+      if (gun.reload > slowestGun.reload) {
+        slowestGun = gun;
+      }
+    }
+    this.reload = slowestGun.reload;
+  }
+  alpha(range) {
+    return new Alpha().add(...this.guns.map((spinal) => spinal.alpha(range)));
+  }
+  dps(range) {
+    const alphaAtRange = this.alpha(range);
+    return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload);
+  }
+};
+var ShipSpinalGun = class extends Weapon {
+  constructor(serializedGun) {
+    super();
+    this.weaponSize = serializedGun.attributes.ProjectileSize;
+    this.weaponType = serializedGun.attributes.WeaponType;
+    const spinalType = SPINALS[this.weaponType];
+    const spinalSize = spinalType[this.weaponSize];
+    this.range = serializedGun.attributes.Range ?? SPINALS[this.weaponType][this.weaponSize].range;
+    this.interval = serializedGun.attributes.BarrelInterval ?? 0;
+    this.barrels = serializedGun.barrels;
+    this.isBroadside = serializedGun.attributes.IsBroadside ?? false;
+    if (typeof serializedGun.attributes.ReloadTime !== "undefined") {
+      this.reload = Math.max(0.01, this.interval * (this.barrels - 1) + serializedGun.attributes.ReloadTime);
+    } else {
+      this.reload = this.interval * (this.barrels - 1) + spinalSize.reload * Math.pow(SPINAL_RELOAD_EXPONENT, this.barrels - 1);
+    }
+    this._alpha = new Alpha(this.barrels * spinalSize.damage * spinalType.damageDistribution.shield, this.barrels * spinalSize.damage * spinalType.damageDistribution.hull, this.barrels * spinalSize.damage * spinalType.damageDistribution[spinalType.damageDistribution.ideal]);
+    if (this.isBroadside)
+      this._alpha.multiply(0.5);
+  }
+  alpha(range) {
+    if (range && range > this.range)
+      return new Alpha();
+    return new Alpha().add(this._alpha);
+  }
+  dps(range) {
+    const alphaAtRange = this.alpha(range);
+    return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload);
+  }
+};
+var ShipFighters = class extends Weapon {
+  constructor(ships, fighterNames) {
+    super();
+    this.hasFighters = false;
+    this.fighters = new Map();
+    for (const fighterName of fighterNames) {
+      try {
+        const fighter = ships[fighterName];
+        if (!fighter)
+          continue;
+        this.incrementFighter(fighter);
+        this.hasFighters = true;
+      } catch (error) {
+        log(error);
+      }
+    }
+  }
+  incrementFighter(fighter) {
+    const previous = this.fighters.get(fighter) ?? 0;
+    this.fighters.set(fighter, previous + 1);
+  }
+  alpha(range, loyalty = 0) {
+    const alpha = new Alpha();
+    for (const [fighter, count] of this.fighters) {
+      alpha.add(fighter.weapons.alpha(range, loyalty).multiply(count));
+    }
+    return alpha;
+  }
+  dps(range, loyalty = 0) {
+    const dps = new Dps();
+    for (const [fighter, count] of this.fighters) {
+      dps.add(fighter.weapons.dps(range, loyalty).multiply(count));
+    }
+    return dps;
+  }
+};
+var ClientShips = class extends Ships {
+  constructor(turrets) {
+    super(turrets);
+  }
+  async init(ships) {
+    await super.load(ships);
+  }
+};
+var ServerShips = class extends Ships {
+  constructor(GalaxyInfo) {
+    super(GalaxyInfo.turrets);
+    this.GalaxyInfo = GalaxyInfo;
+  }
+  async init() {
+    try {
+      const mainCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+        where: {
+          key: this.GalaxyInfo.config.db.kvKeys.serializedShips
+        },
+        rejectOnNotFound: true
+      });
+      const testCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+        where: {
+          key: this.GalaxyInfo.config.db.kvKeys.serializedTestShips
+        },
+        rejectOnNotFound: true
+      });
+      await super.load({ ...mainCache.value, ...testCache.value });
+    } catch (error) {
+      log("Ships database reset.", error);
+    }
+    log("Initialized");
+  }
+  async save(ships, test) {
+    await this.GalaxyInfo.prisma.keyValue.upsert({
+      create: {
+        key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips,
+        value: ships
+      },
+      update: {
+        value: ships
+      },
+      where: {
+        key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips
+      }
+    });
+    const otherShips = (await this.GalaxyInfo.prisma.keyValue.findUnique({
+      where: {
+        key: test ? this.GalaxyInfo.config.db.kvKeys.serializedShips : this.GalaxyInfo.config.db.kvKeys.serializedTestShips
+      },
+      rejectOnNotFound: true
+    })).value;
+    await super.load({ ...ships, ...otherShips });
+  }
+};
+
+// src/turrets.ts
+var TurretsNotInitializedError = class extends Error {
+};
+var TurretsNotDumpedError = class extends Error {
+};
+var TurretNotFoundError = class extends Error {
+};
+var Turrets = class {
+  constructor() {
+    this.turrets = {};
+    this.initialized = false;
+  }
+  assertReady() {
+    if (!this.initialized)
+      throw new TurretsNotInitializedError("Turrets instance has not been initialized; do `await <Turrets>.init()` before using it.");
+    if (Object.keys(this.turrets).length === 0)
+      throw new TurretsNotDumpedError("Turrets have not been exported from the game.");
+  }
+  async load(serializedTurrets) {
+    for (const serializedTurret of Object.values(serializedTurrets)) {
+      const turret = new Turret(serializedTurret);
+      this.turrets[turret.name] = turret;
+    }
+    this.initialized = true;
+  }
+  get(turretName) {
+    this.assertReady();
+    if (!this.turrets.hasOwnProperty(turretName))
+      throw new TurretNotFoundError(`Could not find turret called ${turretName}.`);
+    return this.turrets[turretName];
+  }
+  all() {
+    this.assertReady();
+    return this.turrets;
+  }
+};
+var Turret = class extends Weapon {
+  constructor(serializedTurret) {
+    super();
+    const damageDistribution = serializedTurret.Group === "Alien" ? DAMAGE_TYPE_DISTRIBUTIONS.Plasma : TURRET_CLASS_DAMAGE_DISTRIBUTIONS[serializedTurret.Class];
+    if (!damageDistribution)
+      throw new Error(`Unknown turret class ${serializedTurret.Class}`);
+    this._alpha = new Alpha(serializedTurret.Damage * damageDistribution.shield, serializedTurret.Damage * damageDistribution.hull, serializedTurret.Damage * damageDistribution[damageDistribution.ideal]);
+    this.name = serializedTurret.Name;
+    this.range = serializedTurret.Range;
+    this.reload = serializedTurret.Reload;
+    this.group = serializedTurret.Group;
+    this.size = serializedTurret.TurretSize;
+    this.turretClass = serializedTurret.Class;
+    this.baseAccuracy = serializedTurret.BaseAccuracy;
+    this.trackingAccuracy = serializedTurret.SpeedDenominator;
+    this.test = ["Test", "Modelers"].includes(this.group);
+    this.affectedByLoyalty = !["Mining"].includes(serializedTurret.Class);
+  }
+  alpha(range, loyalty = 0) {
+    if (!this.affectedByLoyalty)
+      loyalty = 0;
+    if (range && range > this.range)
+      return new Alpha();
+    return new Alpha().add(this._alpha).multiply(1 + loyalty);
+  }
+  dps(range, loyalty = 0) {
+    const alphaAtRange = this.alpha(range, loyalty);
+    return new Dps(alphaAtRange.shield / this.reload, alphaAtRange.hull / this.reload);
+  }
+  accuracyDeviation(absoluteVelocity) {
+    if (this.size === "Large" && absoluteVelocity > 80)
+      absoluteVelocity *= 1 + (absoluteVelocity - 80) * 3e-3;
+    if (this.size === "Medium" && absoluteVelocity > 120)
+      absoluteVelocity *= 1 + (absoluteVelocity - 120) * 3e-3;
+    if (this.size === "Small" && absoluteVelocity > 170)
+      absoluteVelocity *= 1 + (absoluteVelocity - 170) * 3e-3;
+    return this.baseAccuracy + absoluteVelocity / this.trackingAccuracy;
+  }
+};
+var ClientTurrets = class extends Turrets {
+  constructor() {
+    super();
+  }
+  async init(turrets) {
+    await super.load(turrets);
+  }
+};
+var ServerTurrets = class extends Turrets {
+  constructor(GalaxyInfo) {
+    super();
+    this.GalaxyInfo = GalaxyInfo;
+  }
+  async init() {
+    try {
+      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+        where: {
+          key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets
+        },
+        rejectOnNotFound: true
+      });
+      await this.load(cache.value);
+    } catch (e) {
+      console.log("Turrets database reset.", e);
+    }
+  }
+  async save(serializedTurrets) {
+    await this.GalaxyInfo.prisma.keyValue.upsert({
+      create: {
+        key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets,
+        value: serializedTurrets
+      },
+      update: {
+        value: serializedTurrets
+      },
+      where: {
+        key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets
+      }
+    });
+    await this.load(serializedTurrets);
+  }
+};
