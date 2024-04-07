@@ -345,6 +345,9 @@ export class ShipSpinalGun extends Weapon {
     const spinalType = SPINALS[this.weaponType]
     const spinalSize = spinalType[this.weaponSize]
 
+    if (!spinalType) throw new Error(`Unknown weapon type: ${this.weaponType}`)
+    if (!spinalSize) throw new Error(`Unknown weapon size: ${this.weaponSize}`)
+
     this.range = serializedGun.attributes.Range ?? SPINALS[this.weaponType][this.weaponSize].range
     this.interval = serializedGun.attributes.BarrelInterval ?? 0
     this.barrels = serializedGun.barrels
