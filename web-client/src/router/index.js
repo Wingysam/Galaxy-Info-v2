@@ -1,71 +1,95 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '@/views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "@/views/Home.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "Home",
+    component: Home,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
+    path: "/login",
+    name: "Login",
+    component: () =>
+      import(/* webpackChunkName: "login" */ "@/views/Login.vue"),
   },
   {
-    path: '/commands',
-    name: 'Commands',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/Commands.vue')
+    path: "/commands",
+    name: "Commands",
+    component: () =>
+      import(/* webpackChunkName: "login" */ "@/views/Commands.vue"),
   },
   {
-    path: '/guilds',
-    name: 'Guilds',
-    component: () => import(/* webpackChunkName: "guilds" */ '@/views/Guilds.vue')
+    path: "/guilds",
+    name: "Guilds",
+    component: () =>
+      import(/* webpackChunkName: "guilds" */ "@/views/Guilds.vue"),
   },
   {
-    path: '/guilds/:guildid/:section',
-    name: 'Guild',
-    component: () => import(/* webpackChunkName: "guild" */ '@/views/Guild.vue')
+    path: "/guilds/:guildid/:section",
+    name: "Guild",
+    component: () =>
+      import(/* webpackChunkName: "guild" */ "@/views/Guild.vue"),
   },
   {
-    path: '/ships',
-    name: 'Ships',
-    component: () => import(/* webpackChunkName: "ships" */ '@/views/Ships.vue')
+    path: "/ships",
+    name: "Ships",
+    component: () =>
+      import(/* webpackChunkName: "ships" */ "@/views/Ships.vue"),
   },
   {
-    path: '/ships/:ship',
-    name: 'Ship',
-    component: () => import(/* webpackChunkName: "ship" */ '@/views/Ship.vue')
+    path: "/ships/:ship",
+    name: "Ship",
+    component: () => import(/* webpackChunkName: "ship" */ "@/views/Ship.vue"),
   },
   {
-    path: '/turrets',
-    name: 'Turrets',
-    component: () => import(/* webpackChunkName: "turrets" */ '@/views/Turrets.vue')
+    path: "/turrets",
+    name: "Turrets",
+    component: () =>
+      import(/* webpackChunkName: "turrets" */ "@/views/Turrets.vue"),
   },
   {
-    path: '/turrets/:turret',
-    name: 'Turret',
-    component: () => import(/* webpackChunkName: "turret" */ '@/views/Turret.vue')
+    path: "/turrets/:turret",
+    name: "Turret",
+    component: () =>
+      import(/* webpackChunkName: "turret" */ "@/views/Turret.vue"),
   },
   {
-    path: '/kills',
-    name: 'Kills',
-    component: () => import(/* webpackChunkName: "kills" */ '@/views/Kills.vue')
+    path: "/kills",
+    name: "Kills",
+    component: () =>
+      import(/* webpackChunkName: "kills" */ "@/views/Kills.vue"),
   },
   {
-    path: '/kills/:kill',
-    name: 'Kill',
-    component: () => import(/* webpackChunkName: "kill" */ '@/views/Kill.vue')
-  }
-]
+    path: "/kills/:kill",
+    name: "Kill",
+    component: () => import(/* webpackChunkName: "kill" */ "@/views/Kill.vue"),
+  },
+  {
+    path: "/terms",
+    name: "Terms of Service",
+    component: () =>
+      import(
+        /* webpackChunkName: "terms-of-service" */ "@/views/TermsOfService.vue"
+      ),
+  },
+  {
+    path: "/privacy-policy",
+    name: "Privacy Policy",
+    component: () =>
+      import(
+        /* webpackChunkName: "privacy-policy" */ "@/views/PrivacyPolicy.vue"
+      ),
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
