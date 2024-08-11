@@ -287,7 +287,9 @@ export class CarnageLeaderboardCommand extends GalaxyInfoCommand {
                 'Alien',
                 'Pirate',
                 'NPC',
-                'Kneall'
+                'Kneall',
+                'Pirate Raider',
+                'Insurgents'
               )`
           }
         GROUP BY ${ships ? `${reverse ? 'victim' : 'killer'}_ship` : `${reverse ? 'victim' : 'killer'}_id`}
