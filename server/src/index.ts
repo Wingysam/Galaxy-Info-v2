@@ -145,7 +145,7 @@ function log (...args: any) {
   }
 
   const client = new GalaxyInfoClient({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES],
     partials: ['CHANNEL']
   }, { GalaxyInfo })
 
