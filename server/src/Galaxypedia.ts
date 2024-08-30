@@ -3,7 +3,7 @@ import Nodemw from 'nodemw'
 export class Galaxypedia extends Nodemw {
   constructor () {
     super({
-      server: 'robloxgalaxy.wiki'
+      server: 'galaxypedia.org'
     })
   }
 
