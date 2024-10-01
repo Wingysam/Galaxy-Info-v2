@@ -9,8 +9,8 @@
     "build": "tsc || true",
     "dev1": "tsc --watch",
     "dev2": "nodemon --ignore web-client",
-    "build-image": "docker build --platform linux/arm64 -f Dockerfile .. -t registry.wg.wingysam.xyz/galaxy-info",
-    "prod": "npm run build-image && docker push registry.wg.wingysam.xyz/galaxy-info"
+    "build-image": "docker build --platform linux/arm64 -f Dockerfile .. -t registry.ts.wingysam.xyz/galaxy-info",
+    "prod": "npm run build-image && docker push registry.ts.wingysam.xyz/galaxy-info"
   },
   "author": "Wingy <git@wingysam.xyz>",
   "license": "AGPL-3.0",
