@@ -30,7 +30,7 @@ export class GameConstants {
       }) as any
       this.load(cache.value)
     } catch (error) {
-      console.log(error)
+      console.log('Failed to load game constants:', error)
     }
   }
 

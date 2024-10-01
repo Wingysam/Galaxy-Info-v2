@@ -37,7 +37,7 @@ export class GalaxyInfoWeb {
     app.get('/', (_, res) => res.send('should be frontend'))
 
     app.use((err: any, _req: express.Request, res: express.Response) => {
-      console.error(err)
+      console.error('Error in HTTP handler:', err)
       res.status(500)
       res.end()
     })

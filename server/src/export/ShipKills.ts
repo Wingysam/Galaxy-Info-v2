@@ -18,7 +18,6 @@ export class ShipKillsExport {
   async init () {
     const shipKillsIngest = await this.GalaxyInfo.ingest.services.wait('ShipKillsIngest') as ShipKillsIngest
     shipKillsIngest.on('kill', async (kill: Kill) => {
-      console.log(kill)
       const channels: any = await this.GalaxyInfo.prisma.$queryRaw`
         SELECT
           id, kill_log_embed, kill_log_pin_limiteds, kill_log_template_normal, kill_log_template_nuke, (SELECT members FROM "Guild" WHERE "Guild".id = "Channel".guild) AS members, kill_log_members, kill_log_include_all, kill_log_custom_users,

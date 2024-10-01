@@ -157,7 +157,7 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
 
       return res.send(serialize({ guild: newGuildConfig, channels: newChannelsConfig }))
     } catch (error) {
-      console.log(error)
+      console.log('Failed to upload guild settings:', error)
       return res.send(serialize({ error }))
     }
   })

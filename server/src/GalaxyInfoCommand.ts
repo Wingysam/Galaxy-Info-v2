@@ -65,7 +65,7 @@ export abstract class GalaxyInfoCommand {
           })
         }
       } catch {
-        console.log(error)
+        console.log('Failed to handle error in command:', error)
       } // throw away the error if discord isn't working
     }
     const end = performance.now()

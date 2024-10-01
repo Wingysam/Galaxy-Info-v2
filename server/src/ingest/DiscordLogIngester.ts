@@ -206,7 +206,7 @@ class DiscordLogFetcher {
         })
         return messages
       } catch (error) {
-        console.error(error)
+        console.error('Failed to fetch Discord log page:', error)
         return await fetchPage(cursor)
       }
     }
