@@ -106,9 +106,7 @@ export class DiscordLogIngester {
   }
 
   private async throwAwayParseFailures (parsed: Array<PromiseSettledResult<any>>) {
-    // @ts-expect-error Typedefs for promise.allSettled are bad.
     const rejecteds = parsed.filter(settled => settled.status === 'rejected').map(settled => settled.reason)
-    // @ts-expect-error Typedefs for promise.allSettled are bad.
     const fulfilled = parsed.filter(settled => settled.status === 'fulfilled').map(settled => settled.value)
 
     for (const rejected of rejecteds) {
