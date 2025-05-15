@@ -139,11 +139,10 @@ export class ServerTurrets extends Turrets {
 
   async init() {
     try {
-      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const cache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets
-        },
-        rejectOnNotFound: true
+        }
       }) as any
       await this.load(cache.value)
     } catch (e) {

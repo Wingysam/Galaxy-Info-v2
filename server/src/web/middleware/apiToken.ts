@@ -5,11 +5,10 @@ export async function apiToken (req: Request, res: Response, next: NextFunction)
   try {
     const providedToken = (typeof req.query.token === 'string' ? req.query.token : null) ?? req.header('x-token') ?? ''
 
-    const foundToken = await req.GalaxyInfo.prisma.apiToken.findUnique({
+    const foundToken = await req.GalaxyInfo.prisma.apiToken.findUniqueOrThrow({
       where: {
         token: providedToken
-      },
-      rejectOnNotFound: true
+      }
     })
 
     req.token = foundToken

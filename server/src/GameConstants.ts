@@ -22,11 +22,10 @@ export class GameConstants {
 
   async init () {
     try {
-      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const cache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.gameConstants
-        },
-        rejectOnNotFound: true
+        }
       }) as any
       this.load(cache.value)
     } catch (error) {

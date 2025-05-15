@@ -440,17 +440,15 @@ export class ServerShips extends Ships {
 
   async init() {
     try {
-      const mainCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const mainCache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedShips
-        },
-        rejectOnNotFound: true
+        }
       }) as any
-      const testCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const testCache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedTestShips
-        },
-        rejectOnNotFound: true
+        }
       }) as any
       await super.load({ ...mainCache.value, ...testCache.value })
     } catch (error) {
@@ -472,11 +470,10 @@ export class ServerShips extends Ships {
         key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips
       }
     })
-    const otherShips = (await this.GalaxyInfo.prisma.keyValue.findUnique({
+    const otherShips = (await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
       where: {
         key: test ? this.GalaxyInfo.config.db.kvKeys.serializedShips : this.GalaxyInfo.config.db.kvKeys.serializedTestShips
-      },
-      rejectOnNotFound: true
+      }
     })).value
     await super.load({ ...ships, ...otherShips })
   }

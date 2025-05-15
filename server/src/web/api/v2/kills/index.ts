@@ -121,11 +121,10 @@ export async function kills ({ GalaxyInfo }: Arg) {
     const refunded = refunded_override && !!data.refunded
 
     const id = BigInt(req.params.id)
-    const kill = await GalaxyInfo.prisma.kill.findFirst({
+    const kill = await GalaxyInfo.prisma.kill.findFirstOrThrow({
       where: {
         id
-      },
-      rejectOnNotFound: true
+      }
     })
     kill.refunded_override_history.push({
       admin: discordUserId,

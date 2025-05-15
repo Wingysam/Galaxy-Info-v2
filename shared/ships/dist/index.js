@@ -635,17 +635,15 @@ var ServerShips = class extends Ships {
   }
   async init() {
     try {
-      const mainCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const mainCache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedShips
-        },
-        rejectOnNotFound: true
+        }
       });
-      const testCache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const testCache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedTestShips
-        },
-        rejectOnNotFound: true
+        }
       });
       await super.load({ ...mainCache.value, ...testCache.value });
     } catch (error) {
@@ -666,11 +664,10 @@ var ServerShips = class extends Ships {
         key: test ? this.GalaxyInfo.config.db.kvKeys.serializedTestShips : this.GalaxyInfo.config.db.kvKeys.serializedShips
       }
     });
-    const otherShips = (await this.GalaxyInfo.prisma.keyValue.findUnique({
+    const otherShips = (await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
       where: {
         key: test ? this.GalaxyInfo.config.db.kvKeys.serializedShips : this.GalaxyInfo.config.db.kvKeys.serializedTestShips
-      },
-      rejectOnNotFound: true
+      }
     })).value;
     await super.load({ ...ships, ...otherShips });
   }
@@ -766,11 +763,10 @@ var ServerTurrets = class extends Turrets {
   }
   async init() {
     try {
-      const cache = await this.GalaxyInfo.prisma.keyValue.findUnique({
+      const cache = await this.GalaxyInfo.prisma.keyValue.findUniqueOrThrow({
         where: {
           key: this.GalaxyInfo.config.db.kvKeys.serializedTurrets
-        },
-        rejectOnNotFound: true
+        }
       });
       await this.load(cache.value);
     } catch (e) {
