@@ -5,6 +5,7 @@ import type { SerializedShips, SerializedTurrets } from '@galaxyinfo/ships'
 import { serialize } from '@galaxyinfo/serialization'
 import frontendLoggedIn from '../../../middleware/frontendLoggedIn'
 import type GalaxyStaffIngest from 'ingest/services/GalaxyStaff'
+import { sleep } from '../../../../util/sleep'
 
 interface Arg {
   GalaxyInfo: GalaxyInfo
@@ -53,9 +54,25 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
     return { serializedShips: allowedShips, serializedTurrets: allowedTurrets }
   }
 
+  let unauthenticatedCache = getDumps()
+  void (async () => {
+    while (true) {
+      await sleep(5000) // 5 seconds
+      try {
+        const latestCache = getDumps()
+        await latestCache
+        unauthenticatedCache = latestCache
+      } catch (error) {
+        console.error('Failed to update ships and turrets cache:', error)
+      }
+    }
+  })()
+
   router.get('/', scope('ships_read', 'turrets_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
     try {
-      const { serializedShips, serializedTurrets } = await getDumps(req.discordUser?.id)
+      const { serializedShips, serializedTurrets } = typeof req.discordUser?.id === 'string'
+        ? await getDumps(req.discordUser.id)
+        : await unauthenticatedCache
       res.send(serialize({ serializedShips, serializedTurrets }))
     } catch (error) {
       res.send(`${error}`)
@@ -65,7 +82,9 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
 
   router.get('/raw', scope('ships_read', 'turrets_read'), frontendLoggedIn({ optional: true }), async (req, res) => {
     try {
-      const { serializedShips, serializedTurrets } = await getDumps(req.discordUser?.id)
+      const { serializedShips, serializedTurrets } = typeof req.discordUser?.id === 'string'
+        ? await getDumps(req.discordUser.id)
+        : await unauthenticatedCache
       res.send({ serializedShips, serializedTurrets })
     } catch (error) {
       res.send(`${error}`)
