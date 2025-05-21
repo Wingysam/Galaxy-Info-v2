@@ -31,8 +31,7 @@ export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
 
     const allowedShips: SerializedShips = {}
 
-    const galaxyStaffIngest = GalaxyInfo.ingest.services.get('GalaxyStaffIngest') as GalaxyStaffIngest | undefined
-    if (!galaxyStaffIngest) throw new Error('GalaxyStaffIngest missing')
+    const galaxyStaffIngest = await GalaxyInfo.ingest.services.wait('GalaxyStaffIngest') as GalaxyStaffIngest
 
     const includeSecret = typeof user === 'string' && galaxyStaffIngest.testShipAccess.members.includes(user)
 
