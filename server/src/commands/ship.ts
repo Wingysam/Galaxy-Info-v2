@@ -6,7 +6,6 @@ import { GalaxyInfoCommand } from '../GalaxyInfoCommand'
 import { EMOJIS } from '../emoji'
 import { type Ship, type ShipFighters, ShipNotFoundError, type ShipSpinal, type ShipSpinalGun, type ShipTurrets, type Turret, BUILD_MENU_CLASSES } from '@galaxyinfo/ships'
 import { firstBy } from 'thenby'
-import type { Galaxypedia } from '../Galaxypedia'
 import type GalaxyStaffIngest from '../ingest/services/GalaxyStaff'
 import type { Channel } from '@prisma/client'
 
@@ -21,16 +20,6 @@ export class ShipCommand extends GalaxyInfoCommand {
       .addIntegerOption(option => option.setName('loyalty').setDescription('Turret damage is increased at higher loyalty, default is ship requirement or 3%'))
       .setDescription('Get information about a ship in Galaxy')
     super({ builder, instant: true })
-  }
-
-  private async getShipImage (galaxypedia: Galaxypedia, ship: string): Promise<string | null> {
-    try {
-      const info = await galaxypedia.getImageInfo(`File:${ship}-icon.png`)
-      if (!info) return null
-      return info.url || null
-    } catch {
-      return null
-    }
   }
 
   public async interactionCreate (interaction: CommandInteraction, _expectsEphemeral: boolean, channelConfig?: AllProps<Channel>) {
@@ -65,7 +54,7 @@ export class ShipCommand extends GalaxyInfoCommand {
       await interaction.deferReply({ ephemeral: true })
     }
 
-    const image = this.getShipImage(GalaxyInfo.galaxypedia, info.name)
+    const image = GalaxyInfo.galaxypedia.getShipImage(info.name)
 
     const PRIZE_SHIP = '🏆 Prize Ship'
     const LIMITED = '🟠 Limited'
