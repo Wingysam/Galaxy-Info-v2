@@ -10,6 +10,139 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/kills:
+ *   get:
+ *     summary: Get kill logs
+ *     description: Retrieve kill logs with optional filtering by killer ship or victim ship. Requires kills_read scope. Returns up to 250 most recent kills.
+ *     tags:
+ *       - Kills
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     parameters:
+ *       - in: query
+ *         name: killer_ship
+ *         schema:
+ *           type: string
+ *         description: Filter by killer ship name
+ *       - in: query
+ *         name: victim_ship
+ *         schema:
+ *           type: string
+ *         description: Filter by victim ship name
+ *     responses:
+ *       200:
+ *         description: Kill logs retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 carnage:
+ *                   type: string
+ *                   description: Total carnage value
+ *                 kills:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Kill'
+ *       403:
+ *         description: Missing required scope
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @openapi
+ * /v2/kills/{id}:
+ *   get:
+ *     summary: Get kill by ID
+ *     description: Retrieve a specific kill by its ID. Requires kills_read scope or admin privileges.
+ *     tags:
+ *       - Kills
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Kill ID
+ *     responses:
+ *       200:
+ *         description: Kill retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 kill:
+ *                   $ref: '#/components/schemas/Kill'
+ *       403:
+ *         description: Missing required scope or not authorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @openapi
+ * /v2/kills/{id}/refund:
+ *   post:
+ *     summary: Update kill refund status
+ *     description: Update the refund status of a kill. Requires kills_write scope or admin privileges.
+ *     tags:
+ *       - Kills
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Kill ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               discordUserId:
+ *                 type: string
+ *                 description: Discord user ID performing the refund action
+ *               refunded_override:
+ *                 type: boolean
+ *                 description: Whether to override the refund status
+ *               refunded:
+ *                 type: boolean
+ *                 description: Refund status
+ *     responses:
+ *       200:
+ *         description: Kill refund status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 kill:
+ *                   $ref: '#/components/schemas/Kill'
+ *       403:
+ *         description: Missing required scope or not authorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 export async function kills ({ GalaxyInfo }: Arg) {
   const router = Router()
 

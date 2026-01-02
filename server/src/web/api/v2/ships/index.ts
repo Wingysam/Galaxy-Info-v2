@@ -5,6 +5,111 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/ships:
+ *   post:
+ *     summary: Update ship stats
+ *     description: Updates the stats for ships provided in the request body. Requires ships_write scope.
+ *     tags:
+ *       - Ships
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     parameters:
+ *       - in: query
+ *         name: test
+ *         schema:
+ *           type: boolean
+ *         description: Set to true to mark these ships as test ships
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             additionalProperties:
+ *               type: object
+ *               description: Ship data keyed by ship name
+ *     responses:
+ *       200:
+ *         description: Ships updated successfully
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Updated ships.
+ *       403:
+ *         description: Missing required scope
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @openapi
+ * /v2/ships/stats-from-serialized-ship:
+ *   post:
+ *     summary: Compute ship stats from serialized ship data
+ *     description: Calculate DPS and alpha damage stats for a ship from serialized data. Requires ships_compute_stats scope.
+ *     tags:
+ *       - Ships
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - ship
+ *             properties:
+ *               ship:
+ *                 type: object
+ *                 description: Serialized ship data
+ *               range:
+ *                 type: number
+ *                 description: Range for damage calculation (default 0)
+ *               loyalty:
+ *                 type: number
+ *                 description: Loyalty percentage for damage bonus (default 0)
+ *     responses:
+ *       200:
+ *         description: Ship stats calculated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 stats:
+ *                   type: object
+ *                   properties:
+ *                     weapons:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                         turrets:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                         spinals:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *       403:
+ *         description: Missing required scope
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 export async function ships ({ GalaxyInfo }: Arg) {
   const router = Router()
 

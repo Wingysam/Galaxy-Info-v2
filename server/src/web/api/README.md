@@ -1,10 +1,20 @@
 # Galaxy Info API
 You can access the data that Galaxy Info has collected through this API.
 
->Warning
+## Interactive API Documentation
+
+**View the interactive Swagger UI documentation at `/api-docs`** (e.g., `http://localhost:3000/api-docs`)
+
+The Swagger UI provides:
+- Complete documentation of all API endpoints
+- Interactive request/response testing
+- Request/response schema definitions
+- Authentication information
+
+> Warning
 >
->Some routes of this API require a token, to get one please contact Wingy#3538.
->You can use this token with the x-token header or ?token=...
+> Some routes of this API require a token, to get one please contact Wingy#3538.
+> You can use this token with the x-token header or ?token=...
 
 <details>
 <summary>v1</summary>
@@ -21,6 +31,8 @@ Get the data used to generate the embed in the !ship command
 
 ## v2
 v2 of the api
+
+For detailed endpoint documentation, please visit the Swagger UI at `/api-docs`.
 
 ### GET /v2/ships
 `ships_read` | `ships_read_secret?`

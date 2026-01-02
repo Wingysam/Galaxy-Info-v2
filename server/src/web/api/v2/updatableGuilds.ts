@@ -9,6 +9,47 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/updatableGuilds:
+ *   get:
+ *     summary: Get guilds that can be updated
+ *     description: Retrieve list of Discord guilds that the authenticated user can manage. Separates guilds with the bot from guilds without.
+ *     tags:
+ *       - Guild Config
+ *     responses:
+ *       200:
+ *         description: Updatable guilds retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 botGuilds:
+ *                   type: array
+ *                   description: Guilds where the bot is present
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       icon:
+ *                         type: string
+ *                 userGuilds:
+ *                   type: array
+ *                   description: Guilds where the bot is not present
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: Not logged in
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 export async function updatableGuilds ({ GalaxyInfo }: Arg) {
   const router = Router()
 
