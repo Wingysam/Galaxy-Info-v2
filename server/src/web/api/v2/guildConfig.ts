@@ -10,6 +10,115 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/guildConfig/{guildId}:
+ *   get:
+ *     summary: Get guild configuration
+ *     description: Retrieve configuration for a specific Discord guild. Requires authentication and guild management permissions.
+ *     tags:
+ *       - Guild Config
+ *     parameters:
+ *       - in: path
+ *         name: guildId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Discord guild ID
+ *     responses:
+ *       200:
+ *         description: Guild configuration retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   description: Guild name
+ *                 icon:
+ *                   type: string
+ *                   description: Guild icon URL
+ *                 channels:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       config:
+ *                         type: object
+ *                 config:
+ *                   $ref: '#/components/schemas/GuildConfig'
+ *       403:
+ *         description: Not authorized to access this guild
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   post:
+ *     summary: Update guild configuration
+ *     description: Update configuration for a specific Discord guild. Requires authentication and guild management permissions.
+ *     tags:
+ *       - Guild Config
+ *     parameters:
+ *       - in: path
+ *         name: guildId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Discord guild ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - channels
+ *               - last_updated
+ *             properties:
+ *               channels:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *               last_updated:
+ *                 type: string
+ *                 format: date-time
+ *               force:
+ *                 type: boolean
+ *                 description: Force update even if configuration has changed
+ *               members:
+ *                 type: string
+ *               command_ship_image_placement:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Guild configuration updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 guild:
+ *                   $ref: '#/components/schemas/GuildConfig'
+ *                 channels:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 requiresForce:
+ *                   type: boolean
+ *                   description: Configuration has changed, force flag required
+ *       403:
+ *         description: Not authorized to update this guild
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 export async function guildConfig ({ GalaxyInfo }: Arg) {
   const router = Router()
 

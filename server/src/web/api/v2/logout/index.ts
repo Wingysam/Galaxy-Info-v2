@@ -8,6 +8,29 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/logout:
+ *   get:
+ *     summary: Logout and revoke Discord OAuth token
+ *     description: Revokes the user's Discord OAuth token, effectively logging them out.
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: Successfully logged out
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       401:
+ *         description: Not logged in
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 export async function logout ({ GalaxyInfo }: Arg) {
   const router = Router()
 

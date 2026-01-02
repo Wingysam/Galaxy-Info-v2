@@ -3,6 +3,17 @@
 | ![Galaxy Info](logo.png) | Version 2 of the all-in-one solution to gathering and accessing information about Galaxy. |
 | --- | --- |
 
+## API Documentation
+
+Interactive API documentation is available via Swagger UI at `/api-docs` when the server is running (e.g., `http://localhost:3000/api-docs`).
+
+The API provides endpoints for:
+- Ships and turrets data
+- Kill logs and statistics
+- Guild configuration
+- Game constants
+- Galaxypedia integration
+
 ## Development
 ### Getting Started
 First, install dependencies with npm:

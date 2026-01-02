@@ -11,6 +11,74 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/ships-turrets:
+ *   get:
+ *     summary: Get all ships and turrets data
+ *     description: Retrieve serialized data for all ships and turrets. Requires ships_read and turrets_read scopes. Secret/test ships are only included for authorized users.
+ *     tags:
+ *       - Ships
+ *       - Turrets
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     responses:
+ *       200:
+ *         description: Ships and turrets data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 serializedShips:
+ *                   type: object
+ *                   additionalProperties:
+ *                     $ref: '#/components/schemas/Ship'
+ *                 serializedTurrets:
+ *                   type: object
+ *                   additionalProperties:
+ *                     $ref: '#/components/schemas/Turret'
+ *       403:
+ *         description: Missing required scopes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @openapi
+ * /v2/ships-turrets/raw:
+ *   get:
+ *     summary: Get raw ships and turrets data
+ *     description: Retrieve raw (non-serialized) data for all ships and turrets. Requires ships_read and turrets_read scopes.
+ *     tags:
+ *       - Ships
+ *       - Turrets
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     responses:
+ *       200:
+ *         description: Raw ships and turrets data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 serializedShips:
+ *                   type: object
+ *                 serializedTurrets:
+ *                   type: object
+ *       403:
+ *         description: Missing required scopes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 export async function shipsAndTurrets ({ GalaxyInfo }: Arg) {
   const router = Router()
 

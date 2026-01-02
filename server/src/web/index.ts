@@ -1,8 +1,10 @@
 import express from 'express'
 import 'express-async-errors'
+import swaggerUi from 'swagger-ui-express'
 
 import GalaxyInfoWebApi from './api'
 import { apiToken } from './middleware/apiToken'
+import { swaggerSpec } from './swagger'
 
 interface ConstructorArg {
   GalaxyInfo: GalaxyInfo
@@ -29,6 +31,12 @@ export class GalaxyInfoWeb {
       req.GalaxyInfo = this.GalaxyInfo
       next()
     })
+
+    // Swagger UI setup - accessible without token
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'Galaxy Info API Documentation'
+    }))
 
     app.use(apiToken) // eslint-disable-line @typescript-eslint/no-misused-promises
 

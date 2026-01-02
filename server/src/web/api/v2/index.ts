@@ -15,6 +15,24 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2:
+ *   get:
+ *     summary: API v2 root endpoint
+ *     description: Returns a simple message indicating API v2 is available
+ *     tags:
+ *       - General
+ *     responses:
+ *       200:
+ *         description: API v2 is available
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: API v2
+ */
+
 export async function ApiV2 ({ GalaxyInfo }: Arg) {
   const router = Router()
 

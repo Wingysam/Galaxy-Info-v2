@@ -6,6 +6,69 @@ interface Arg {
   GalaxyInfo: GalaxyInfo
 }
 
+/**
+ * @openapi
+ * /v2/galaxypedia:
+ *   get:
+ *     summary: Get all ships formatted for Galaxypedia
+ *     description: Retrieve all ships formatted for Galaxypedia wiki pages. Requires galaxypedia scope. Does not include secret ships.
+ *     tags:
+ *       - Galaxypedia
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     responses:
+ *       200:
+ *         description: Ships data formatted for Galaxypedia
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               additionalProperties:
+ *                 type: object
+ *                 description: Ship data keyed by ship name
+ *       403:
+ *         description: Missing required scope
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @openapi
+ * /v2/galaxypedia/{ship}:
+ *   get:
+ *     summary: Get specific ship formatted for Galaxypedia
+ *     description: Retrieve a specific ship formatted for Galaxypedia wiki pages. Requires galaxypedia scope.
+ *     tags:
+ *       - Galaxypedia
+ *     security:
+ *       - ApiToken: []
+ *       - ApiTokenQuery: []
+ *     parameters:
+ *       - in: path
+ *         name: ship
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Ship name
+ *     responses:
+ *       200:
+ *         description: Ship data formatted for Galaxypedia
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Formatted ship data for Galaxypedia
+ *       403:
+ *         description: Missing required scope
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 function formatShip (ship: Ship) {
   const dps = {
     turret: ship.weapons.turrets.dps().average,
