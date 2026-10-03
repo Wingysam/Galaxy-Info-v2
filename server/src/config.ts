@@ -37,11 +37,6 @@ export interface GalaxyInfoConfig { // eslint-disable-line no-unused-vars
       gameConstants: string
     }
   }
-  export: {
-    shipKills: {
-      allowKillLogForAll: boolean
-    }
-  }
 }
 
 export async function parseConfig (): Promise<GalaxyInfoConfig> {
@@ -148,9 +143,6 @@ export async function parseConfig (): Promise<GalaxyInfoConfig> {
   await option('db_kvKeys_serializedTestShips', 'may', 'ships_dump_test')
   await option('db_kvKeys_serializedTurrets', 'may', 'turrets_dump')
   await option('db_kvKeys_gameConstants', 'may', 'game_constants_dump')
-
-  // Export
-  await option('export_shipKills_allowKillLogForAll', 'may', true, async opt => opt === 'true')
 
   return cfg
 }

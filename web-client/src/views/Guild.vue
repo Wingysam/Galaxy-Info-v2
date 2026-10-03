@@ -113,127 +113,6 @@
                   class="mt-0"
                   label="Show command results"
                 />
-                <h4 class="mb-4">
-                  Kill Log
-                </h4>
-                <v-switch
-                  v-model="selectedChannel.config.kill_log_enabled"
-                  class="mt-0"
-                  label="This is a kill log channel"
-                />
-                <v-switch
-                  v-model="selectedChannel.config.kill_log_embed"
-                  class="mt-0"
-                  label="Place the message in an embed"
-                />
-                <v-switch
-                  v-model="selectedChannel.config.kill_log_pin_limiteds"
-                  class="mt-0"
-                  label="Automatically pin limited kills/deaths"
-                />
-                <v-switch
-                  v-model="selectedChannel.config.kill_log_members"
-                  class="mt-0"
-                  label="Include all of your members in this kill log"
-                />
-                <v-switch v-if="disableKills !== 'true'"
-                  v-model="selectedChannel.config.kill_log_include_all"
-                  class="mt-0"
-                  label="Include everyone in this kill log"
-                />
-                <h5 class="mb-4">
-                  Custom users
-                </h5>
-                <p>Include these users in this kill log (one roblox id per line)</p>
-                <RobloxUserIdArrayInput v-model="selectedChannel.config.kill_log_custom_users" />
-                <h5 class="mb-4">
-                  Templates
-                </h5>
-                <v-text-field
-                  v-model="selectedChannel.config.kill_log_template_normal"
-                  class="mt-0"
-                  label="Normal"
-                />
-                <v-text-field
-                  v-model="selectedChannel.config.kill_log_template_nuke"
-                  class="mt-0"
-                  label="Nuke"
-                />
-                <h5 class="mb-4">
-                  Classes
-                </h5>
-                <p class="my-4">
-                  When you kill a build menu ship
-                </p>
-                <v-row>
-                  <v-col
-                    v-for="shipClass in shipClasses"
-                    :key="shipClass"
-                    class="pa-0 ml-2"
-                    style="flex-grow: 0;"
-                  >
-                    <v-checkbox
-                      v-model="selectedChannel.config.kill_log_bm_kill_classes"
-                      :label="shipClass.replace('_', ' ')"
-                      :value="shipClass"
-                      style="width: 15em;"
-                    />
-                  </v-col>
-                </v-row>
-                <p class="my-4">
-                  When you kill a limited ship
-                </p>
-                <v-row>
-                  <v-col
-                    v-for="shipClass in shipClasses"
-                    :key="shipClass"
-                    class="pa-0 ml-2"
-                    style="flex-grow: 0;"
-                  >
-                    <v-checkbox
-                      v-model="selectedChannel.config.kill_log_limited_kill_classes"
-                      :label="shipClass.replace('_', ' ')"
-                      :value="shipClass"
-                      style="width: 15em;"
-                    />
-                  </v-col>
-                </v-row>
-                <p class="my-4">
-                  When you lose a build menu ship
-                </p>
-                <v-row>
-                  <v-col
-                    v-for="shipClass in shipClasses"
-                    :key="shipClass"
-                    class="pa-0 ml-2"
-                    style="flex-grow: 0;"
-                  >
-                    <v-checkbox
-                      v-model="selectedChannel.config.kill_log_bm_death_classes"
-                      :label="shipClass.replace('_', ' ')"
-                      :value="shipClass"
-                      style="width: 15em;"
-                    />
-                  </v-col>
-                </v-row>
-                <p class="my-4">
-                  When you lose a limited ship
-                </p>
-                <v-row>
-                  <v-col
-                    v-for="shipClass in shipClasses"
-                    :key="shipClass"
-                    class="pa-0 ml-2"
-                    style="flex-grow: 0;"
-                  >
-                    <v-checkbox
-                      v-model="selectedChannel.config.kill_log_limited_death_classes"
-                      :label="shipClass.replace('_', ' ')"
-                      :value="shipClass"
-                      style="width: 15em;"
-                    />
-                  </v-col>
-                </v-row>
               </v-card>
             </v-col>
           </v-row>
@@ -261,20 +140,7 @@ export default {
       forceRequired: false,
       selectedChannel: {
         config: {}
-      },
-      disableKills: process.env.VUE_APP_DISABLE_KILLS,
-      shipClasses: [
-        'Miner',
-        'Freighter',
-        'Frigate',
-        'Destroyer',
-        'Cruiser',
-        'Battlecruiser',
-        'Battleship',
-        'Dreadnought',
-        'Carrier',
-        'Super_Capital'
-      ]
+      }
     }
   },
   computed: {

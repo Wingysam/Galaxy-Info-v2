@@ -10,7 +10,6 @@ import roblox from './util/roblox'
 import { IngestServices } from './ingest'
 import { GalaxyInfoWeb } from './web'
 import { GuildConfigs } from './util/guildConfigReadWrite'
-import { ExportService } from './export'
 import { ServerShips, ServerTurrets } from '@galaxyinfo/ships'
 import { GalaxyInfoClient } from './GalaxyInfoClient'
 import { Galaxypedia } from './Galaxypedia'
@@ -159,7 +158,6 @@ function log (...args: any) {
 
   GalaxyInfo.client = client
   GalaxyInfo.web = new GalaxyInfoWeb({ GalaxyInfo })
-  GalaxyInfo.export = new ExportService({ GalaxyInfo })
 
   client.once('ready', async () => {
     try {
