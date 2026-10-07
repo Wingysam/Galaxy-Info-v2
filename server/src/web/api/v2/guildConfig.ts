@@ -126,26 +126,10 @@ export async function guildConfig ({ GalaxyInfo }: Arg) {
           'commands',
           'admin_event_pings',
           'dps_updates',
-          'permits',
-
-          'kill_log_enabled',
-          'kill_log_members',
-          'kill_log_include_all',
-          'kill_log_custom_users',
-          'kill_log_embed',
-          'kill_log_pin_limiteds',
-          'kill_log_template_normal',
-          'kill_log_template_nuke',
-          'kill_log_daily_stats',
-
-          'kill_log_bm_kill_classes',
-          'kill_log_limited_kill_classes',
-          'kill_log_bm_death_classes',
-          'kill_log_limited_death_classes'
+          'permits'
         ] as const
 
         for (const key of CHANNEL_KEYS) {
-          // @ts-expect-error "Expression produces a union type that is too complex to represent."
           if (key in submittedChannel) channel[key] = submittedChannel[key]
         }
 

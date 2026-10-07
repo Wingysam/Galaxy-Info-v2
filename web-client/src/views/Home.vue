@@ -118,8 +118,7 @@ export default {
           'Kills',
           require('@/assets/marketing/kills.png'),
           [
-            'Galaxy Info processes kills as they happen.',
-            'Custom kill logs: create a Discord channel with a live feed of your kills and/or losses as a group.'
+            'Galaxy Info processes kills as they happen.'
           ]
         ],
         [

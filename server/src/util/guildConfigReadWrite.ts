@@ -20,17 +20,7 @@ export class GuildConfigs {
         commands: true,
         admin_event_pings: false,
         dps_updates: false,
-        permits: false,
-
-        kill_log_enabled: false,
-        kill_log_members: true,
-        kill_log_include_all: false,
-        kill_log_custom_users: [],
-        kill_log_embed: true,
-        kill_log_pin_limiteds: true,
-        kill_log_template_normal: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} destroyed {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",
-        kill_log_template_nuke: "{{KILLERNAME}}'s {{KILLERICON}} {{KILLERSHIP}} 💥 nuked 💥 {{VICTIMNAME}}'s {{VICTIMICON}} {{VICTIMSHIP}}",
-        kill_log_daily_stats: false
+        permits: false
       }
     }
   }
